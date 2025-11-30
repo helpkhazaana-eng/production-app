@@ -1,6 +1,7 @@
 ---
 import '../styles/global.css';
 import { generateMetaKeywords, generateLocalBusinessSchema } from '../lib/seo';
+import SpeedInsights from '@vercel/speed-insights/astro';
 
 interface Props {
   title: string;
@@ -195,5 +196,6 @@ const localBusinessSchema = generateLocalBusinessSchema();
     }
   </script>
   -->
+  <SpeedInsights />
 </body>
 </html>
