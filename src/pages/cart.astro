@@ -80,8 +80,16 @@ import { ShoppingBag, Trash2, Plus, Minus, ArrowRight } from 'lucide-react';
               Continue Shopping
             </a>
 
+            <!-- Minimum Order Warning -->
+            <div id="min-order-warning" class="hidden mt-4 p-4 bg-orange-50 border-l-4 border-orange-400 rounded-lg">
+              <p class="text-sm text-orange-800">
+                ⚠️ <strong>Minimum order value is ₹100.</strong>
+                Add items worth ₹<span id="amount-needed">0</span> more to proceed.
+              </p>
+            </div>
+
             <!-- Note -->
-            <div class="mt-6 p-4 bg-blue-50 rounded-lg">
+            <div class="mt-4 p-4 bg-blue-50 rounded-lg">
               <p class="text-sm text-blue-800">
                 💡 <strong>Note:</strong> You can only order from one restaurant at a time. 
                 Clear your cart to order from a different restaurant.
@@ -109,6 +117,8 @@ import { ShoppingBag, Trash2, Plus, Minus, ArrowRight } from 'lucide-react';
   import { logger } from '../lib/logger';
   import type { CartItem } from '../types';
 
+  const MINIMUM_ORDER_VALUE = 100; // Minimum order value in INR
+
   let cart = getCart();
   
   // Render cart
@@ -132,6 +142,8 @@ import { ShoppingBag, Trash2, Plus, Minus, ArrowRight } from 'lucide-react';
     const deliveryFeeEl = document.getElementById('delivery-fee');
 
     const isOpenForOrders = isOrderingOpenNow();
+    const minOrderWarning = document.getElementById('min-order-warning');
+    const amountNeededEl = document.getElementById('amount-needed');
 
     if (cart.items.length === 0) {
       // Show empty state
@@ -148,11 +160,30 @@ import { ShoppingBag, Trash2, Plus, Minus, ArrowRight } from 'lucide-react';
 
     // Hide empty state
     if (emptyCartEl) emptyCartEl.classList.add('hidden');
+    
+    // Check minimum order value
+    const subtotal = cart.subtotal || 0;
+    const meetsMinimum = subtotal >= MINIMUM_ORDER_VALUE;
+    const amountNeeded = Math.max(0, MINIMUM_ORDER_VALUE - subtotal);
+    
+    // Show/hide minimum order warning
+    if (minOrderWarning) {
+      minOrderWarning.classList.toggle('hidden', meetsMinimum);
+    }
+    if (amountNeededEl) {
+      amountNeededEl.textContent = amountNeeded.toFixed(0);
+    }
+    
+    // Enable/disable checkout button based on minimum order and ordering hours
     if (checkoutBtn) {
-      if (isOpenForOrders) {
+      if (isOpenForOrders && meetsMinimum) {
         checkoutBtn.classList.remove('opacity-50', 'pointer-events-none');
+        (checkoutBtn as HTMLAnchorElement).title = '';
       } else {
         checkoutBtn.classList.add('opacity-50', 'pointer-events-none');
+        if (!meetsMinimum) {
+          (checkoutBtn as HTMLAnchorElement).title = `Minimum order value is ₹${MINIMUM_ORDER_VALUE}`;
+        }
       }
     }
     if (orderClosedNote) {

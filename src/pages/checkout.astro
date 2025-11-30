@@ -33,6 +33,23 @@ import { MapPin, Phone, Mail, User, MessageCircle } from 'lucide-react';
         </div>
       </div>
 
+      <!-- Minimum Order Warning -->
+      <div id="min-order-checkout" class="hidden bg-orange-50 border-l-4 border-orange-400 p-6 rounded-lg mb-4">
+        <div class="flex items-start space-x-3">
+          <svg class="w-6 h-6 text-orange-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+          </svg>
+          <div>
+            <h3 class="font-semibold text-orange-800 mb-1">Minimum order value not met</h3>
+            <p class="text-orange-700 text-sm">
+              Minimum order value is <strong>₹100</strong>. Your current order is ₹<span id="checkout-subtotal-value">0</span>.
+              Please add items worth ₹<span id="checkout-amount-needed">0</span> more.
+            </p>
+            <a href="/restaurants/" class="inline-block mt-2 text-orange-800 font-semibold hover:underline">Add more items →</a>
+          </div>
+        </div>
+      </div>
+
       <!-- Ordering Closed Banner -->
       <div id="order-closed-checkout" class="hidden bg-red-50 border-l-4 border-red-400 p-6 rounded-lg mb-4">
         <div class="flex items-start space-x-3">
@@ -236,6 +253,8 @@ import { MapPin, Phone, Mail, User, MessageCircle } from 'lucide-react';
   import { logger, perfMonitor } from '../lib/logger';
   import type { Order, Customer } from '../types';
 
+  const MINIMUM_ORDER_VALUE = 100; // Minimum order value in INR
+
   let cart = getCart();
   let customerLocation: { latitude?: number; longitude?: number } = {};
 
@@ -272,6 +291,31 @@ import { MapPin, Phone, Mail, User, MessageCircle } from 'lucide-react';
       if (formContainer) formContainer.classList.add('hidden');
       logger.warn('Checkout accessed with empty cart', {}, 'CHECKOUT');
     } else {
+      // Check minimum order value
+      const subtotal = cart.subtotal || 0;
+      const meetsMinimum = subtotal >= MINIMUM_ORDER_VALUE;
+      const amountNeeded = Math.max(0, MINIMUM_ORDER_VALUE - subtotal);
+      
+      const minOrderBanner = document.getElementById('min-order-checkout');
+      const checkoutSubtotalEl = document.getElementById('checkout-subtotal-value');
+      const checkoutAmountNeededEl = document.getElementById('checkout-amount-needed');
+      
+      if (minOrderBanner) {
+        minOrderBanner.classList.toggle('hidden', meetsMinimum);
+      }
+      if (checkoutSubtotalEl) {
+        checkoutSubtotalEl.textContent = subtotal.toFixed(0);
+      }
+      if (checkoutAmountNeededEl) {
+        checkoutAmountNeededEl.textContent = amountNeeded.toFixed(0);
+      }
+      
+      // Disable submit button if minimum not met
+      if (!meetsMinimum && submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.textContent = `Minimum order ₹${MINIMUM_ORDER_VALUE} required`;
+      }
+      
       renderOrderSummary();
     }
   }
@@ -383,6 +427,14 @@ import { MapPin, Phone, Mail, User, MessageCircle } from 'lucide-react';
     if (!isOrderingOpenNow()) {
       alert('Ordering is currently closed. We accept orders between 9:00 AM and 9:00 PM (IST).');
       logger.warn('Checkout attempt outside ordering hours', {}, 'CHECKOUT');
+      return;
+    }
+
+    // Check minimum order value
+    const subtotal = cart.subtotal || 0;
+    if (subtotal < MINIMUM_ORDER_VALUE) {
+      alert(`Minimum order value is ₹${MINIMUM_ORDER_VALUE}. Your current order is ₹${subtotal.toFixed(0)}. Please add more items.`);
+      logger.warn('Checkout attempt below minimum order value', { subtotal, minimum: MINIMUM_ORDER_VALUE }, 'CHECKOUT');
       return;
     }
 
