@@ -20,6 +20,12 @@ self.addEventListener('install', (event) => {
 
 // Fetch event - serve from cache, fallback to network
 self.addEventListener('fetch', (event) => {
+  // Bypass service worker for Google Apps Script requests (CRITICAL for CORS)
+  if (event.request.url.includes('script.google.com') || 
+      event.request.url.includes('script.googleusercontent.com')) {
+    return; // Let browser handle it directly
+  }
+  
   event.respondWith(
     caches.match(event.request)
       .then((response) => {
@@ -48,4 +54,4 @@ self.addEventListener('activate', (event) => {
     })
   );
 });
-// Cache bust: 1764484328
+// Cache bust: 1764502500

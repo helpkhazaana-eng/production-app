@@ -23,6 +23,18 @@ const CONFIG = {
 };
 
 /**
+ * Handle OPTIONS preflight requests (CRITICAL for CORS)
+ */
+function doOptions(e) {
+  return ContentService
+    .createTextOutput('')
+    .setMimeType(ContentService.MimeType.TEXT)
+    .setHeader('Access-Control-Allow-Origin', '*')
+    .setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS')
+    .setHeader('Access-Control-Allow-Headers', 'Content-Type');
+}
+
+/**
  * Main webhook handler for GET requests (Image beacon support)
  */
 function doGet(e) {
@@ -32,20 +44,29 @@ function doGet(e) {
       const data = JSON.parse(e.parameter.data);
       sendEmailAlert(data);
       
-      return ContentService.createTextOutput(JSON.stringify({ 
-        success: true,
-        message: 'Alert received via GET'
-      })).setMimeType(ContentService.MimeType.JSON);
+      return ContentService
+        .createTextOutput(JSON.stringify({ 
+          success: true,
+          message: 'Alert received via GET'
+        }))
+        .setMimeType(ContentService.MimeType.JSON)
+        .setHeader('Access-Control-Allow-Origin', '*');
     }
     
-    return ContentService.createTextOutput(JSON.stringify({ 
-      status: 'ok',
-      message: 'Khazaana Monitoring Webhook is active'
-    })).setMimeType(ContentService.MimeType.JSON);
+    return ContentService
+      .createTextOutput(JSON.stringify({ 
+        status: 'ok',
+        message: 'Khazaana Monitoring Webhook is active'
+      }))
+      .setMimeType(ContentService.MimeType.JSON)
+      .setHeader('Access-Control-Allow-Origin', '*');
   } catch (error) {
-    return ContentService.createTextOutput(JSON.stringify({ 
-      error: error.toString()
-    })).setMimeType(ContentService.MimeType.JSON);
+    return ContentService
+      .createTextOutput(JSON.stringify({ 
+        error: error.toString()
+      }))
+      .setMimeType(ContentService.MimeType.JSON)
+      .setHeader('Access-Control-Allow-Origin', '*');
   }
 }
 
