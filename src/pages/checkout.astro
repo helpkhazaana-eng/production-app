@@ -151,9 +151,12 @@ import { MapPin, Phone, Mail, User, MessageCircle } from 'lucide-react';
                 class="btn-outline flex items-center space-x-2"
               >
                 <MapPin className="w-4 h-4" />
-                <span>Get My Location</span>
+                <span>Get My Location (Optional)</span>
               </button>
               <p id="location-status" class="text-xs text-gray-500 mt-2"></p>
+              <p class="text-xs text-blue-600 mt-1">
+                💡 Share your location to help us deliver faster (optional)
+              </p>
             </div>
 
             <!-- Important Note -->
@@ -537,12 +540,8 @@ import { MapPin, Phone, Mail, User, MessageCircle } from 'lucide-react';
       return;
     }
 
-    // Validate location
-    if (!customerLocation.latitude || !customerLocation.longitude) {
-      alert('Please share your location by clicking "Get My Location" button');
-      logger.warn('Location not provided', {}, 'CHECKOUT');
-      return;
-    }
+    // Location is optional - no validation needed
+    // Location helps deliver faster but is not required
 
     // Disable submit button to prevent double submission
     const submitBtn = checkoutForm.querySelector('button[type="submit"]') as HTMLButtonElement;
@@ -569,8 +568,8 @@ import { MapPin, Phone, Mail, User, MessageCircle } from 'lucide-react';
         phone: customer.phone,
         email: customer.email,
         address: customer.address,
-        lat: customerLocation.latitude!,
-        lng: customerLocation.longitude!
+        lat: customerLocation.latitude || undefined,
+        lng: customerLocation.longitude || undefined
       };
 
       const pricing: OrderPricing = {

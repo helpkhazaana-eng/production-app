@@ -83,7 +83,7 @@ export function generateWhatsAppURLFromOrderData(
   orderId: string,
   restaurantName: string,
   items: Array<{name: string; qty: number; price: number; vegNonVeg?: string}>,
-  customer: {name: string; phone: string; email?: string; address: string; lat: number; lng: number},
+  customer: {name: string; phone: string; email?: string; address: string; lat?: number; lng?: number},
   pricing: {subtotal: number; tax: number; total: number}
 ): string {
   const itemsList = items
@@ -93,9 +93,9 @@ export function generateWhatsAppURLFromOrderData(
     })
     .join('\n');
 
-  const locationLink = customer.lat && customer.lng
-    ? `https://maps.google.com/?q=${customer.lat},${customer.lng}`
-    : 'Not provided';
+  const locationSection = customer.lat && customer.lng
+    ? `\n*Location:* https://maps.google.com/?q=${customer.lat},${customer.lng}`
+    : '';
 
   const deliveryFee = Math.max(0, pricing.total - pricing.subtotal - pricing.tax);
   const deliveryFeeText = deliveryFee === 0 ? 'FREE' : `Rs.${deliveryFee}`;
@@ -125,9 +125,7 @@ ${itemsList}
 - Phone: ${customer.phone}${customer.email ? `\n- Email: ${customer.email}` : ''}
 
 *Delivery Address:*
-${customer.address}
-
-*Location:* ${locationLink}
+${customer.address}${locationSection}
 
 *Order Time:* ${orderTime}
 
