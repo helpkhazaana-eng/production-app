@@ -44,8 +44,8 @@ Desktop.ini
 # Editor directories
 .history/
 
-# Netlify
-.netlify/
+# Vercel
+.vercel/
 
 # Cache
 .cache/

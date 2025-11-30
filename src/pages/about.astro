@@ -130,7 +130,7 @@ import cc2Img from '../assets/images/cc2.jpeg';
         
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {restaurants.map((restaurant) => (
-            <a href={`/restaurants/${restaurant.id}`} class="restaurant-card p-6 flex flex-col h-full hover:shadow-lg transition-shadow">
+            <a href={`/restaurants/${restaurant.id}/`} class="restaurant-card p-6 flex flex-col h-full hover:shadow-lg transition-shadow">
               <div class="flex-1">
                 <div class="flex items-start justify-between mb-2">
                   <h3 class="text-xl font-bold">{restaurant.name}</h3>
@@ -160,7 +160,7 @@ import cc2Img from '../assets/images/cc2.jpeg';
         <p class="text-xl mb-8 text-orange-100 max-w-2xl mx-auto">
           Explore our partner restaurants and discover your next favorite meal.
         </p>
-        <a href="/restaurants" class="bg-white text-orange-600 hover:bg-gray-100 font-bold py-4 px-8 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl inline-block">
+        <a href="/restaurants/" class="bg-white text-orange-600 hover:bg-gray-100 font-bold py-4 px-8 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl inline-block">
           Browse Restaurants
         </a>
       </div>

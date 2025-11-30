@@ -26,10 +26,10 @@ export function buildRestaurantSchema(restaurant: Restaurant, menuItems?: MenuIt
   return {
     '@context': 'https://schema.org',
     '@type': 'Restaurant',
-    '@id': `${SITE_CONFIG.domain}/restaurants/${restaurant.id}#restaurant`,
+    '@id': `${SITE_CONFIG.domain}/restaurants/${restaurant.id}/#restaurant`,
     name: name,
     description: `${name} - Best ${cuisine.join(' & ')} restaurant in ${locality}, ${city}. Order online for fast delivery.`,
-    url: `${SITE_CONFIG.domain}/restaurants/${restaurant.id}`,
+    url: `${SITE_CONFIG.domain}/restaurants/${restaurant.id}/`,
     telephone: `+91-${phone}`,
     email: SITE_CONFIG.email,
     
@@ -104,10 +104,10 @@ export function buildRestaurantSchema(restaurant: Restaurant, menuItems?: MenuIt
     // Menu
     hasMenu: {
       '@type': 'Menu',
-      '@id': `${SITE_CONFIG.domain}/restaurants/${restaurant.id}#menu`,
+      '@id': `${SITE_CONFIG.domain}/restaurants/${restaurant.id}/#menu`,
       name: `${name} Menu`,
       description: `Full menu of ${name} featuring ${cuisine.join(', ')} dishes`,
-      url: `${SITE_CONFIG.domain}/restaurants/${restaurant.id}`,
+      url: `${SITE_CONFIG.domain}/restaurants/${restaurant.id}/`,
       hasMenuSection: menuItems ? buildMenuSections(menuItems) : []
     },
     
@@ -145,7 +145,7 @@ export function buildRestaurantSchema(restaurant: Restaurant, menuItems?: MenuIt
       '@type': 'OrderAction',
       target: {
         '@type': 'EntryPoint',
-        urlTemplate: `${SITE_CONFIG.domain}/restaurants/${restaurant.id}`,
+        urlTemplate: `${SITE_CONFIG.domain}/restaurants/${restaurant.id}/`,
         actionPlatform: [
           'http://schema.org/DesktopWebPlatform',
           'http://schema.org/MobileWebPlatform'
@@ -235,7 +235,7 @@ export function buildBreadcrumbSchema(restaurant: Restaurant) {
         '@type': 'ListItem',
         position: 3,
         name: restaurant.name,
-        item: `${SITE_CONFIG.domain}/restaurants/${restaurant.id}`
+        item: `${SITE_CONFIG.domain}/restaurants/${restaurant.id}/`
       }
     ]
   };
@@ -271,7 +271,7 @@ export function buildRestaurantsListSchema(restaurants: Restaurant[]) {
       item: {
         '@type': 'Restaurant',
         name: restaurant.name,
-        url: `${SITE_CONFIG.domain}/restaurants/${restaurant.id}`,
+        url: `${SITE_CONFIG.domain}/restaurants/${restaurant.id}/`,
         servesCuisine: restaurant.cuisine,
         aggregateRating: {
           '@type': 'AggregateRating',
@@ -312,10 +312,10 @@ export function buildWebPageSchema(
     schema.about = {
       '@type': 'Restaurant',
       name: restaurant.name,
-      '@id': `${SITE_CONFIG.domain}/restaurants/${restaurant.id}#restaurant`
+      '@id': `${SITE_CONFIG.domain}/restaurants/${restaurant.id}/#restaurant`
     };
     schema.mainEntity = {
-      '@id': `${SITE_CONFIG.domain}/restaurants/${restaurant.id}#restaurant`
+      '@id': `${SITE_CONFIG.domain}/restaurants/${restaurant.id}/#restaurant`
     };
   }
   

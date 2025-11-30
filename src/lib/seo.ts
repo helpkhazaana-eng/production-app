@@ -1,8 +1,8 @@
 // SEO Utility for Khazaana Food Ordering Platform
 // Comprehensive SEO with location-based keywords and structured data
 
-// Get site URL dynamically
-const getSiteUrl = () => import.meta.env.SITE_URL || import.meta.env.SITE || 'https://khazaana.co.in';
+// Get site URL dynamically (Vercel compatible)
+const getSiteUrl = () => import.meta.env.PUBLIC_SITE_URL || import.meta.env.SITE || 'https://khazaana.co.in';
 
 export interface SEOConfig {
   title: string;
@@ -158,8 +158,8 @@ export function generateRestaurantSchema(restaurant: any) {
     '@type': 'Restaurant',
     name: restaurant.name,
     image: `${getSiteUrl()}/images/restaurants/${restaurant.id}.jpg`,
-    '@id': `${getSiteUrl()}/restaurants/${restaurant.id}`,
-    url: `${getSiteUrl()}/restaurants/${restaurant.id}`,
+    '@id': `${getSiteUrl()}/restaurants/${restaurant.id}/`,
+    url: `${getSiteUrl()}/restaurants/${restaurant.id}/`,
     telephone: `+91-${restaurant.phone}`,
     priceRange: restaurant.priceRange,
     servesCuisine: restaurant.cuisine,

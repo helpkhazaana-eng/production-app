@@ -20,9 +20,9 @@ export const LOCATION = {
   }
 };
 
-// Domain is set dynamically from environment or Astro.site
+// Domain is set dynamically from environment (Vercel compatible)
 export const SITE_CONFIG = {
-  domain: import.meta.env.SITE_URL || import.meta.env.SITE || 'https://khazaana.co.in',
+  domain: import.meta.env.PUBLIC_SITE_URL || import.meta.env.SITE || 'https://khazaana.co.in',
   name: 'Khazaana',
   phone: '+91-8695902696',
   phoneBackup: '+91-8649851034',
@@ -185,7 +185,7 @@ export function generateRestaurantMeta(
   const title = generateRestaurantTitle(restaurant);
   const description = generateRestaurantDescription(restaurant, menuItems);
   const keywords = generateRestaurantKeywords(restaurant).join(', ');
-  const canonicalUrl = `${SITE_CONFIG.domain}/restaurants/${restaurant.id}`;
+  const canonicalUrl = `${SITE_CONFIG.domain}/restaurants/${restaurant.id}/`;
   const ogImage = `${SITE_CONFIG.domain}/images/restaurants/${restaurant.id}.jpg`;
   
   return {

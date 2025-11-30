@@ -7,13 +7,13 @@ export const GET: APIRoute = ({ site }) => {
 
   const staticPages = [
     { url: '/', priority: '1.0', changefreq: 'daily' },
-    { url: '/restaurants', priority: '0.95', changefreq: 'daily' },
-    { url: '/about', priority: '0.70', changefreq: 'monthly' },
-    { url: '/terms', priority: '0.50', changefreq: 'monthly' },
+    { url: '/restaurants/', priority: '0.95', changefreq: 'daily' },
+    { url: '/about/', priority: '0.70', changefreq: 'monthly' },
+    { url: '/terms/', priority: '0.50', changefreq: 'monthly' },
   ];
 
   const restaurantPages = restaurants.map((r) => ({
-    url: `/restaurants/${r.id}`,
+    url: `/restaurants/${r.id}/`,
     priority: r.featured ? '0.95' : '0.85',
     changefreq: 'daily',
     image: {

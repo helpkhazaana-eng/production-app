@@ -2,22 +2,32 @@
 import { defineConfig } from 'astro/config';
 import react from '@astrojs/react';
 import tailwindcss from '@tailwindcss/vite';
+import vercel from '@astrojs/vercel';
 
-// Site URL from environment variable (set by Netlify)
+// Site URL from environment variable
+// Vercel sets VERCEL_URL automatically
 // Production: https://khazaana.co.in
-// Staging: https://khazaana2.netlify.app
-const siteUrl = process.env.SITE_URL || process.env.URL || 'https://khazaana.co.in';
+// Staging: https://<project>.vercel.app
+const siteUrl = process.env.PUBLIC_SITE_URL || 
+                (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : null) ||
+                'https://khazaana.co.in';
 
 // https://astro.build/config
 export default defineConfig({
   site: siteUrl,
   // Always use trailing slash for consistent URLs
   trailingSlash: 'always',
+  // Static output for best performance
+  output: 'static',
+  // Vercel adapter for deployment
+  adapter: vercel({
+    webAnalytics: { enabled: true }
+  }),
   integrations: [react()],
   vite: {
     plugins: [tailwindcss()],
     define: {
-      'import.meta.env.SITE_URL': JSON.stringify(siteUrl),
+      'import.meta.env.PUBLIC_SITE_URL': JSON.stringify(siteUrl),
     }
   },
   image: {
@@ -28,14 +38,10 @@ export default defineConfig({
         limitInputPixels: false,
       }
     },
-    // Domains for remote images (if any)
     domains: [],
   },
   build: {
-    // Inline small assets as base64
     inlineStylesheets: 'auto',
     assets: '_astro'
-  },
-  // Ensure images are generated during build
-  output: 'static'
+  }
 });
