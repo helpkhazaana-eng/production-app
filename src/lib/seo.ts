@@ -237,42 +237,38 @@ export function generateMenuSchema(restaurant: any, menuItems: any[]) {
   };
 }
 
-// SEO-optimized title generator
+// SEO-optimized title generator (max 60 chars for optimal display)
 export function generateSEOTitle(
   pageName: string,
   restaurantName?: string,
   category?: string
 ): string {
-  const location = 'Aurangabad, West Bengal';
-  
   if (restaurantName && category) {
-    return `${restaurantName} - Best ${category} in ${location} | Order Online | Khazaana`;
+    return `${restaurantName} - ${category} | Khazaana`;
   } else if (restaurantName) {
-    return `${restaurantName} Menu - Order Online in ${location} | Khazaana Food Delivery`;
+    return `${restaurantName} Menu | Khazaana`;
   } else if (pageName === 'Home') {
-    return `Khazaana - Best Food Delivery in ${location} | Order Biryani, Chinese, Cafe Online`;
+    return `Khazaana - Food Delivery in Aurangabad`;
   } else if (pageName === 'Restaurants') {
-    return `Best Restaurants in ${location} | Online Food Delivery | Khazaana`;
+    return `Restaurants | Khazaana Aurangabad`;
   } else {
-    return `${pageName} | Khazaana - Food Delivery in ${location}`;
+    return `${pageName} | Khazaana`;
   }
 }
 
-// SEO-optimized description generator
+// SEO-optimized description generator (max 155 chars for optimal display)
 export function generateSEODescription(
   pageName: string,
   restaurantName?: string,
   cuisine?: string[]
 ): string {
-  const location = 'Aurangabad, Suti, West Bengal';
-  
   if (restaurantName && cuisine) {
-    return `Order delicious ${cuisine.join(', ')} from ${restaurantName} in ${location}. Fast delivery, best prices. Available on Khazaana - Your trusted food delivery platform. Call 8695902696 for orders.`;
+    return `Order ${cuisine.slice(0, 2).join(', ')} from ${restaurantName} in Aurangabad. Fast delivery, best prices. Call 8695902696.`;
   } else if (pageName === 'Home') {
-    return `Order food online from the best restaurants in ${location}. Get biryani, Chinese, cafe items delivered fast. Khazaana offers the best food delivery service near DNC College, College More. Order now! Call 8695902696`;
+    return `Order food online in Aurangabad, West Bengal. Biryani, Chinese, cafe items delivered fast. Call 8695902696.`;
   } else if (pageName === 'Restaurants') {
-    return `Browse top-rated restaurants in ${location}. Order biryani, Chinese food, cafe items online. Fast delivery to College More, DNC College area. Best food near you on Khazaana.`;
+    return `Best restaurants in Aurangabad. Order biryani, Chinese food online. Fast delivery near DNC College.`;
   } else {
-    return `${pageName} - Khazaana Food Delivery Platform serving ${location}. Order online from best restaurants.`;
+    return `${pageName} - Khazaana Food Delivery in Aurangabad. Order online now.`;
   }
 }
