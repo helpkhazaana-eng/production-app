@@ -517,6 +517,138 @@ const meta = generateRestaurantMeta(restaurant, menuItems);
   
   window.addEventListener('scroll', updateMobileTabs);
   updateMobileTabs();
+
+  // ============================================
+  // CLIENT-SIDE RESTAURANT OPEN/CLOSE STATUS (IST)
+  // Disables Add to Cart when restaurant is closed
+  // ============================================
+  
+  const RESTAURANT_TIMINGS = {
+    opensAt: '09:00',
+    closesAt: '21:00'
+  };
+
+  function getISTTime() {
+    const now = new Date();
+    const istOffset = 5.5 * 60 * 60 * 1000;
+    const utc = now.getTime() + (now.getTimezoneOffset() * 60 * 1000);
+    const istDate = new Date(utc + istOffset);
+    
+    return {
+      hours: istDate.getHours(),
+      minutes: istDate.getMinutes()
+    };
+  }
+
+  function isRestaurantOpenNow() {
+    const ist = getISTTime();
+    const currentTime = ist.hours * 60 + ist.minutes;
+    
+    const [openHour, openMin] = RESTAURANT_TIMINGS.opensAt.split(':').map(Number);
+    const [closeHour, closeMin] = RESTAURANT_TIMINGS.closesAt.split(':').map(Number);
+    
+    const openTime = openHour * 60 + openMin;
+    const closeTime = closeHour * 60 + closeMin;
+    
+    return currentTime >= openTime && currentTime <= closeTime;
+  }
+
+  function getCountdownToOpenClient() {
+    const ist = getISTTime();
+    const [openHour, openMin] = RESTAURANT_TIMINGS.opensAt.split(':').map(Number);
+    
+    const currentMinutes = ist.hours * 60 + ist.minutes;
+    const openMinutes = openHour * 60 + openMin;
+    
+    let diffMinutes = openMinutes - currentMinutes;
+    if (diffMinutes < 0) {
+      diffMinutes += 24 * 60;
+    }
+    
+    const hours = Math.floor(diffMinutes / 60);
+    const minutes = diffMinutes % 60;
+    
+    return `Opens in ${hours}h ${minutes}m`;
+  }
+
+  function updateRestaurantStatus() {
+    const isOpen = isRestaurantOpenNow();
+    const countdown = !isOpen ? getCountdownToOpenClient() : '';
+    
+    // Update status badge in header
+    const statusBadge = document.querySelector('.badge-success, .badge-danger');
+    if (statusBadge) {
+      if (isOpen) {
+        statusBadge.className = 'badge badge-success';
+        statusBadge.textContent = 'OPEN';
+      } else {
+        statusBadge.className = 'badge badge-danger';
+        statusBadge.textContent = 'CLOSED';
+      }
+    }
+    
+    // Update countdown text
+    const countdownEl = document.getElementById('restaurant-countdown');
+    if (countdownEl) {
+      if (isOpen) {
+        countdownEl.style.display = 'none';
+      } else {
+        countdownEl.textContent = countdown;
+        countdownEl.style.display = 'block';
+      }
+    }
+    
+    // Enable/disable Add to Cart buttons
+    const addToCartBtns = document.querySelectorAll('.add-to-cart-btn');
+    addToCartBtns.forEach((btn) => {
+      if (isOpen) {
+        btn.removeAttribute('disabled');
+        btn.classList.remove('opacity-50', 'cursor-not-allowed');
+        btn.classList.add('btn-primary');
+      } else {
+        btn.setAttribute('disabled', 'true');
+        btn.classList.add('opacity-50', 'cursor-not-allowed');
+        btn.classList.remove('btn-primary');
+      }
+    });
+    
+    // Show/hide closed banner
+    let closedBanner = document.getElementById('closed-banner');
+    if (!isOpen) {
+      if (!closedBanner) {
+        closedBanner = document.createElement('div');
+        closedBanner.id = 'closed-banner';
+        closedBanner.className = 'bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-4 rounded-r-lg';
+        closedBanner.innerHTML = `
+          <div class="flex items-center">
+            <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
+            </svg>
+            <div>
+              <p class="font-bold">Restaurant is currently closed</p>
+              <p class="text-sm">${countdown}. You can browse the menu but ordering is disabled.</p>
+            </div>
+          </div>
+        `;
+        const menuSection = document.querySelector('section:has(.menu-item-card)');
+        if (menuSection) {
+          menuSection.insertBefore(closedBanner, menuSection.firstChild?.nextSibling || null);
+        }
+      } else {
+        closedBanner.querySelector('p.text-sm')!.textContent = `${countdown}. You can browse the menu but ordering is disabled.`;
+      }
+    } else if (closedBanner) {
+      closedBanner.remove();
+    }
+    
+    logger.info('Restaurant status updated', { isOpen, time: getISTTime() }, 'MENU');
+  }
+
+  // Run on page load
+  updateRestaurantStatus();
+  
+  // Update every minute
+  setInterval(updateRestaurantStatus, 60000);
 </script>
 
 <style>

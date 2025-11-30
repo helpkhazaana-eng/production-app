@@ -126,10 +126,25 @@ export const restaurants: Restaurant[] = [
   }
 ];
 
-// Helper function to check if restaurant is currently open
-export function isRestaurantOpen(restaurant: Restaurant): boolean {
+// Get current time in IST (India Standard Time)
+export function getISTTime(): { hours: number; minutes: number; date: Date } {
   const now = new Date();
-  const currentTime = now.getHours() * 60 + now.getMinutes();
+  // Convert to IST (UTC+5:30)
+  const istOffset = 5.5 * 60 * 60 * 1000; // 5 hours 30 minutes in milliseconds
+  const utc = now.getTime() + (now.getTimezoneOffset() * 60 * 1000);
+  const istDate = new Date(utc + istOffset);
+  
+  return {
+    hours: istDate.getHours(),
+    minutes: istDate.getMinutes(),
+    date: istDate
+  };
+}
+
+// Helper function to check if restaurant is currently open (uses IST)
+export function isRestaurantOpen(restaurant: Restaurant): boolean {
+  const ist = getISTTime();
+  const currentTime = ist.hours * 60 + ist.minutes;
   
   const [openHour, openMin] = restaurant.opensAt.split(':').map(Number);
   const [closeHour, closeMin] = restaurant.closesAt.split(':').map(Number);
@@ -140,21 +155,21 @@ export function isRestaurantOpen(restaurant: Restaurant): boolean {
   return currentTime >= openTime && currentTime <= closeTime;
 }
 
-// Get countdown to opening time
+// Get countdown to opening time (uses IST)
 export function getCountdownToOpen(restaurant: Restaurant): string {
-  const now = new Date();
+  const ist = getISTTime();
   const [openHour, openMin] = restaurant.opensAt.split(':').map(Number);
   
-  const openTime = new Date();
-  openTime.setHours(openHour, openMin, 0, 0);
+  const currentMinutes = ist.hours * 60 + ist.minutes;
+  const openMinutes = openHour * 60 + openMin;
   
-  if (openTime < now) {
-    openTime.setDate(openTime.getDate() + 1);
+  let diffMinutes = openMinutes - currentMinutes;
+  if (diffMinutes < 0) {
+    diffMinutes += 24 * 60; // Add 24 hours if past opening time
   }
   
-  const diff = openTime.getTime() - now.getTime();
-  const hours = Math.floor(diff / (1000 * 60 * 60));
-  const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+  const hours = Math.floor(diffMinutes / 60);
+  const minutes = diffMinutes % 60;
   
   return `Opens in ${hours}h ${minutes}m`;
 }
