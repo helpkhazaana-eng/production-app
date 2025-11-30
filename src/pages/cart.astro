@@ -222,7 +222,14 @@ import { ShoppingBag, Trash2, Plus, Minus, ArrowRight } from 'lucide-react';
                 <h3 class="font-bold text-lg">${item.itemName}</h3>
               </div>
               ${item.description ? `<p class="text-gray-600 text-sm mb-2">${item.description}</p>` : ''}
-              <p class="text-lg font-semibold text-[var(--color-primary)]">₹${item.price}</p>
+              <div class="flex items-center space-x-2">
+                ${item.price === 195 ? 
+                  `<p class="text-lg text-gray-400 line-through">₹${item.price}</p>
+                   <p class="text-lg font-semibold text-[var(--color-primary)]">₹180</p>
+                   <span class="bg-red-500 text-white text-xs px-2 py-1 rounded-full font-semibold">8% OFF</span>` : 
+                  `<p class="text-lg font-semibold text-[var(--color-primary)]">₹${item.price}</p>`
+                }
+              </div>
             </div>
             <button 
               class="remove-item-btn p-2 text-red-500 hover:bg-red-50 rounded transition-colors"

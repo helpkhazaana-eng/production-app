@@ -362,14 +362,18 @@ import { MapPin, Phone, Mail, User, MessageCircle } from 'lucide-react';
 
     // Render items
     if (itemsEl && cart.items && cart.items.length > 0) {
-      itemsEl.innerHTML = cart.items.map(item => `
+      itemsEl.innerHTML = cart.items.map(item => {
+        // Use discounted price for ₹195 items (₹180)
+        const actualPrice = item.price === 195 ? 180 : item.price;
+        return `
         <div class="flex justify-between text-sm">
           <span class="flex-1">
             ${item.vegNonVeg === 'Veg' ? '🟢' : '🔴'} ${item.itemName} × ${item.quantity}
           </span>
-          <span class="font-semibold">₹${(item.price * item.quantity).toFixed(2)}</span>
+          <span class="font-semibold">₹${(actualPrice * item.quantity).toFixed(2)}</span>
         </div>
-      `).join('');
+      `;
+      }).join('');
       console.log('Rendered', cart.items.length, 'items');
     } else {
       console.error('No items to render or itemsEl not found');
@@ -549,12 +553,16 @@ import { MapPin, Phone, Mail, User, MessageCircle } from 'lucide-react';
 
     try {
       // Prepare data for Google Sheets
-      const orderItems: OrderItem[] = cart.items.map(item => ({
-        name: item.itemName,
-        qty: item.quantity,
-        price: item.price,
-        vegNonVeg: item.vegNonVeg
-      }));
+      const orderItems: OrderItem[] = cart.items.map(item => {
+        // Use discounted price for ₹195 items (₹180)
+        const actualPrice = item.price === 195 ? 180 : item.price;
+        return {
+          name: item.itemName,
+          qty: item.quantity,
+          price: actualPrice,
+          vegNonVeg: item.vegNonVeg
+        };
+      });
 
       const customerInfo: CustomerInfo = {
         name: customer.name,

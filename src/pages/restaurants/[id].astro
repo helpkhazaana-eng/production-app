@@ -224,9 +224,25 @@ const meta = generateRestaurantMeta(restaurant, menuItems);
                           
                           <div class="flex items-center space-x-1">
                             <IndianRupee className="w-5 h-5 text-[var(--color-primary)]" />
-                            <p class="text-xl font-bold text-[var(--color-primary)]">
-                              {item.price}
-                            </p>
+                            <div class="flex items-center space-x-2">
+                              {item.price === 195 ? (
+                                <div class="flex items-center space-x-2">
+                                  <p class="text-lg text-gray-400 line-through">
+                                    {item.price}
+                                  </p>
+                                  <p class="text-xl font-bold text-[var(--color-primary)]">
+                                    180
+                                  </p>
+                                  <span class="bg-red-500 text-white text-xs px-2 py-1 rounded-full font-semibold">
+                                    8% OFF
+                                  </span>
+                                </div>
+                              ) : (
+                                <p class="text-xl font-bold text-[var(--color-primary)]">
+                                  {item.price}
+                                </p>
+                              )}
+                            </div>
                           </div>
                         </div>
 

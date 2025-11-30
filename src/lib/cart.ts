@@ -192,7 +192,11 @@ export function clearCart(): Cart {
  */
 export function calculateCartTotals(cart: Cart): Cart {
   const subtotal = cart.items.reduce(
-    (sum, item) => sum + (item.price * item.quantity),
+    (sum, item) => {
+      // Use discounted price for ₹195 items (₹180)
+      const actualPrice = item.price === 195 ? 180 : item.price;
+      return sum + (actualPrice * item.quantity);
+    },
     0
   );
 
