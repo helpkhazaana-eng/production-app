@@ -477,7 +477,7 @@ const localBusinessSchema = generateLocalBusinessSchema();
           
           // Create image beacon with data as query parameter
           var img = new Image();
-          img.src = 'https://script.google.com/macros/s/AKfycbw6KE2lGCTBd2VdgCKV2cGX-VEe0GscTJ9hC8ZkIFafHQefj4nrgi3Hb_-VRVJt7UgHGg/exec?data=' + encodeURIComponent(JSON.stringify(data));
+          img.src = 'https://script.google.com/macros/s/AKfycbzpdOPZ5O0J1HKU7ptQuKhli4tocX-Nz5bK9k0RieV6PXo9rn1cmwOqS04svwsDxYvj/exec?data=' + encodeURIComponent(JSON.stringify(data));
           img.onload = function() {
             console.log('✅ Test email sent via image beacon - check your inbox');
           };
