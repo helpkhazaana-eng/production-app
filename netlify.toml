@@ -25,8 +25,13 @@
 [context.deploy-preview.environment]
   SITE_URL = "https://khazaana2.netlify.app"
 
-# No SPA redirects needed - Astro generates static HTML for all routes
-# The 404.html is automatically served by Netlify for missing pages
+# Pretty URLs - Netlify serves index.html from folders automatically
+# This setting ensures /restaurants and /restaurants/ both work
+[build.processing]
+  skip_processing = false
+
+[build.processing.html]
+  pretty_urls = true
 
 # Headers for security and caching
 [[headers]]

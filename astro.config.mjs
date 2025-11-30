@@ -11,6 +11,8 @@ const siteUrl = process.env.SITE_URL || process.env.URL || 'https://khazaana.co.
 // https://astro.build/config
 export default defineConfig({
   site: siteUrl,
+  // Allow both /restaurants and /restaurants/ to work
+  trailingSlash: 'ignore',
   integrations: [react()],
   vite: {
     plugins: [tailwindcss()],
