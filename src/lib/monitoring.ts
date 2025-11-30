@@ -30,7 +30,7 @@ export const MONITORING_CONFIG = {
   LOGROCKET_APP_ID: process.env.PUBLIC_LOGROCKET_APP_ID || 'khazaana/khazaana-web', // From screenshot
   
   // Custom Alert Webhook (Google Apps Script)
-  ALERT_WEBHOOK_URL: process.env.PUBLIC_ALERT_WEBHOOK_URL || 'https://script.google.com/macros/s/AKfycbzPfDTUD9bYZwLGrSey30Fhu8Jr_r8y_fW7lxwgHA4g1TWCmHWwY4bSEwU3xVdgHBZlyg/exec', // Khazaana Alert System v2 (CORS Fixed)
+  ALERT_WEBHOOK_URL: process.env.PUBLIC_ALERT_WEBHOOK_URL || 'https://script.google.com/macros/s/AKfycbw6KE2lGCTBd2VdgCKV2cGX-VEe0GscTJ9hC8ZkIFafHQefj4nrgi3Hb_-VRVJt7UgHGg/exec', // Khazaana Alert System v3 (CORS-Free)
   
   // Alert Emails (comma-separated for multiple recipients)
   ALERT_EMAILS: [
