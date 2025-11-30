@@ -24,7 +24,7 @@
 // ============================================================
 export const MONITORING_CONFIG = {
   // Sentry (https://sentry.io) - Error Tracking
-  SENTRY_DSN: process.env.PUBLIC_SENTRY_DSN || 'YOUR_SENTRY_DSN', // e.g., https://xxx@xxx.ingest.sentry.io/xxx
+  SENTRY_DSN: process.env.PUBLIC_SENTRY_DSN || 'https://8eeb5a726529801ef43ed298c7b3a0b6@o4510453631156224.ingest.us.sentry.io/4510453644001280', // Khazaana project
   
   // LogRocket (https://logrocket.com) - Session Replay
   LOGROCKET_APP_ID: process.env.PUBLIC_LOGROCKET_APP_ID || 'khazaana/khazaana-web', // From screenshot
