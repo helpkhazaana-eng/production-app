@@ -25,11 +25,8 @@
 [context.deploy-preview.environment]
   SITE_URL = "https://khazaana2.netlify.app"
 
-# Redirects for SPA-like behavior (optional, Astro handles this)
-[[redirects]]
-  from = "/*"
-  to = "/404.html"
-  status = 404
+# No SPA redirects needed - Astro generates static HTML for all routes
+# The 404.html is automatically served by Netlify for missing pages
 
 # Headers for security and caching
 [[headers]]
