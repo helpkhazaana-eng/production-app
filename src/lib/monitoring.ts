@@ -145,6 +145,13 @@ class MonitoringService {
           tracesSampleRate: 0.2,
           replaysSessionSampleRate: 0.1,
           replaysOnErrorSampleRate: 1.0,
+          // Enable console logging integration
+          integrations: [
+            // @ts-ignore
+            window.Sentry.consoleLoggingIntegration({ levels: ["log", "warn", "error"] }),
+          ],
+          // Enable logs to be sent to Sentry
+          enableLogs: true,
         });
       }
     } catch (error) {
@@ -515,6 +522,18 @@ class MonitoringService {
   // Get session ID
   getSessionId(): string {
     return this.sessionId;
+  }
+
+  // Test Sentry logging
+  testSentryLogging() {
+    // @ts-ignore
+    if (window.Sentry) {
+      // @ts-ignore
+      window.Sentry.logger.info('User triggered test log', { log_source: 'sentry_test' });
+      console.log('✅ Sentry test log sent - check Sentry dashboard');
+    } else {
+      console.warn('❌ Sentry not available for logging test');
+    }
   }
 }
 

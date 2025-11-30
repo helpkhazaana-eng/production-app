@@ -20,6 +20,14 @@ try {
   console.log('✅ Test error thrown - check Sentry dashboard');
 }
 
+// 2b. Test Sentry Logging
+console.log('\n📝 Testing Sentry Logging...');
+if (window.Monitoring && window.Monitoring.testSentryLogging) {
+  window.Monitoring.testSentryLogging();
+} else {
+  console.warn('❌ Monitoring service not available for Sentry logging test');
+}
+
 // 3. Test LogRocket Session
 console.log('\n📹 Testing LogRocket...');
 if (window.LogRocket) {
