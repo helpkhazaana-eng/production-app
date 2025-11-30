@@ -23,6 +23,33 @@ const CONFIG = {
 };
 
 /**
+ * Main webhook handler for GET requests (Image beacon support)
+ */
+function doGet(e) {
+  try {
+    // Handle GET requests from image beacons
+    if (e.parameter.data) {
+      const data = JSON.parse(e.parameter.data);
+      sendEmailAlert(data);
+      
+      return ContentService.createTextOutput(JSON.stringify({ 
+        success: true,
+        message: 'Alert received via GET'
+      })).setMimeType(ContentService.MimeType.JSON);
+    }
+    
+    return ContentService.createTextOutput(JSON.stringify({ 
+      status: 'ok',
+      message: 'Khazaana Monitoring Webhook is active'
+    })).setMimeType(ContentService.MimeType.JSON);
+  } catch (error) {
+    return ContentService.createTextOutput(JSON.stringify({ 
+      error: error.toString()
+    })).setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+/**
  * Main webhook handler with CORS support
  */
 function doPost(e) {

@@ -424,20 +424,46 @@ class MonitoringService {
         sessionId: this.sessionId
       };
 
+      // Use Image beacon to bypass CORS (works for GET requests)
+      if (typeof window !== 'undefined') {
+        const params = new URLSearchParams();
+        params.append('data', JSON.stringify(payload));
+        
+        const img = new Image();
+        img.src = `${MONITORING_CONFIG.ALERT_WEBHOOK_URL}?${params.toString()}`;
+        img.onload = () => console.log('Alert sent via image beacon');
+        img.onerror = () => console.error('Image beacon failed, trying fetch');
+        
+        // Fallback to fetch if image beacon fails
+        setTimeout(() => {
+          if (!img.complete) {
+            this.sendViaFetch(payload);
+          }
+        }, 3000);
+      } else {
+        // Server-side: use fetch
+        await this.sendViaFetch(payload);
+      }
+    } catch (error) {
+      // Log webhook failure but don't throw
+      console.error('Failed to send alert:', error);
+    }
+  }
+
+  // Fallback fetch method
+  private async sendViaFetch(payload: any) {
+    try {
       const response = await fetch(MONITORING_CONFIG.ALERT_WEBHOOK_URL, {
         method: 'POST',
+        mode: 'no-cors',
         headers: {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify(payload)
       });
-
-      if (!response.ok) {
-        throw new Error(`Webhook failed: ${response.status}`);
-      }
+      console.log('Alert sent via fetch fallback');
     } catch (error) {
-      // Log webhook failure but don't throw
-      console.error('Failed to send alert:', error);
+      console.error('Fetch fallback also failed:', error);
     }
   }
 
