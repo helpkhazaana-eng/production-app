@@ -325,8 +325,8 @@ const breadcrumbSchema = generateBreadcrumbSchema([
         
         <!-- 4-Image Grid -->
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-          <div class="rounded-lg overflow-hidden shadow-md">
-            <Image src={founderImg} alt="Founder" class="w-full h-auto object-contain hover:scale-105 transition-transform duration-300" width={300} height={400} format="webp" quality={85} />
+          <div class="aspect-square rounded-lg overflow-hidden shadow-md">
+            <Image src={founderImg} alt="Founder" class="w-full h-full object-cover object-top hover:scale-105 transition-transform duration-300" width={300} height={300} format="webp" quality={85} />
           </div>
           <div class="aspect-square rounded-lg overflow-hidden shadow-md">
             <Image src={partnersImg} alt="Partners" class="w-full h-full object-cover hover:scale-110 transition-transform duration-300" width={250} height={250} format="webp" quality={80} />
