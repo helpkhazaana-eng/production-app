@@ -376,19 +376,82 @@ const localBusinessSchema = generateLocalBusinessSchema();
     }
   </script>
   -->
+  <!-- Load Sentry SDK -->
+  <script src="https://browser.sentry-cdn.com/7.91.0/bundle.min.js" crossorigin="anonymous"></script>
+  
+  <!-- Load LogRocket SDK -->
+  <script src="https://cdn.lr-ingest.io/LogRocket.min.js" crossorigin="anonymous"></script>
+  
   <!-- Initialize Monitoring System -->
-  <script type="module">
-    import { Monitoring } from '../lib/monitoring.js';
-    
-    // Initialize monitoring on page load
-    if (typeof window !== 'undefined') {
-      Monitoring.init();
+  <script is:inline>
+    // Wait for SDKs to load
+    window.addEventListener('load', function() {
+      console.log('🔍 Checking monitoring SDKs...');
+      console.log('Sentry:', typeof window.Sentry !== 'undefined' ? '✅ Loaded' : '❌ Not loaded');
+      console.log('LogRocket:', typeof window.LogRocket !== 'undefined' ? '✅ Loaded' : '❌ Not loaded');
       
-      // Make Monitoring available globally for testing
-      window.Monitoring = Monitoring;
+      // Initialize Sentry
+      if (window.Sentry) {
+        try {
+          window.Sentry.init({
+            dsn: 'https://8eeb5a726529801ef43ed298c7b3a0b6@o4510453631156224.ingest.us.sentry.io/4510453644001280',
+            environment: 'production',
+            tracesSampleRate: 0.2,
+          });
+          console.log('✅ Sentry initialized');
+        } catch (e) {
+          console.warn('❌ Sentry init failed:', e);
+        }
+      }
       
-      console.log('✅ Monitoring system initialized');
-    }
+      // Initialize LogRocket
+      if (window.LogRocket) {
+        try {
+          window.LogRocket.init('x6pnta/khazaana');
+          console.log('✅ LogRocket initialized');
+        } catch (e) {
+          console.warn('❌ LogRocket init failed:', e);
+        }
+      }
+      
+      // Make monitoring available globally
+      window.Monitoring = {
+        initialized: true,
+        testSentryLogging: function() {
+          if (window.Sentry) {
+            window.Sentry.addBreadcrumb({
+              message: 'User triggered test log',
+              level: 'info',
+              category: 'test'
+            });
+            console.log('✅ Sentry test breadcrumb sent');
+          }
+        },
+        sendTestEmail: function() {
+          fetch('https://script.google.com/macros/s/AKfycbw6KE2lGCTBd2VdgCKV2cGX-VEe0GscTJ9hC8ZkIFafHQefj4nrgi3Hb_-VRVJt7UgHGg/exec', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              subject: 'Test Email - Monitoring System Working!',
+              data: { 
+                message: 'All monitoring systems are operational',
+                sentry: window.Sentry ? 'Active' : 'Inactive',
+                logrocket: window.LogRocket ? 'Active' : 'Inactive',
+                timestamp: new Date().toISOString()
+              },
+              timestamp: new Date().toISOString(),
+              url: window.location.href
+            })
+          }).then(() => {
+            console.log('✅ Test email sent - check your inbox');
+          }).catch(err => {
+            console.warn('Email send failed (CORS expected):', err.message);
+          });
+        }
+      };
+      
+      console.log('✅ Monitoring system ready');
+    });
   </script>
   
   <SpeedInsights />
