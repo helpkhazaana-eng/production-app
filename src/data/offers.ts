@@ -57,9 +57,9 @@ export const exclusiveOffers: ExclusiveOffer[] = [
     description: 'Buy 2 Grill Sandwiches, Get 1 Fruit Cake FREE! Freshly Grilled.',
     restaurantId: 'cupsncrumbs',
     restaurantName: 'Cups N Crumbs',
-    originalPrice: 300,
-    offerPrice: 200,
-    discountPercent: 33,
+    originalPrice: 195,
+    offerPrice: 180,
+    discountPercent: 8,
     deliveryCharge: 0, // FREE delivery
     startDate: '2025-11-27',
     endDate: '2025-11-30',
