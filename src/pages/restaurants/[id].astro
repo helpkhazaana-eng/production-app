@@ -299,8 +299,10 @@ const meta = generateRestaurantMeta(restaurant, menuItems);
 
 <script>
   import { getCart, addToCart, saveCart } from '../../lib/cart';
-  import { logger } from '../../lib/logger';
-  import type { MenuItem } from '../../types';
+  import { logger, perfMonitor } from '../../lib/logger';
+  import { Monitoring } from '../../lib/monitoring';
+  import { initTimeManager, addTimeListener, removeTimeListener, type TimeData } from '../../lib/timeManager';
+  import { RESTAURANT_TIMINGS } from '../../data/restaurants';
 
   // Initialize cart
   let cart = getCart();
@@ -538,58 +540,12 @@ const meta = generateRestaurantMeta(restaurant, menuItems);
   // CLIENT-SIDE RESTAURANT OPEN/CLOSE STATUS (IST)
   // Disables Add to Cart when restaurant is closed
   // ============================================
+  // TIME MANAGER - EFFICIENT TIME-BASED UPDATES
+  // ============================================
   
-  const RESTAURANT_TIMINGS = {
-    opensAt: '09:00',
-    closesAt: '21:00'
-  };
-
-  function getISTTime() {
-    const now = new Date();
-    const istOffset = 5.5 * 60 * 60 * 1000;
-    const utc = now.getTime() + (now.getTimezoneOffset() * 60 * 1000);
-    const istDate = new Date(utc + istOffset);
-    
-    return {
-      hours: istDate.getHours(),
-      minutes: istDate.getMinutes()
-    };
-  }
-
-  function isRestaurantOpenNow() {
-    const ist = getISTTime();
-    const currentTime = ist.hours * 60 + ist.minutes;
-    
-    const [openHour, openMin] = RESTAURANT_TIMINGS.opensAt.split(':').map(Number);
-    const [closeHour, closeMin] = RESTAURANT_TIMINGS.closesAt.split(':').map(Number);
-    
-    const openTime = openHour * 60 + openMin;
-    const closeTime = closeHour * 60 + closeMin;
-    
-    return currentTime >= openTime && currentTime <= closeTime;
-  }
-
-  function getCountdownToOpenClient() {
-    const ist = getISTTime();
-    const [openHour, openMin] = RESTAURANT_TIMINGS.opensAt.split(':').map(Number);
-    
-    const currentMinutes = ist.hours * 60 + ist.minutes;
-    const openMinutes = openHour * 60 + openMin;
-    
-    let diffMinutes = openMinutes - currentMinutes;
-    if (diffMinutes < 0) {
-      diffMinutes += 24 * 60;
-    }
-    
-    const hours = Math.floor(diffMinutes / 60);
-    const minutes = diffMinutes % 60;
-    
-    return `Opens in ${hours}h ${minutes}m`;
-  }
-
-  function updateRestaurantStatus() {
-    const isOpen = isRestaurantOpenNow();
-    const countdown = !isOpen ? getCountdownToOpenClient() : '';
+  // Time-based update handler
+  function handleTimeUpdate(timeData: TimeData) {
+    const { isOpen, countdown } = timeData;
     
     // Update status badge in header
     const statusBadge = document.querySelector('.badge-success, .badge-danger');
@@ -657,14 +613,17 @@ const meta = generateRestaurantMeta(restaurant, menuItems);
       closedBanner.remove();
     }
     
-    logger.info('Restaurant status updated', { isOpen, time: getISTTime() }, 'MENU');
+    logger.info('Restaurant status updated', { isOpen, time: timeData.currentTime }, 'MENU');
   }
 
-  // Run on page load
-  updateRestaurantStatus();
+  // Initialize TimeManager and add listener
+  initTimeManager();
+  addTimeListener('restaurant-menu', handleTimeUpdate, 1); // High priority
   
-  // Update every minute
-  setInterval(updateRestaurantStatus, 60000);
+  // Cleanup on page unload
+  window.addEventListener('beforeunload', () => {
+    removeTimeListener('restaurant-menu');
+  });
 </script>
 
 <style>

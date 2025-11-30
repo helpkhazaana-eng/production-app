@@ -382,6 +382,7 @@ const combinedSchema = {
 
 <script>
   import { logger } from '../../lib/logger';
+  import { initTimeManager, addTimeListener, removeTimeListener, type TimeData } from '../../lib/timeManager';
 
   // State
   let activeTab = 'all';
@@ -680,70 +681,15 @@ const combinedSchema = {
     }
   }
   
-  // Run on page load
+  // Initialize TimeManager
+  initTimeManager();
+  
+  // Run offer expiry check on page load
   checkOfferExpiry();
   
-  // Check every minute for real-time expiry
-  setInterval(checkOfferExpiry, 60000);
-
-  // ============================================
-  // CLIENT-SIDE RESTAURANT OPEN/CLOSE STATUS (IST)
-  // Updates status in real-time based on IST timezone
-  // ============================================
-  
-  // Restaurant timings (same as server-side)
-  const RESTAURANT_TIMINGS = {
-    opensAt: '09:00',
-    closesAt: '21:00'
-  };
-
-  function getISTTime() {
-    const now = new Date();
-    // Convert to IST (UTC+5:30)
-    const istOffset = 5.5 * 60 * 60 * 1000;
-    const utc = now.getTime() + (now.getTimezoneOffset() * 60 * 1000);
-    const istDate = new Date(utc + istOffset);
-    
-    return {
-      hours: istDate.getHours(),
-      minutes: istDate.getMinutes()
-    };
-  }
-
-  function isRestaurantOpenNow() {
-    const ist = getISTTime();
-    const currentTime = ist.hours * 60 + ist.minutes;
-    
-    const [openHour, openMin] = RESTAURANT_TIMINGS.opensAt.split(':').map(Number);
-    const [closeHour, closeMin] = RESTAURANT_TIMINGS.closesAt.split(':').map(Number);
-    
-    const openTime = openHour * 60 + openMin;
-    const closeTime = closeHour * 60 + closeMin;
-    
-    return currentTime >= openTime && currentTime <= closeTime;
-  }
-
-  function getCountdownToOpenClient() {
-    const ist = getISTTime();
-    const [openHour, openMin] = RESTAURANT_TIMINGS.opensAt.split(':').map(Number);
-    
-    const currentMinutes = ist.hours * 60 + ist.minutes;
-    const openMinutes = openHour * 60 + openMin;
-    
-    let diffMinutes = openMinutes - currentMinutes;
-    if (diffMinutes < 0) {
-      diffMinutes += 24 * 60;
-    }
-    
-    const hours = Math.floor(diffMinutes / 60);
-    const minutes = diffMinutes % 60;
-    
-    return `Opens in ${hours}h ${minutes}m`;
-  }
-
-  function updateRestaurantStatus() {
-    const isOpen = isRestaurantOpenNow();
-    const countdown = !isOpen ? getCountdownToOpenClient() : '';
+  // Time-based update handlers
+  function handleTimeUpdate(timeData: TimeData) {
+    const { isOpen, countdown } = timeData;
     
     // Update all restaurant cards
     const cards = document.querySelectorAll('.restaurant-card-item');
@@ -777,24 +723,33 @@ const combinedSchema = {
       } else if (!isOpen) {
         // Add countdown if it doesn't exist
         const timingDiv = card.querySelector('.flex.items-center.justify-between:has(.badge)');
-        if (timingDiv && !timingDiv.nextElementSibling?.classList.contains('text-xs')) {
-          const countdownP = document.createElement('p');
-          countdownP.className = 'text-xs text-gray-500 mt-2';
-          countdownP.textContent = countdown;
-          timingDiv.after(countdownP);
+        if (timingDiv) {
+          const countdownEl = document.createElement('div');
+          countdownEl.className = 'text-xs text-gray-500 mt-2';
+          countdownEl.textContent = countdown;
+          timingDiv.parentNode?.insertBefore(countdownEl, timingDiv.nextSibling);
         }
       }
     });
     
-    // Refresh the display to update "Open Now" tab filtering
+    // Update display to re-apply filters with new status
     updateDisplay();
     
-    logger.info('Restaurant status updated', { isOpen, time: getISTTime() }, 'RESTAURANTS');
+    logger.info('Restaurant status updated', { isOpen, time: timeData.currentTime }, 'RESTAURANTS');
   }
-
-  // Run on page load
-  updateRestaurantStatus();
   
-  // Update every minute for real-time status
-  setInterval(updateRestaurantStatus, 60000);
+  function handleOfferUpdate(timeData: TimeData) {
+    // Check offer expiry
+    checkOfferExpiry();
+  }
+  
+  // Add TimeManager listeners
+  addTimeListener('restaurants-listing', handleTimeUpdate, 1); // High priority for restaurant status
+  addTimeListener('offers-expiry', handleOfferUpdate, 5); // Lower priority for offers
+  
+  // Cleanup on page unload
+  window.addEventListener('beforeunload', () => {
+    removeTimeListener('restaurants-listing');
+    removeTimeListener('offers-expiry');
+  });
 </script>

@@ -473,6 +473,8 @@ const breadcrumbSchema = generateBreadcrumbSchema([
 </BaseLayout>
 
 <script>
+  import { initTimeManager, addTimeListener, removeTimeListener, type TimeData } from '../lib/timeManager';
+  
   // Register service worker for PWA
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
@@ -817,11 +819,27 @@ const breadcrumbSchema = generateBreadcrumbSchema([
     }
   }
   
-  // Run on page load
+  // ============================================
+  // TIME MANAGER - EFFICIENT TIME-BASED UPDATES
+  // ============================================
+  
+  // Initialize TimeManager
+  initTimeManager();
+  
+  // Run offer expiry check on page load
   checkOfferExpiry();
   
-  // Check every minute for real-time expiry
-  setInterval(checkOfferExpiry, 60000);
+  // Add TimeManager listener for offer expiry
+  function handleOfferUpdate(timeData: TimeData) {
+    checkOfferExpiry();
+  }
+  
+  addTimeListener('home-offers', handleOfferUpdate, 5);
+  
+  // Cleanup on page unload
+  window.addEventListener('beforeunload', () => {
+    removeTimeListener('home-offers');
+  });
 </script>
 
 <style>

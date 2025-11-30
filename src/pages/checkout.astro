@@ -258,25 +258,15 @@ import { MapPin, Phone, Mail, User, MessageCircle } from 'lucide-react';
   import { submitCompleteOrder, type OrderItem, type CustomerInfo, type OrderPricing } from '../lib/googleSheets';
   import { logger, perfMonitor } from '../lib/logger';
   import type { Order, Customer } from '../types';
+  import { initTimeManager, addTimeListener, removeTimeListener, isOrderingOpenNow, type TimeData } from '../lib/timeManager';
 
   const MINIMUM_ORDER_VALUE = 100; // Minimum order value in INR
 
   let cart = getCart();
   let customerLocation: { latitude?: number; longitude?: number } = {};
-
-  function isOrderingOpenNow(): boolean {
-    // Check if current time is within ordering hours (9 AM - 9 PM IST)
-    const now = new Date();
-    const istOffset = 5.5 * 60; // IST is UTC+5:30
-    const utcMinutes = now.getUTCHours() * 60 + now.getUTCMinutes();
-    const istMinutes = utcMinutes + istOffset;
-    const istHours = Math.floor((istMinutes % 1440) / 60);
-    
-    const opensAt = 9;  // 9 AM
-    const closesAt = 21; // 9 PM
-    
-    return istHours >= opensAt && istHours < closesAt;
-  }
+  
+  // Initialize TimeManager
+  initTimeManager();
 
   // Function to initialize checkout
   function initializeCheckout() {
@@ -680,10 +670,21 @@ import { MapPin, Phone, Mail, User, MessageCircle } from 'lucide-react';
     }
   });
 
-  // Real-time update for ordering status (check every minute)
-  setInterval(() => {
-    initializeCheckout(); // Re-check ordering status
-  }, 60000);
+  // Add TimeManager listener for real-time updates
+  function handleTimeUpdate(timeData: TimeData) {
+    // Only re-initialize if ordering status changed
+    const wasOpen = isOrderingOpenNow();
+    if (wasOpen !== timeData.isOpen) {
+      initializeCheckout();
+    }
+  }
+  
+  addTimeListener('checkout-page', handleTimeUpdate, 5);
+  
+  // Cleanup on page unload
+  window.addEventListener('beforeunload', () => {
+    removeTimeListener('checkout-page');
+  });
 
   logger.info('Checkout page loaded', { itemCount: cart.items.length }, 'CHECKOUT');
 </script>
