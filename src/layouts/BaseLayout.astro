@@ -72,19 +72,28 @@ const localBusinessSchema = generateLocalBusinessSchema();
   
   {noIndex ? <meta name="robots" content="noindex, nofollow"> : <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">}
   
-  <!-- Open Graph / Facebook -->
+  <!-- Open Graph / Facebook (Enhanced for Meta Ads) -->
   <meta property="og:type" content="website">
   <meta property="og:url" content={canonicalURL}>
   <meta property="og:title" content={fullTitle}>
   <meta property="og:description" content={description}>
   <meta property="og:image" content={ogImage}>
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Khazaana Food Delivery - Order food online in Aurangabad">
+  <meta property="og:locale" content="en_IN">
+  <meta property="og:site_name" content="Khazaana">
+  <meta property="fb:app_id" content="YOUR_FB_APP_ID">
   
   <!-- Twitter -->
-  <meta property="twitter:card" content="summary_large_image">
-  <meta property="twitter:url" content={canonicalURL}>
-  <meta property="twitter:title" content={fullTitle}>
-  <meta property="twitter:description" content={description}>
-  <meta property="twitter:image" content={ogImage}>
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:url" content={canonicalURL}>
+  <meta name="twitter:title" content={fullTitle}>
+  <meta name="twitter:description" content={description}>
+  <meta name="twitter:image" content={ogImage}>
+  <meta name="twitter:image:alt" content="Khazaana Food Delivery - Order food online in Aurangabad">
+  <meta name="twitter:site" content="@khazaana_food">
+  <meta name="twitter:creator" content="@khazaana_food">
   
   <!-- PWA Meta Tags -->
   <meta name="theme-color" content="#FF6B35">
@@ -93,19 +102,54 @@ const localBusinessSchema = generateLocalBusinessSchema();
   <meta name="apple-mobile-web-app-title" content="Khazaana">
   <link rel="manifest" href="/manifest.json">
   
-  <!-- Preconnect to important domains -->
+  <!-- Preconnect to important domains for performance -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://www.googletagmanager.com">
+  <link rel="preconnect" href="https://connect.facebook.net">
+  <link rel="dns-prefetch" href="https://www.google-analytics.com">
+  <link rel="dns-prefetch" href="https://translate.google.com">
   
-  <!-- Google Analytics 4 -->
-  <!-- TODO: Replace with your GA4 Measurement ID -->
-  <!-- <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script> -->
-  <!-- <script>
+  <!-- Preload critical assets -->
+  <link rel="preload" href="/images/logo.png" as="image">
+  
+  <!-- Google Tag Manager (for Google Ads & Analytics) -->
+  <!-- Replace GTM-XXXXXXX with your GTM Container ID -->
+  <script is:inline>
+    (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-XXXXXXX');
+  </script>
+  
+  <!-- Meta Pixel (Facebook Ads) -->
+  <!-- Replace PIXEL_ID with your Meta Pixel ID -->
+  <script is:inline>
+    !function(f,b,e,v,n,t,s)
+    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+    n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];
+    s.parentNode.insertBefore(t,s)}(window, document,'script',
+    'https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', 'PIXEL_ID');
+    fbq('track', 'PageView');
+  </script>
+  <noscript>
+    <img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=PIXEL_ID&ev=PageView&noscript=1" alt="" />
+  </noscript>
+  
+  <!-- Google Ads Conversion Tracking -->
+  <!-- Replace AW-XXXXXXXXX with your Google Ads Conversion ID -->
+  <script is:inline async src="https://www.googletagmanager.com/gtag/js?id=AW-XXXXXXXXX"></script>
+  <script is:inline>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
-    gtag('config', 'G-XXXXXXXXXX');
-  </script> -->
+    gtag('config', 'AW-XXXXXXXXX');
+  </script>
   
   <!-- JSON-LD Structured Data -->
   <!-- Website Schema -->
@@ -150,6 +194,9 @@ const localBusinessSchema = generateLocalBusinessSchema();
   <slot name="head" />
 </head>
 <body class="min-h-screen bg-gray-50">
+  <!-- Google Tag Manager (noscript) -->
+  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-XXXXXXX" height="0" width="0" style="display:none;visibility:hidden" title="Google Tag Manager"></iframe></noscript>
+  
   <slot />
   
   <!-- Developer Tools (Development Only) -->
@@ -182,6 +229,23 @@ const localBusinessSchema = generateLocalBusinessSchema();
     }
   </script>
   <script is:inline src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+  
+  <!-- Add title to Google Translate iframe for accessibility -->
+  <script is:inline>
+    // Wait for Google Translate to load and add title to iframe
+    setTimeout(function() {
+      const iframes = document.querySelectorAll('iframe');
+      iframes.forEach(function(iframe) {
+        if (!iframe.title || iframe.title === '') {
+          if (iframe.src && iframe.src.includes('translate.google')) {
+            iframe.title = 'Google Translate Widget';
+          } else {
+            iframe.title = 'Embedded content';
+          }
+        }
+      });
+    }, 2000);
+  </script>
   
   <!-- Mount DevTools in development -->
   <!-- DevTools temporarily disabled -->

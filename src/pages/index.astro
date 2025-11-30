@@ -188,8 +188,9 @@ const breadcrumbSchema = generateBreadcrumbSchema([
                       <button 
                         class="add-offer-to-cart w-full bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white font-bold py-3 px-4 rounded-xl flex items-center justify-center gap-2 transition-all shadow-lg shadow-orange-500/25 hover:shadow-xl hover:shadow-orange-500/30"
                         data-offer={JSON.stringify(offer)}
+                        aria-label={`Add ${offer.dishName} to cart`}
                       >
-                        <ShoppingCart className="w-5 h-5" />
+                        <ShoppingCart className="w-5 h-5" aria-hidden="true" />
                         <span>Add to Cart</span>
                       </button>
                     </div>
@@ -281,10 +282,11 @@ const breadcrumbSchema = generateBreadcrumbSchema([
                     <button 
                       class="add-offer-to-cart w-full bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white font-bold py-4 px-6 rounded-xl flex items-center justify-center gap-3 transition-all shadow-lg shadow-orange-500/25 hover:shadow-xl hover:shadow-orange-500/30 group-hover:scale-[1.02]"
                       data-offer={JSON.stringify(offer)}
+                      aria-label={`Add ${offer.dishName} to cart`}
                     >
-                      <ShoppingCart className="w-5 h-5" />
+                      <ShoppingCart className="w-5 h-5" aria-hidden="true" />
                       <span>Add to Cart</span>
-                      <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                      <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" aria-hidden="true" />
                     </button>
                   </div>
                   
@@ -574,11 +576,11 @@ const breadcrumbSchema = generateBreadcrumbSchema([
             <p class="font-bold">${deviceInfo.title}</p>
             <p class="text-xs text-orange-100 mt-0.5">Quick access & offline support</p>
           </div>
-          <button id="install-btn" class="bg-white text-orange-600 font-bold py-2 px-4 rounded-lg text-sm hover:bg-orange-50 transition-colors">
+          <button id="install-btn" class="bg-white text-orange-600 font-bold py-2 px-4 rounded-lg text-sm hover:bg-orange-50 transition-colors" aria-label="Install Khazaana app">
             Install
           </button>
-          <button id="close-install" class="ml-2 text-white/80 hover:text-white p-1">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <button id="close-install" class="ml-2 text-white/80 hover:text-white p-1" aria-label="Close install banner">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
             </svg>
           </button>
@@ -595,8 +597,8 @@ const breadcrumbSchema = generateBreadcrumbSchema([
             <p class="font-bold">${deviceInfo.title}</p>
             <p class="text-xs text-orange-100 mt-1">${deviceInfo.steps}</p>
           </div>
-          <button id="close-install" class="text-white/80 hover:text-white p-1 flex-shrink-0">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <button id="close-install" class="text-white/80 hover:text-white p-1 flex-shrink-0" aria-label="Close install banner">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
             </svg>
           </button>

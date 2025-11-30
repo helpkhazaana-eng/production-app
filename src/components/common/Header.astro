@@ -57,8 +57,9 @@ import logoImage from '../../assets/images/logo.png';
         </a>
 
         <!-- Mobile Menu Button -->
-        <button id="mobile-menu-btn" class="lg:hidden p-2 text-gray-700 hover:text-[var(--color-primary)]">
-          <Menu className="w-6 h-6" />
+        <button id="mobile-menu-btn" class="lg:hidden p-2 text-gray-700 hover:text-[var(--color-primary)]" aria-label="Open navigation menu" title="Menu">
+          <Menu className="w-6 h-6" aria-hidden="true" />
+          <span class="sr-only">Menu</span>
         </button>
       </div>
     </div>
