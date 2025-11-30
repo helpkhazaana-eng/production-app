@@ -410,28 +410,56 @@ class MonitoringService {
   }
 
   // Send alert via webhook
-  async sendAlert(subject: string, data: any) {
-    if (MONITORING_CONFIG.ALERT_WEBHOOK_URL === 'YOUR_APPS_SCRIPT_WEBHOOK_URL') {
-      console.warn('Alert webhook not configured');
+  private async sendAlert(subject: string, data: Record<string, any>) {
+    if (!MONITORING_CONFIG.ALERT_WEBHOOK_URL || MONITORING_CONFIG.ALERT_WEBHOOK_URL === 'YOUR_APPS_SCRIPT_WEBHOOK_URL') {
       return;
     }
 
     try {
-      await fetch(MONITORING_CONFIG.ALERT_WEBHOOK_URL, {
+      const payload = {
+        subject,
+        data,
+        timestamp: new Date().toISOString(),
+        url: typeof window !== 'undefined' ? window.location.href : 'server-side',
+        sessionId: this.sessionId
+      };
+
+      // Use CORS proxy for Google Apps Script
+      const proxyUrl = `https://cors-anywhere.herokuapp.com/${MONITORING_CONFIG.ALERT_WEBHOOK_URL}`;
+      
+      const response = await fetch(proxyUrl, {
         method: 'POST',
-        mode: 'no-cors',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'X-Requested-With': 'XMLHttpRequest'
         },
-        body: JSON.stringify({
+        body: JSON.stringify(payload)
+      });
+
+      if (!response.ok) {
+        throw new Error(`Webhook failed: ${response.status}`);
+      }
+    } catch (error) {
+      // Log webhook failure but don't throw
+      console.error('Failed to send alert:', error);
+      // Fallback: try direct fetch (might work for some browsers)
+      try {
+        const payload = {
           subject,
           data,
           timestamp: new Date().toISOString(),
-          url: window.location.href
-        })
-      });
-    } catch (error) {
-      console.error('Failed to send alert:', error);
+          url: typeof window !== 'undefined' ? window.location.href : 'server-side',
+          sessionId: this.sessionId
+        };
+        
+        await fetch(MONITORING_CONFIG.ALERT_WEBHOOK_URL, {
+          method: 'POST',
+          mode: 'no-cors',
+          body: JSON.stringify(payload)
+        });
+      } catch (fallbackError) {
+        console.error('Fallback webhook also failed:', fallbackError);
+      }
     }
   }
 
