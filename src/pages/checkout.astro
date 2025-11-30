@@ -83,12 +83,8 @@ import { MapPin, Phone, Mail, User, MessageCircle } from 'lucide-react';
                 id="customer-name"
                 name="name"
                 required
-                minlength="2"
-                maxlength="50"
-                pattern="[a-zA-Z\s]+"
                 class="input-field"
                 placeholder="Enter your full name"
-                title="Name should only contain letters and spaces (2-50 characters)"
               />
             </div>
 
@@ -145,11 +141,8 @@ import { MapPin, Phone, Mail, User, MessageCircle } from 'lucide-react';
                 name="address"
                 required
                 rows="3"
-                minlength="10"
-                maxlength="200"
                 class="input-field"
-                placeholder="Enter your complete delivery address (house number, street, area, landmark)"
-                title="Please enter your complete delivery address (at least 10 characters)"
+                placeholder="Enter your complete delivery address"
               ></textarea>
             </div>
 
@@ -543,19 +536,6 @@ import { MapPin, Phone, Mail, User, MessageCircle } from 'lucide-react';
       longitude: customerLocation.longitude
     };
 
-    // Validate name
-    if (!customer.name || customer.name.trim().length < 2) {
-      alert('Please enter your full name (at least 2 characters)');
-      logger.warn('Invalid name', { name: customer.name }, 'CHECKOUT');
-      return;
-    }
-
-    if (!/^[a-zA-Z\s]+$/.test(customer.name.trim())) {
-      alert('Name should only contain letters and spaces');
-      logger.warn('Invalid name format', { name: customer.name }, 'CHECKOUT');
-      return;
-    }
-
     // Validate phone number
     if (!customer.phone || customer.phone.trim().length !== 10) {
       alert('Please enter a valid 10-digit mobile number');
@@ -577,13 +557,6 @@ import { MapPin, Phone, Mail, User, MessageCircle } from 'lucide-react';
         logger.warn('Invalid email', { email: customer.email }, 'CHECKOUT');
         return;
       }
-    }
-
-    // Validate address
-    if (!customer.address || customer.address.trim().length < 10) {
-      alert('Please enter your complete delivery address (at least 10 characters)');
-      logger.warn('Invalid address', { address: customer.address }, 'CHECKOUT');
-      return;
     }
 
     // Location is optional - no validation needed
