@@ -137,6 +137,7 @@ class MonitoringService {
 
       // @ts-ignore
       if (window.Sentry) {
+        // Initialize Sentry with basic configuration
         // @ts-ignore
         window.Sentry.init({
           dsn: MONITORING_CONFIG.SENTRY_DSN,
@@ -145,14 +146,55 @@ class MonitoringService {
           tracesSampleRate: 0.2,
           replaysSessionSampleRate: 0.1,
           replaysOnErrorSampleRate: 1.0,
-          // Enable console logging integration
-          integrations: [
-            // @ts-ignore
-            window.Sentry.consoleLoggingIntegration({ levels: ["log", "warn", "error"] }),
-          ],
-          // Enable logs to be sent to Sentry
-          enableLogs: true,
+          // Note: consoleLoggingIntegration might not be available in browser SDK
+          // We'll use manual console override instead
         });
+        
+        // Manual console logging override
+        const originalConsole = {
+          log: console.log,
+          warn: console.warn,
+          error: console.error
+        };
+        
+        console.log = function(...args) {
+          originalConsole.log.apply(console, args);
+          // @ts-ignore
+          if (window.Sentry) {
+            // @ts-ignore
+            window.Sentry.addBreadcrumb({
+              message: args.join(' '),
+              level: 'info',
+              category: 'console'
+            });
+          }
+        };
+        
+        console.warn = function(...args) {
+          originalConsole.warn.apply(console, args);
+          // @ts-ignore
+          if (window.Sentry) {
+            // @ts-ignore
+            window.Sentry.addBreadcrumb({
+              message: args.join(' '),
+              level: 'warning',
+              category: 'console'
+            });
+          }
+        };
+        
+        console.error = function(...args) {
+          originalConsole.error.apply(console, args);
+          // @ts-ignore
+          if (window.Sentry) {
+            // @ts-ignore
+            window.Sentry.addBreadcrumb({
+              message: args.join(' '),
+              level: 'error',
+              category: 'console'
+            });
+          }
+        };
       }
     } catch (error) {
       console.warn('Sentry initialization failed:', error);
@@ -175,9 +217,16 @@ class MonitoringService {
       });
 
       // @ts-ignore
-      if (window.LogRocket) {
-        // @ts-ignore
-        window.LogRocket.init(MONITORING_CONFIG.LOGROCKET_APP_ID);
+      if (window.LogRocket && typeof window.LogRocket.init === 'function') {
+        try {
+          // @ts-ignore
+          window.LogRocket.init(MONITORING_CONFIG.LOGROCKET_APP_ID);
+          console.log('✅ LogRocket initialized successfully');
+        } catch (initError) {
+          console.warn('LogRocket.init failed:', initError);
+        }
+      } else {
+        console.warn('LogRocket not available or init method not found');
       }
     } catch (error) {
       console.warn('LogRocket initialization failed:', error);
@@ -528,9 +577,15 @@ class MonitoringService {
   testSentryLogging() {
     // @ts-ignore
     if (window.Sentry) {
+      // Use breadcrumb instead of logger since logger might not be available
       // @ts-ignore
-      window.Sentry.logger.info('User triggered test log', { log_source: 'sentry_test' });
-      console.log('✅ Sentry test log sent - check Sentry dashboard');
+      window.Sentry.addBreadcrumb({
+        message: 'User triggered test log',
+        level: 'info',
+        category: 'test',
+        data: { log_source: 'sentry_test' }
+      });
+      console.log('✅ Sentry test breadcrumb sent - check Sentry dashboard');
     } else {
       console.warn('❌ Sentry not available for logging test');
     }
