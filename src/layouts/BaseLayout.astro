@@ -126,8 +126,8 @@ const localBusinessSchema = generateLocalBusinessSchema();
     "@context": "https://schema.org",
     "@type": "Organization",
     "name": "Khazaana",
-    "url": "https://khazaana.co.in",
-    "logo": "https://khazaana.co.in/images/logo.png",
+    "url": Astro.site?.toString() || "https://khazaana.co.in",
+    "logo": `${Astro.site || "https://khazaana.co.in"}/images/logo.png`,
     "contactPoint": {
       "@type": "ContactPoint",
       "telephone": "+91-8695902696",

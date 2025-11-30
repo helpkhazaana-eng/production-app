@@ -1,6 +1,11 @@
-# Khazaana Food Ordering Platform - Robots.txt
+import type { APIRoute } from 'astro';
+
+export const GET: APIRoute = ({ site }) => {
+  const siteUrl = site?.toString().replace(/\/$/, '') || 'https://khazaana.co.in';
+
+  const robotsTxt = `# Khazaana Food Ordering Platform - Robots.txt
 # Best Food Delivery in Aurangabad, West Bengal
-# Domain: khazaana.co.in
+# Domain: ${siteUrl}
 
 User-agent: *
 Allow: /
@@ -14,12 +19,12 @@ Disallow: /test-order
 Disallow: /404
 
 # Sitemap location
-Sitemap: https://khazaana.co.in/sitemap.xml
+Sitemap: ${siteUrl}/sitemap.xml
 
-# Crawl delay (optional, helps prevent server overload)
+# Crawl delay
 Crawl-delay: 1
 
-# Specific rules for Google
+# Google
 User-agent: Googlebot
 Allow: /
 Allow: /restaurants/
@@ -35,7 +40,7 @@ Allow: /images/
 User-agent: Googlebot-Mobile
 Allow: /
 
-# Specific rules for Bing
+# Bing
 User-agent: Bingbot
 Allow: /
 Allow: /restaurants/
@@ -43,15 +48,24 @@ Disallow: /checkout
 Disallow: /history
 Disallow: /cart
 
-# Specific rules for Yandex
+# Yandex
 User-agent: Yandex
 Allow: /
 Disallow: /checkout
 Disallow: /history
 
-# Specific rules for DuckDuckGo
+# DuckDuckGo
 User-agent: DuckDuckBot
 Allow: /
 
 # Host directive
-Host: https://khazaana.co.in
+Host: ${siteUrl}
+`;
+
+  return new Response(robotsTxt, {
+    headers: {
+      'Content-Type': 'text/plain',
+      'Cache-Control': 'public, max-age=3600',
+    },
+  });
+};

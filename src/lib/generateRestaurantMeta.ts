@@ -20,8 +20,9 @@ export const LOCATION = {
   }
 };
 
+// Domain is set dynamically from environment or Astro.site
 export const SITE_CONFIG = {
-  domain: 'https://khazaana.co.in',
+  domain: import.meta.env.SITE_URL || import.meta.env.SITE || 'https://khazaana.co.in',
   name: 'Khazaana',
   phone: '+91-8695902696',
   phoneBackup: '+91-8649851034',

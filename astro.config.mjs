@@ -3,12 +3,20 @@ import { defineConfig } from 'astro/config';
 import react from '@astrojs/react';
 import tailwindcss from '@tailwindcss/vite';
 
+// Site URL from environment variable (set by Netlify)
+// Production: https://khazaana.co.in
+// Staging: https://khazaana2.netlify.app
+const siteUrl = process.env.SITE_URL || process.env.URL || 'https://khazaana.co.in';
+
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://khazaana.co.in',
+  site: siteUrl,
   integrations: [react()],
   vite: {
-    plugins: [tailwindcss()]
+    plugins: [tailwindcss()],
+    define: {
+      'import.meta.env.SITE_URL': JSON.stringify(siteUrl),
+    }
   },
   image: {
     // Use sharp for image optimization (converts to WebP automatically)

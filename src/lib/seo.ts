@@ -1,6 +1,9 @@
 // SEO Utility for Khazaana Food Ordering Platform
 // Comprehensive SEO with location-based keywords and structured data
 
+// Get site URL dynamically
+const getSiteUrl = () => import.meta.env.SITE_URL || import.meta.env.SITE || 'https://khazaana.co.in';
+
 export interface SEOConfig {
   title: string;
   description: string;
@@ -106,9 +109,9 @@ export function generateLocalBusinessSchema() {
     '@context': 'https://schema.org',
     '@type': 'FoodEstablishment',
     name: 'Khazaana Food Ordering Platform',
-    image: 'https://khazaana.co.in/images/logo.png',
-    '@id': 'https://khazaana.co.in',
-    url: 'https://khazaana.co.in',
+    image: `${getSiteUrl()}/images/logo.png`,
+    '@id': getSiteUrl(),
+    url: getSiteUrl(),
     telephone: '+91-8695902696',
     priceRange: '₹₹',
     address: {
@@ -154,9 +157,9 @@ export function generateRestaurantSchema(restaurant: any) {
     '@context': 'https://schema.org',
     '@type': 'Restaurant',
     name: restaurant.name,
-    image: `https://khazaana.co.in/images/restaurants/${restaurant.id}.jpg`,
-    '@id': `https://khazaana.co.in/restaurants/${restaurant.id}`,
-    url: `https://khazaana.co.in/restaurants/${restaurant.id}`,
+    image: `${getSiteUrl()}/images/restaurants/${restaurant.id}.jpg`,
+    '@id': `${getSiteUrl()}/restaurants/${restaurant.id}`,
+    url: `${getSiteUrl()}/restaurants/${restaurant.id}`,
     telephone: `+91-${restaurant.phone}`,
     priceRange: restaurant.priceRange,
     servesCuisine: restaurant.cuisine,
@@ -204,7 +207,7 @@ export function generateBreadcrumbSchema(items: { name: string; url: string }[])
       '@type': 'ListItem',
       position: index + 1,
       name: item.name,
-      item: `https://khazaana.co.in${item.url}`
+      item: `${getSiteUrl()}${item.url}`
     }))
   };
 }
