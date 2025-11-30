@@ -26,12 +26,96 @@
   SITE_URL = "https://khazaana2.netlify.app"
 
 # Pretty URLs - Netlify serves index.html from folders automatically
-# This setting ensures /restaurants and /restaurants/ both work
 [build.processing]
   skip_processing = false
 
 [build.processing.html]
   pretty_urls = true
+
+# ============================================
+# REDIRECTS - Handle trailing slash for all routes
+# Redirect non-slash to slash version (Netlify serves index.html from folders)
+# ============================================
+
+# Main pages
+[[redirects]]
+  from = "/about"
+  to = "/about/"
+  status = 301
+  force = false
+
+[[redirects]]
+  from = "/restaurants"
+  to = "/restaurants/"
+  status = 301
+  force = false
+
+[[redirects]]
+  from = "/cart"
+  to = "/cart/"
+  status = 301
+  force = false
+
+[[redirects]]
+  from = "/checkout"
+  to = "/checkout/"
+  status = 301
+  force = false
+
+[[redirects]]
+  from = "/history"
+  to = "/history/"
+  status = 301
+  force = false
+
+[[redirects]]
+  from = "/terms"
+  to = "/terms/"
+  status = 301
+  force = false
+
+[[redirects]]
+  from = "/test-order"
+  to = "/test-order/"
+  status = 301
+  force = false
+
+# Restaurant detail pages
+[[redirects]]
+  from = "/restaurants/cupsncrumbs"
+  to = "/restaurants/cupsncrumbs/"
+  status = 301
+  force = false
+
+[[redirects]]
+  from = "/restaurants/aaviora"
+  to = "/restaurants/aaviora/"
+  status = 301
+  force = false
+
+[[redirects]]
+  from = "/restaurants/arsalan"
+  to = "/restaurants/arsalan/"
+  status = 301
+  force = false
+
+[[redirects]]
+  from = "/restaurants/bandhu-hotel"
+  to = "/restaurants/bandhu-hotel/"
+  status = 301
+  force = false
+
+[[redirects]]
+  from = "/restaurants/bholebaba"
+  to = "/restaurants/bholebaba/"
+  status = 301
+  force = false
+
+[[redirects]]
+  from = "/restaurants/whitechocolate"
+  to = "/restaurants/whitechocolate/"
+  status = 301
+  force = false
 
 # Headers for security and caching
 [[headers]]
