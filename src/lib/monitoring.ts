@@ -24,13 +24,13 @@
 // ============================================================
 export const MONITORING_CONFIG = {
   // Sentry (https://sentry.io) - Error Tracking
-  SENTRY_DSN: 'YOUR_SENTRY_DSN', // e.g., https://xxx@xxx.ingest.sentry.io/xxx
+  SENTRY_DSN: process.env.PUBLIC_SENTRY_DSN || 'YOUR_SENTRY_DSN', // e.g., https://xxx@xxx.ingest.sentry.io/xxx
   
   // LogRocket (https://logrocket.com) - Session Replay
-  LOGROCKET_APP_ID: 'YOUR_LOGROCKET_APP_ID', // e.g., 'org/app'
+  LOGROCKET_APP_ID: process.env.PUBLIC_LOGROCKET_APP_ID || 'khazaana/khazaana-web', // From screenshot
   
   // Custom Alert Webhook (Google Apps Script)
-  ALERT_WEBHOOK_URL: 'YOUR_APPS_SCRIPT_WEBHOOK_URL',
+  ALERT_WEBHOOK_URL: process.env.PUBLIC_ALERT_WEBHOOK_URL || 'https://script.google.com/macros/s/ABC123XYZ/exec', // REPLACE WITH YOUR URL
   
   // Alert Emails (comma-separated for multiple recipients)
   ALERT_EMAILS: [
