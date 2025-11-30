@@ -462,25 +462,28 @@ const localBusinessSchema = generateLocalBusinessSchema();
           }
         },
         sendTestEmail: function() {
-          fetch('https://script.google.com/macros/s/AKfycbw6KE2lGCTBd2VdgCKV2cGX-VEe0GscTJ9hC8ZkIFafHQefj4nrgi3Hb_-VRVJt7UgHGg/exec', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              subject: 'Test Email - Monitoring System Working!',
-              data: { 
-                message: 'All monitoring systems are operational',
-                sentry: window.Sentry ? 'Active' : 'Inactive',
-                logrocket: window.LogRocket ? 'Active' : 'Inactive',
-                timestamp: new Date().toISOString()
-              },
-              timestamp: new Date().toISOString(),
-              url: window.location.href
-            })
-          }).then(() => {
-            console.log('✅ Test email sent - check your inbox');
-          }).catch(err => {
-            console.warn('Email send failed (CORS expected):', err.message);
-          });
+          // Use image beacon to bypass CORS
+          var data = {
+            subject: 'Test Email - Monitoring System Working!',
+            data: { 
+              message: 'All monitoring systems are operational',
+              sentry: window.Sentry ? 'Active' : 'Inactive',
+              logrocket: window.LogRocket ? 'Active' : 'Inactive',
+              timestamp: new Date().toISOString()
+            },
+            timestamp: new Date().toISOString(),
+            url: window.location.href
+          };
+          
+          // Create image beacon with data as query parameter
+          var img = new Image();
+          img.src = 'https://script.google.com/macros/s/AKfycbw6KE2lGCTBd2VdgCKV2cGX-VEe0GscTJ9hC8ZkIFafHQefj4nrgi3Hb_-VRVJt7UgHGg/exec?data=' + encodeURIComponent(JSON.stringify(data));
+          img.onload = function() {
+            console.log('✅ Test email sent via image beacon - check your inbox');
+          };
+          img.onerror = function() {
+            console.log('✅ Email request sent (image beacon) - check your inbox');
+          };
         }
       };
       
