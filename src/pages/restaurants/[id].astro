@@ -1,0 +1,552 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/common/Header.astro';
+import Footer from '../../components/common/Footer.astro';
+import RestaurantSeo from '../../components/RestaurantSeo.astro';
+import { Clock, MapPin, Phone, AlertCircle, UtensilsCrossed, IndianRupee, Award, ChefHat, ShoppingCart, Plus } from 'lucide-react';
+import { restaurants, isRestaurantOpen, getCountdownToOpen, getFormattedTimings } from '../../data/restaurants';
+import { loadMenuFromCSV, groupByCategory } from '../../lib/csv-loader';
+import { generateRestaurantMeta } from '../../lib/generateRestaurantMeta';
+
+// Required for dynamic routes in Astro
+export async function getStaticPaths() {
+  return restaurants.map((restaurant) => ({
+    params: { id: restaurant.id },
+  }));
+}
+
+// Get restaurant ID from URL
+const { id } = Astro.params;
+
+// Find restaurant
+const restaurant = restaurants.find(r => r.id === id);
+
+if (!restaurant) {
+  return Astro.redirect('/restaurants');
+}
+
+// Load menu from CSV
+const menuItems = await loadMenuFromCSV(restaurant.menuFile);
+const groupedMenu = groupByCategory(menuItems);
+const categories = Object.keys(groupedMenu);
+
+// Check if restaurant is open
+const isOpen = isRestaurantOpen(restaurant);
+const countdown = !isOpen ? getCountdownToOpen(restaurant) : '';
+
+// Generate SEO meta for BaseLayout
+const meta = generateRestaurantMeta(restaurant, menuItems);
+---
+
+<BaseLayout 
+  title={meta.title}
+  description={meta.description}
+  keywords={meta.keywords}
+  category={restaurant.category}
+>
+  <!-- Enhanced Restaurant SEO -->
+  <RestaurantSeo slot="head" restaurant={restaurant} menuItems={menuItems} />
+  
+  <Header />
+  
+  <main class="min-h-screen bg-gray-50">
+    <!-- Restaurant Header -->
+    <section class="bg-white border-b border-gray-200">
+      <div class="container-custom py-8">
+        <!-- Main Header Row -->
+        <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-6">
+          <!-- Left: Restaurant Info -->
+          <div class="flex-1">
+            <!-- Name and Featured Badge -->
+            <div class="flex items-center gap-3 mb-3">
+              <h1 class="text-3xl md:text-4xl font-bold">{restaurant.name}</h1>
+              {restaurant.featured && (
+                <span class="bg-gradient-to-r from-orange-500 to-red-500 text-white text-xs font-semibold px-3 py-1 rounded-full flex items-center gap-1">
+                  <Award className="w-3 h-3" />
+                  Featured
+                </span>
+              )}
+            </div>
+
+            <!-- Cuisine Tags -->
+            <div class="flex flex-wrap gap-2 mb-4">
+              {restaurant.cuisine.map((tag) => (
+                <span class="bg-orange-100 text-orange-700 font-medium px-3 py-1 rounded-full text-sm">
+                  {tag}
+                </span>
+              ))}
+            </div>
+
+            <!-- Stats Row -->
+            <div class="flex flex-wrap items-center gap-6 mb-4">
+              <!-- Price -->
+              <div class="flex items-center gap-1.5 text-gray-600">
+                <IndianRupee className="w-4 h-4" />
+                <span>{restaurant.costForTwo} for two</span>
+              </div>
+              
+              <!-- Timing -->
+              <div class="flex items-center gap-1.5 text-gray-600">
+                <Clock className="w-4 h-4" />
+                <span>{getFormattedTimings(restaurant)}</span>
+              </div>
+            </div>
+
+            <!-- Status Badge -->
+            <div class="flex items-center gap-3">
+              {isOpen ? (
+                <span class="bg-green-100 text-green-800 font-semibold px-4 py-2 rounded-full text-sm flex items-center gap-2">
+                  <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+                  Open Now
+                </span>
+              ) : (
+                <div class="flex items-center gap-3">
+                  <span class="bg-red-100 text-red-800 font-semibold px-4 py-2 rounded-full text-sm">
+                    Closed
+                  </span>
+                  <span class="text-gray-500 text-sm">{countdown}</span>
+                </div>
+              )}
+            </div>
+          </div>
+
+          <!-- Right: Call Button -->
+          <div class="flex-shrink-0">
+            <a 
+              href="tel:+918695902696" 
+              class="inline-flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white font-semibold px-4 py-2 md:px-6 md:py-3 rounded-xl transition-colors shadow-lg shadow-orange-500/20 text-sm md:text-base"
+            >
+              <Phone className="w-4 h-4 md:w-5 md:h-5" />
+              <span class="hidden sm:inline">Call Khazaana</span>
+              <span class="sm:hidden">Call</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Closed Restaurant Warning -->
+        {!isOpen && (
+          <div class="mt-6 bg-amber-50 border border-amber-200 p-4 rounded-xl">
+            <div class="flex items-center gap-3">
+              <div class="bg-amber-100 p-2 rounded-lg">
+                <AlertCircle className="w-5 h-5 text-amber-600" />
+              </div>
+              <div>
+                <p class="font-semibold text-amber-800">Restaurant is currently closed</p>
+                <p class="text-sm text-amber-700">
+                  You can browse the menu, but ordering is disabled. {countdown}
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    </section>
+
+    <!-- Menu Section -->
+    <section class="py-8">
+      <div class="container-custom">
+        <!-- VEG MODE Toggle (Menu Page) -->
+        <div class="flex items-center justify-end mb-4">
+          <label class="flex items-center space-x-2 cursor-pointer">
+            <input type="checkbox" id="veg-mode-toggle" class="hidden" />
+            <div class="veg-mode-switch relative w-14 h-7 bg-gray-300 rounded-full transition-colors duration-300">
+              <div class="veg-mode-slider absolute top-1 left-1 w-5 h-5 bg-white rounded-full transition-transform duration-300"></div>
+            </div>
+            <span class="font-medium text-gray-700">🌱 VEG MODE</span>
+          </label>
+        </div>
+
+        <!-- Mobile Category Tabs (Horizontal Scroll) -->
+        <div class="lg:hidden mb-6 sticky top-16 z-20 bg-gray-50 py-2 -mx-4 px-4">
+          <div class="bg-white rounded-lg shadow-sm p-2">
+            <div id="mobile-category-tabs" class="flex overflow-x-auto gap-2 scrollbar-hide" style="scroll-behavior: smooth; -webkit-overflow-scrolling: touch;">
+              {categories.map((category) => (
+                <button
+                  type="button"
+                  data-target={category.toLowerCase().replace(/\s+/g, '-')}
+                  class="mobile-category-tab flex-shrink-0 px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-colors bg-gray-100 text-gray-700 hover:bg-orange-100 hover:text-orange-600"
+                >
+                  {category} ({groupedMenu[category].length})
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+          <!-- Category Navigation (Desktop Sidebar) -->
+          <div class="hidden lg:block lg:col-span-1">
+            <div class="bg-white rounded-lg shadow-sm p-4 sticky top-24 max-h-[calc(100vh-120px)] overflow-y-auto">
+              <h3 class="font-bold mb-4 flex items-center space-x-2">
+                <ChefHat className="w-5 h-5 text-gray-600" />
+                <span>Categories</span>
+              </h3>
+              <nav class="space-y-1" id="category-nav">
+                {categories.map((category) => (
+                  <a
+                    href={`#${category.toLowerCase().replace(/\s+/g, '-')}`}
+                    class="category-link block px-3 py-2 rounded hover:bg-orange-50 transition-colors text-gray-700 hover:text-[var(--color-primary)] text-sm"
+                    data-category={category.toLowerCase().replace(/\s+/g, '-')}
+                  >
+                    {category} ({groupedMenu[category].length})
+                  </a>
+                ))}
+              </nav>
+            </div>
+          </div>
+
+          <!-- Menu Items -->
+          <div class="lg:col-span-3">
+            {categories.map((category) => (
+              <div id={category.toLowerCase().replace(/\s+/g, '-')} class="mb-12">
+                <h2 class="text-2xl font-bold mb-6 pb-2 border-b-2 border-gray-200 flex items-center space-x-2">
+                  <ChefHat className="w-6 h-6 text-[var(--color-primary)]" />
+                  <span>{category}</span>
+                </h2>
+                
+                <div class="space-y-4">
+                  {groupedMenu[category].map((item) => (
+                    <div class="menu-item-card" data-item-name={item.itemName} data-veg={item.vegNonVeg === 'Veg' ? 'true' : 'false'}>
+                      <div class="flex items-start justify-between">
+                        <div class="flex-1">
+                          <div class="flex items-center space-x-2 mb-2">
+                            {item.vegNonVeg === 'Veg' ? (
+                              <span class="veg-indicator" title="Vegetarian"></span>
+                            ) : (
+                              <span class="non-veg-indicator" title="Non-Vegetarian"></span>
+                            )}
+                            <h3 class="font-bold text-lg">{item.itemName}</h3>
+                          </div>
+                          
+                          {item.description && (
+                            <p class="text-gray-600 text-sm mb-3">{item.description}</p>
+                          )}
+                          
+                          <div class="flex items-center space-x-1">
+                            <IndianRupee className="w-5 h-5 text-[var(--color-primary)]" />
+                            <p class="text-xl font-bold text-[var(--color-primary)]">
+                              {item.price}
+                            </p>
+                          </div>
+                        </div>
+
+                        <!-- Add to Cart Button -->
+                        <button
+                          class="add-to-cart-btn btn-primary ml-4 flex items-center space-x-1"
+                          data-item={JSON.stringify(item)}
+                          data-restaurant-id={restaurant.id}
+                          data-restaurant-name={restaurant.name}
+                        >
+                          <Plus className="w-4 h-4" />
+                          <span>Add</span>
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+
+  <!-- Sticky Cart Summary -->
+  <div id="sticky-cart" class="sticky-cart hidden">
+    <div class="container-custom">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center space-x-3">
+          <ShoppingCart className="w-6 h-6 text-white" />
+          <div>
+            <p class="text-sm text-gray-200">
+              <span id="cart-item-count">0</span> items
+            </p>
+            <div class="flex items-center space-x-1">
+              <IndianRupee className="w-4 h-4 text-white" />
+              <p class="text-lg font-bold text-white">
+                <span id="cart-total">0</span>
+              </p>
+            </div>
+          </div>
+        </div>
+        <a href="/cart" class="btn-primary bg-white text-[var(--color-primary)] hover:bg-gray-100 flex items-center space-x-2">
+          <ShoppingCart className="w-4 h-4" />
+          <span>View Cart</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</BaseLayout>
+
+<script>
+  import { getCart, addToCart, saveCart } from '../../lib/cart';
+  import { logger } from '../../lib/logger';
+  import type { MenuItem } from '../../types';
+
+  // Initialize cart
+  let cart = getCart();
+  updateCartDisplay();
+
+  // Add to cart buttons
+  const addToCartButtons = document.querySelectorAll('.add-to-cart-btn');
+  
+  addToCartButtons.forEach(button => {
+    button.addEventListener('click', () => {
+      const itemData = button.getAttribute('data-item');
+      const restaurantId = button.getAttribute('data-restaurant-id') || '';
+      const restaurantName = button.getAttribute('data-restaurant-name') || '';
+      
+      if (!itemData) return;
+      
+      try {
+        const item: MenuItem = JSON.parse(itemData);
+        const result = addToCart(cart, item, restaurantId, restaurantName);
+        
+        if (result.error) {
+          // Show error modal
+          showErrorModal(result.error);
+          logger.warn('Failed to add item to cart', { error: result.error }, 'MENU');
+        } else {
+          cart = result.cart;
+          updateCartDisplay();
+          showSuccessToast(`${item.itemName} added to cart!`);
+          logger.info('Item added to cart', { itemName: item.itemName, restaurantName }, 'MENU');
+        }
+      } catch (error) {
+        logger.error('Error adding item to cart', error instanceof Error ? error : new Error(String(error)), 'MENU');
+      }
+    });
+  });
+
+  function updateCartDisplay() {
+    const stickyCart = document.getElementById('sticky-cart');
+    const cartItemCount = document.getElementById('cart-item-count');
+    const cartTotal = document.getElementById('cart-total');
+    
+    const itemCount = cart.items.reduce((sum, item) => sum + item.quantity, 0);
+    
+    if (itemCount > 0 && stickyCart) {
+      stickyCart.classList.remove('hidden');
+    } else if (stickyCart) {
+      stickyCart.classList.add('hidden');
+    }
+    
+    if (cartItemCount) cartItemCount.textContent = itemCount.toString();
+    if (cartTotal) cartTotal.textContent = cart.total.toFixed(2);
+  }
+
+  function showErrorModal(message: string) {
+    const modal = document.createElement('div');
+    modal.className = 'fixed inset-0 bg-black/50 z-[9999] flex items-center justify-center p-4';
+    modal.innerHTML = `
+      <div class="bg-white rounded-lg p-6 max-w-md w-full">
+        <h3 class="text-xl font-bold mb-4 text-red-600">Cannot Add Item</h3>
+        <p class="text-gray-700 mb-6">${message}</p>
+        <div class="flex space-x-3">
+          <button id="clear-cart-btn" class="btn-primary flex-1">Clear Cart</button>
+          <button id="cancel-btn" class="btn-secondary flex-1">Cancel</button>
+        </div>
+      </div>
+    `;
+    
+    document.body.appendChild(modal);
+    
+    document.getElementById('clear-cart-btn')?.addEventListener('click', () => {
+      cart = { items: [], restaurantId: null, restaurantName: null, subtotal: 0, tax: 0, total: 0 };
+      saveCart(cart);
+      updateCartDisplay();
+      modal.remove();
+      logger.info('Cart cleared by user', {}, 'MENU');
+    });
+    
+    document.getElementById('cancel-btn')?.addEventListener('click', () => {
+      modal.remove();
+    });
+  }
+
+  function showSuccessToast(message: string) {
+    const toast = document.createElement('div');
+    toast.className = 'fixed top-24 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-[9999] animate-slide-in';
+    toast.textContent = message;
+    
+    document.body.appendChild(toast);
+    
+    setTimeout(() => {
+      toast.classList.add('animate-slide-out');
+      setTimeout(() => toast.remove(), 300);
+    }, 2000);
+  }
+
+  // VEG MODE on menu page: hide non-veg items when enabled
+  const vegModeToggle = document.getElementById('veg-mode-toggle') as HTMLInputElement | null;
+  const menuItemCards = Array.from(document.querySelectorAll('.menu-item-card')) as HTMLElement[];
+
+  vegModeToggle?.addEventListener('change', () => {
+    const vegMode = !!vegModeToggle.checked;
+    if (vegMode) {
+      document.body.classList.add('veg-mode-active');
+    } else {
+      document.body.classList.remove('veg-mode-active');
+    }
+
+    menuItemCards.forEach((card) => {
+      const isVeg = card.getAttribute('data-veg') === 'true';
+      card.style.display = vegMode && !isVeg ? 'none' : 'block';
+    });
+
+    logger.info('Veg mode toggled on menu page', { vegMode }, 'MENU');
+  });
+
+  logger.info('Restaurant menu page loaded', { restaurantId: cart.restaurantId }, 'MENU');
+
+  // Category navigation - highlight active and scroll into view
+  const categoryLinks = document.querySelectorAll('.category-link');
+  const categoryNav = document.getElementById('category-nav');
+  const categoryHeaders = document.querySelectorAll('[id]');
+  
+  // Highlight active category on scroll
+  function updateActiveCategory() {
+    const scrollPosition = window.scrollY + 150;
+    
+    let activeCategory = '';
+    categoryHeaders.forEach((header) => {
+      const element = header as HTMLElement;
+      if (element.offsetTop <= scrollPosition) {
+        activeCategory = element.id;
+      }
+    });
+    
+    categoryLinks.forEach((link) => {
+      const linkCategory = link.getAttribute('data-category');
+      if (linkCategory === activeCategory) {
+        link.classList.add('bg-orange-100', 'text-orange-600', 'font-semibold');
+        link.classList.remove('text-gray-700');
+        // Scroll the active link into view in sidebar
+        if (categoryNav) {
+          const linkElement = link as HTMLElement;
+          const navRect = categoryNav.getBoundingClientRect();
+          const linkRect = linkElement.getBoundingClientRect();
+          
+          if (linkRect.top < navRect.top || linkRect.bottom > navRect.bottom) {
+            linkElement.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+          }
+        }
+      } else {
+        link.classList.remove('bg-orange-100', 'text-orange-600', 'font-semibold');
+        link.classList.add('text-gray-700');
+      }
+    });
+  }
+  
+  // Smooth scroll to category when clicking sidebar link
+  categoryLinks.forEach((link) => {
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      const targetId = link.getAttribute('href')?.slice(1);
+      const targetElement = document.getElementById(targetId || '');
+      if (targetElement) {
+        const offset = 100;
+        const elementPosition = targetElement.getBoundingClientRect().top + window.scrollY;
+        window.scrollTo({ top: elementPosition - offset, behavior: 'smooth' });
+      }
+    });
+  });
+  
+  window.addEventListener('scroll', updateActiveCategory);
+  updateActiveCategory();
+  
+  // Mobile category tabs - scroll to section on click
+  const mobileCategoryTabs = document.querySelectorAll('.mobile-category-tab');
+  const mobileTabsContainer = document.getElementById('mobile-category-tabs');
+  
+  mobileCategoryTabs.forEach((tab) => {
+    tab.addEventListener('click', () => {
+      const targetId = tab.getAttribute('data-target');
+      const targetElement = document.getElementById(targetId || '');
+      
+      if (targetElement) {
+        // Calculate offset (header + sticky tabs)
+        const offset = 140;
+        const elementPosition = targetElement.getBoundingClientRect().top + window.scrollY;
+        window.scrollTo({ top: elementPosition - offset, behavior: 'smooth' });
+        
+        // Highlight active tab
+        mobileCategoryTabs.forEach((t) => {
+          t.classList.remove('bg-orange-500', 'text-white');
+          t.classList.add('bg-gray-100', 'text-gray-700');
+        });
+        tab.classList.remove('bg-gray-100', 'text-gray-700');
+        tab.classList.add('bg-orange-500', 'text-white');
+        
+        // Scroll tab into view
+        (tab as HTMLElement).scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+      }
+    });
+  });
+  
+  // Update mobile tabs on scroll
+  function updateMobileTabs() {
+    const scrollPosition = window.scrollY + 160;
+    
+    let activeCategory = '';
+    categoryHeaders.forEach((header) => {
+      const element = header as HTMLElement;
+      if (element.offsetTop <= scrollPosition) {
+        activeCategory = element.id;
+      }
+    });
+    
+    mobileCategoryTabs.forEach((tab) => {
+      const tabTarget = tab.getAttribute('data-target');
+      if (tabTarget === activeCategory) {
+        tab.classList.remove('bg-gray-100', 'text-gray-700');
+        tab.classList.add('bg-orange-500', 'text-white');
+        // Scroll active tab into view
+        if (mobileTabsContainer) {
+          (tab as HTMLElement).scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+        }
+      } else {
+        tab.classList.remove('bg-orange-500', 'text-white');
+        tab.classList.add('bg-gray-100', 'text-gray-700');
+      }
+    });
+  }
+  
+  window.addEventListener('scroll', updateMobileTabs);
+  updateMobileTabs();
+</script>
+
+<style>
+  @keyframes slide-in {
+    from {
+      transform: translateX(100%);
+      opacity: 0;
+    }
+    to {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+  
+  @keyframes slide-out {
+    from {
+      transform: translateX(0);
+      opacity: 1;
+    }
+    to {
+      transform: translateX(100%);
+      opacity: 0;
+    }
+  }
+  
+  .animate-slide-in {
+    animation: slide-in 0.3s ease-out;
+  }
+  
+  .animate-slide-out {
+    animation: slide-out 0.3s ease-out;
+  }
+</style>

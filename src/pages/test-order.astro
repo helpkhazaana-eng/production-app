@@ -1,0 +1,306 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/common/Header.astro';
+import Footer from '../components/common/Footer.astro';
+---
+
+<BaseLayout 
+  title="Test Order - Google Sheets Integration" 
+  description="Test page for Google Sheets backend integration"
+  noIndex={true}
+>
+  <Header />
+  
+  <main class="min-h-screen bg-gray-50 py-8">
+    <div class="container-custom max-w-4xl">
+      <div class="bg-yellow-50 border-l-4 border-yellow-400 p-6 rounded-lg mb-8">
+        <h1 class="text-2xl font-bold text-yellow-800 mb-2">🧪 Test Order Page</h1>
+        <p class="text-yellow-700">This page is for testing the Google Sheets backend integration. Use the form below to submit a test order.</p>
+      </div>
+
+      <!-- Test Form -->
+      <div class="bg-white rounded-lg shadow-sm p-8 mb-8">
+        <h2 class="text-xl font-bold mb-6">Test Order Form</h2>
+        
+        <form id="test-form" class="space-y-6">
+          <!-- Customer Name -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Customer Name</label>
+            <input
+              type="text"
+              id="test-name"
+              value="Test Customer"
+              class="input-field"
+              required
+            />
+          </div>
+
+          <!-- Phone -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Phone Number</label>
+            <input
+              type="tel"
+              id="test-phone"
+              value="9876543210"
+              pattern="[6-9][0-9]{9}"
+              maxlength="10"
+              class="input-field"
+              required
+            />
+          </div>
+
+          <!-- Email -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Email (Optional)</label>
+            <input
+              type="email"
+              id="test-email"
+              value="test@khazaana.com"
+              class="input-field"
+            />
+          </div>
+
+          <!-- Address -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Delivery Address</label>
+            <textarea
+              id="test-address"
+              rows="3"
+              class="input-field"
+              required
+            >College More, near DNC College, Aurangabad, Suti, West Bengal 742201</textarea>
+          </div>
+
+          <!-- Location -->
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Latitude</label>
+              <input
+                type="number"
+                id="test-lat"
+                value="24.75"
+                step="0.000001"
+                class="input-field"
+                required
+              />
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Longitude</label>
+              <input
+                type="number"
+                id="test-lng"
+                value="88.2"
+                step="0.000001"
+                class="input-field"
+                required
+              />
+            </div>
+          </div>
+
+          <!-- Restaurant -->
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Restaurant</label>
+            <select id="test-restaurant" class="input-field" required>
+              <option value="Cups N Crumbs">Cups N Crumbs</option>
+              <option value="Arsalan">Arsalan</option>
+              <option value="Aaviora">Aaviora</option>
+            </select>
+          </div>
+
+          <!-- Submit Button -->
+          <button
+            type="submit"
+            id="test-submit"
+            class="btn-primary w-full text-lg py-4"
+          >
+            🧪 Submit Test Order
+          </button>
+        </form>
+      </div>
+
+      <!-- Response Display -->
+      <div id="response-container" class="hidden">
+        <div class="bg-white rounded-lg shadow-sm p-8">
+          <h2 class="text-xl font-bold mb-4">Response</h2>
+          <div id="response-content" class="space-y-4"></div>
+        </div>
+      </div>
+
+      <!-- WhatsApp Preview -->
+      <div id="whatsapp-preview" class="hidden">
+        <div class="bg-green-50 border-l-4 border-green-400 p-6 rounded-lg">
+          <h3 class="font-bold text-green-800 mb-2">✅ WhatsApp Message Preview</h3>
+          <div class="bg-white p-4 rounded border border-green-200 mt-4">
+            <pre id="whatsapp-message" class="text-sm whitespace-pre-wrap text-gray-700"></pre>
+          </div>
+          <a
+            id="whatsapp-link"
+            href="#"
+            target="_blank"
+            class="btn-primary mt-4 inline-block"
+          >
+            Open in WhatsApp
+          </a>
+        </div>
+      </div>
+
+      <!-- Console Logs -->
+      <div class="bg-gray-900 text-green-400 rounded-lg p-6 mt-8">
+        <h3 class="font-bold mb-4">📋 Console Logs</h3>
+        <div id="console-logs" class="space-y-2 font-mono text-sm max-h-96 overflow-y-auto"></div>
+      </div>
+    </div>
+  </main>
+
+  <Footer />
+</BaseLayout>
+
+<script>
+  import { submitCompleteOrder, type OrderItem, type CustomerInfo, type OrderPricing } from '../lib/googleSheets';
+  import { generateWhatsAppURLFromOrderData } from '../lib/whatsapp';
+
+  const consoleLogsEl = document.getElementById('console-logs');
+  
+  function addLog(message: string, type: 'info' | 'success' | 'error' = 'info') {
+    const logEl = document.createElement('div');
+    const timestamp = new Date().toLocaleTimeString();
+    const color = type === 'success' ? 'text-green-400' : type === 'error' ? 'text-red-400' : 'text-green-400';
+    logEl.className = color;
+    logEl.textContent = `[${timestamp}] ${message}`;
+    consoleLogsEl?.appendChild(logEl);
+    consoleLogsEl?.scrollTo(0, consoleLogsEl.scrollHeight);
+    console.log(message);
+  }
+
+  const testForm = document.getElementById('test-form') as HTMLFormElement;
+  const responseContainer = document.getElementById('response-container');
+  const responseContent = document.getElementById('response-content');
+  const whatsappPreview = document.getElementById('whatsapp-preview');
+  const whatsappMessage = document.getElementById('whatsapp-message');
+  const whatsappLink = document.getElementById('whatsapp-link') as HTMLAnchorElement;
+
+  testForm?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    addLog('🚀 Starting test order submission...', 'info');
+
+    // Get form data
+    const name = (document.getElementById('test-name') as HTMLInputElement).value;
+    const phone = (document.getElementById('test-phone') as HTMLInputElement).value;
+    const email = (document.getElementById('test-email') as HTMLInputElement).value;
+    const address = (document.getElementById('test-address') as HTMLTextAreaElement).value;
+    const lat = parseFloat((document.getElementById('test-lat') as HTMLInputElement).value);
+    const lng = parseFloat((document.getElementById('test-lng') as HTMLInputElement).value);
+    const restaurant = (document.getElementById('test-restaurant') as HTMLSelectElement).value;
+
+    addLog(`📝 Customer: ${name}, Phone: ${phone}`, 'info');
+    addLog(`📍 Location: ${lat}, ${lng}`, 'info');
+    addLog(`🏪 Restaurant: ${restaurant}`, 'info');
+
+    // Create test order items
+    const orderItems: OrderItem[] = [
+      { name: 'Test Coffee', qty: 2, price: 50, vegNonVeg: 'Veg' },
+      { name: 'Test Sandwich', qty: 1, price: 80, vegNonVeg: 'Veg' }
+    ];
+
+    const customerInfo: CustomerInfo = {
+      name,
+      phone,
+      email: email || undefined,
+      address,
+      lat,
+      lng
+    };
+
+    const pricing: OrderPricing = {
+      subtotal: 180,
+      tax: 0,
+      total: 180
+    };
+
+    addLog('📦 Order Items: 2 items, Total: ₹180', 'info');
+
+    // Disable submit button
+    const submitBtn = document.getElementById('test-submit') as HTMLButtonElement;
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.textContent = '⏳ Submitting...';
+    }
+
+    try {
+      addLog('📤 Sending to Google Sheets...', 'info');
+
+      // Submit to Google Sheets
+      const result = await submitCompleteOrder(
+        restaurant,
+        orderItems,
+        customerInfo,
+        pricing
+      );
+
+      if (result.success) {
+        addLog(`✅ SUCCESS! Order ID: ${result.orderId}`, 'success');
+
+        // Show response
+        if (responseContainer && responseContent) {
+          responseContainer.classList.remove('hidden');
+          responseContent.innerHTML = `
+            <div class="bg-green-50 border border-green-200 rounded p-4">
+              <p class="text-green-800 font-semibold">✅ Order Saved Successfully!</p>
+              <p class="text-gray-700 mt-2"><strong>Order ID:</strong> ${result.orderId}</p>
+              <p class="text-gray-700"><strong>Message:</strong> ${result.message}</p>
+            </div>
+          `;
+        }
+
+        // Generate WhatsApp URL
+        addLog('💬 Generating WhatsApp message...', 'info');
+        const whatsappURL = generateWhatsAppURLFromOrderData(
+          result.orderId,
+          restaurant,
+          orderItems,
+          customerInfo,
+          pricing
+        );
+
+        // Decode the message for preview
+        const urlParams = new URL(whatsappURL).searchParams;
+        const messageText = urlParams.get('text') || '';
+        const decodedMessage = decodeURIComponent(messageText);
+
+        if (whatsappPreview && whatsappMessage && whatsappLink) {
+          whatsappPreview.classList.remove('hidden');
+          whatsappMessage.textContent = decodedMessage;
+          whatsappLink.href = whatsappURL;
+        }
+
+        addLog('✅ WhatsApp URL generated successfully', 'success');
+
+      } else {
+        throw new Error(result.message);
+      }
+
+    } catch (error) {
+      addLog(`❌ ERROR: ${error instanceof Error ? error.message : String(error)}`, 'error');
+
+      if (responseContainer && responseContent) {
+        responseContainer.classList.remove('hidden');
+        responseContent.innerHTML = `
+          <div class="bg-red-50 border border-red-200 rounded p-4">
+            <p class="text-red-800 font-semibold">❌ Order Failed</p>
+            <p class="text-gray-700 mt-2">${error instanceof Error ? error.message : String(error)}</p>
+          </div>
+        `;
+      }
+    } finally {
+      // Re-enable submit button
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.textContent = '🧪 Submit Test Order';
+      }
+    }
+  });
+
+  addLog('✅ Test page loaded successfully', 'success');
+  addLog('📝 Fill the form and click "Submit Test Order" to test the integration', 'info');
+</script>

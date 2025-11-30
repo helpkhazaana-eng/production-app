@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+  
+  <!-- Homepage - Highest Priority -->
+  <url>
+    <loc>https://khazaana.co.in/</loc>
+    <lastmod>2025-11-30</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+    <image:image>
+      <image:loc>https://khazaana.co.in/images/logo.png</image:loc>
+      <image:title>Khazaana - Best Food Delivery in Aurangabad</image:title>
+    </image:image>
+  </url>
+  
+  <!-- Restaurants Listing -->
+  <url>
+    <loc>https://khazaana.co.in/restaurants</loc>
+    <lastmod>2025-11-30</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.95</priority>
+  </url>
+  
+  <!-- ========== RESTAURANT PAGES ========== -->
+  
+  <!-- Cups N Crumbs - Featured Restaurant -->
+  <url>
+    <loc>https://khazaana.co.in/restaurants/cupsncrumbs</loc>
+    <lastmod>2025-11-30</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.95</priority>
+    <image:image>
+      <image:loc>https://khazaana.co.in/images/restaurants/cupsncrumbs.jpg</image:loc>
+      <image:title>Cups N Crumbs - Best Cafe in Aurangabad, West Bengal</image:title>
+      <image:caption>Cups N Crumbs menu featuring coffee, waffles, and bakery items in College More, Aurangabad</image:caption>
+    </image:image>
+  </url>
+  
+  <!-- Arsalan - Biryani Restaurant -->
+  <url>
+    <loc>https://khazaana.co.in/restaurants/arsalan</loc>
+    <lastmod>2025-11-30</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.90</priority>
+    <image:image>
+      <image:loc>https://khazaana.co.in/images/restaurants/arsalan.jpg</image:loc>
+      <image:title>Arsalan - Best Biryani in Aurangabad, West Bengal</image:title>
+      <image:caption>Arsalan famous for authentic Mughlai biryani and kebabs near DNC College</image:caption>
+    </image:image>
+  </url>
+  
+  <!-- Aaviora - Chinese Restaurant -->
+  <url>
+    <loc>https://khazaana.co.in/restaurants/aaviora</loc>
+    <lastmod>2025-11-30</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.90</priority>
+    <image:image>
+      <image:loc>https://khazaana.co.in/images/restaurants/aaviora.jpg</image:loc>
+      <image:title>Aaviora - Best Chinese Food in Aurangabad, West Bengal</image:title>
+      <image:caption>Aaviora serving delicious Chinese and Asian cuisine in College More</image:caption>
+    </image:image>
+  </url>
+  
+  <!-- Bandhu Hotel - Indian Restaurant -->
+  <url>
+    <loc>https://khazaana.co.in/restaurants/bandhu-hotel</loc>
+    <lastmod>2025-11-30</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.85</priority>
+    <image:image>
+      <image:loc>https://khazaana.co.in/images/restaurants/bandhu-hotel.jpg</image:loc>
+      <image:title>Bandhu Hotel - Best Indian Bengali Food in Aurangabad</image:title>
+      <image:caption>Bandhu Hotel serving authentic Indian and Bengali cuisine</image:caption>
+    </image:image>
+  </url>
+  
+  <!-- Bhole Baba - Street Food -->
+  <url>
+    <loc>https://khazaana.co.in/restaurants/bholebaba</loc>
+    <lastmod>2025-11-30</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.85</priority>
+    <image:image>
+      <image:loc>https://khazaana.co.in/images/restaurants/bholebaba.jpg</image:loc>
+      <image:title>Bhole Baba - Best Street Food in Aurangabad, West Bengal</image:title>
+      <image:caption>Bhole Baba famous for street food and snacks near College More</image:caption>
+    </image:image>
+  </url>
+  
+  <!-- White Chocolate - Desserts -->
+  <url>
+    <loc>https://khazaana.co.in/restaurants/whitechocolate</loc>
+    <lastmod>2025-11-30</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.85</priority>
+    <image:image>
+      <image:loc>https://khazaana.co.in/images/restaurants/whitechocolate.jpg</image:loc>
+      <image:title>White Chocolate - Best Desserts and Bakery in Aurangabad</image:title>
+      <image:caption>White Chocolate serving delicious desserts and bakery items</image:caption>
+    </image:image>
+  </url>
+  
+  <!-- ========== OTHER PAGES ========== -->
+  
+  <!-- About Page -->
+  <url>
+    <loc>https://khazaana.co.in/about</loc>
+    <lastmod>2025-11-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.70</priority>
+  </url>
+  
+  <!-- Terms & Conditions -->
+  <url>
+    <loc>https://khazaana.co.in/terms</loc>
+    <lastmod>2025-11-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.50</priority>
+  </url>
+  
+</urlset>

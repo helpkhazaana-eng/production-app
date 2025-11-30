@@ -1,0 +1,57 @@
+# Khazaana Food Ordering Platform - Robots.txt
+# Best Food Delivery in Aurangabad, West Bengal
+# Domain: khazaana.co.in
+
+User-agent: *
+Allow: /
+Allow: /restaurants/
+Allow: /about
+Allow: /terms
+Disallow: /checkout
+Disallow: /history
+Disallow: /cart
+Disallow: /test-order
+Disallow: /404
+
+# Sitemap location
+Sitemap: https://khazaana.co.in/sitemap.xml
+
+# Crawl delay (optional, helps prevent server overload)
+Crawl-delay: 1
+
+# Specific rules for Google
+User-agent: Googlebot
+Allow: /
+Allow: /restaurants/
+Disallow: /checkout
+Disallow: /history
+Disallow: /cart
+
+User-agent: Googlebot-Image
+Allow: /
+Allow: /_astro/
+Allow: /images/
+
+User-agent: Googlebot-Mobile
+Allow: /
+
+# Specific rules for Bing
+User-agent: Bingbot
+Allow: /
+Allow: /restaurants/
+Disallow: /checkout
+Disallow: /history
+Disallow: /cart
+
+# Specific rules for Yandex
+User-agent: Yandex
+Allow: /
+Disallow: /checkout
+Disallow: /history
+
+# Specific rules for DuckDuckGo
+User-agent: DuckDuckBot
+Allow: /
+
+# Host directive
+Host: https://khazaana.co.in

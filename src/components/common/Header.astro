@@ -1,0 +1,144 @@
+---
+import { Menu, ShoppingCart, Home, Info, UtensilsCrossed } from 'lucide-react';
+import { Image } from 'astro:assets';
+import logoImage from '../../assets/images/logo.png';
+---
+
+<header class="bg-white shadow-md sticky top-0 z-40">
+  <div class="container-custom">
+    <div class="flex items-center justify-between py-4">
+      <!-- Logo -->
+      <a href="/" class="flex items-center space-x-3 hover:opacity-80 transition-opacity">
+        <Image src={logoImage} alt="Khazaana Logo" class="h-10 sm:h-12 w-auto" width={96} height={96} format="webp" quality={100} />
+        <div class="hidden sm:block">
+          <h1 class="text-2xl font-bold text-gray-900">Khazaana</h1>
+          <p class="text-xs text-gray-600">Food Ordering Platform</p>
+        </div>
+      </a>
+
+      <!-- Desktop Navigation -->
+      <nav class="hidden md:flex items-center space-x-6">
+        <a href="/" class="flex items-center space-x-2 text-gray-700 hover:text-[var(--color-primary)] transition-colors font-medium">
+          <Home className="w-5 h-5" />
+          <span>Home</span>
+        </a>
+        <a href="/restaurants" class="flex items-center space-x-2 text-gray-700 hover:text-[var(--color-primary)] transition-colors font-medium">
+          <UtensilsCrossed className="w-5 h-5" />
+          <span>Restaurants</span>
+        </a>
+        <a href="/about" class="flex items-center space-x-2 text-gray-700 hover:text-[var(--color-primary)] transition-colors font-medium">
+          <Info className="w-5 h-5" />
+          <span>About</span>
+        </a>
+        <a href="/history" class="text-gray-700 hover:text-[var(--color-primary)] transition-colors font-medium">
+          Order History
+        </a>
+      </nav>
+
+      <!-- Right Side Actions -->
+      <div class="flex items-center space-x-4">
+        <!-- Google Translate (Desktop) -->
+        <div id="google_translate_element" class="hidden md:block"></div>
+
+        <!-- Cart Button -->
+        <a href="/cart" class="relative btn-primary flex items-center space-x-2">
+          <ShoppingCart className="w-5 h-5" />
+          <span class="hidden sm:inline">Cart</span>
+          <span id="cart-count" class="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center hidden">
+            0
+          </span>
+        </a>
+
+        <!-- Mobile Menu Button -->
+        <button id="mobile-menu-btn" class="md:hidden p-2 text-gray-700 hover:text-[var(--color-primary)]">
+          <Menu className="w-6 h-6" />
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Navigation -->
+    <nav id="mobile-menu" class="hidden md:hidden pb-4 border-t border-gray-200 mt-2 pt-4 bg-white">
+      <div class="flex flex-col space-y-1">
+        <a href="/" class="flex items-center space-x-3 text-gray-700 hover:text-[var(--color-primary)] hover:bg-gray-50 transition-colors font-medium py-3 px-2 rounded-lg">
+          <Home className="w-5 h-5" />
+          <span>Home</span>
+        </a>
+        <a href="/restaurants" class="flex items-center space-x-3 text-gray-700 hover:text-[var(--color-primary)] hover:bg-gray-50 transition-colors font-medium py-3 px-2 rounded-lg">
+          <UtensilsCrossed className="w-5 h-5" />
+          <span>Restaurants</span>
+        </a>
+        <a href="/about" class="flex items-center space-x-3 text-gray-700 hover:text-[var(--color-primary)] hover:bg-gray-50 transition-colors font-medium py-3 px-2 rounded-lg">
+          <Info className="w-5 h-5" />
+          <span>About</span>
+        </a>
+        <a href="/history" class="flex items-center space-x-3 text-gray-700 hover:text-[var(--color-primary)] hover:bg-gray-50 transition-colors font-medium py-3 px-2 rounded-lg">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+          <span>Order History</span>
+        </a>
+        <!-- Google Translate (Mobile) -->
+        <div class="pt-3 border-t border-gray-200 mt-3">
+          <p class="text-sm text-gray-600 mb-2 font-medium px-2">🌐 Language / ভাষা</p>
+          <div id="google_translate_element_mobile" class="px-2"></div>
+        </div>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<script>
+  // Mobile menu toggle
+  const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+  const mobileMenu = document.getElementById('mobile-menu');
+
+  mobileMenuBtn?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    mobileMenu?.classList.toggle('hidden');
+    document.body.classList.toggle('mobile-menu-open');
+  });
+
+  // Close mobile menu when clicking outside
+  document.addEventListener('click', (e) => {
+    const target = e.target as HTMLElement;
+    if (mobileMenu && !mobileMenu.classList.contains('hidden')) {
+      if (!mobileMenu.contains(target) && target !== mobileMenuBtn) {
+        mobileMenu.classList.add('hidden');
+        document.body.classList.remove('mobile-menu-open');
+      }
+    }
+  });
+
+  // Close mobile menu when clicking on a link
+  mobileMenu?.querySelectorAll('a').forEach(link => {
+    link.addEventListener('click', () => {
+      mobileMenu.classList.add('hidden');
+      document.body.classList.remove('mobile-menu-open');
+    });
+  });
+
+  // Update cart count from localStorage
+  function updateCartCount() {
+    try {
+      const cart = localStorage.getItem('khazaana_cart');
+      if (cart) {
+        const cartData = JSON.parse(cart);
+        const totalItems = cartData.items?.reduce((sum: number, item: any) => sum + item.quantity, 0) || 0;
+        const cartCountEl = document.getElementById('cart-count');
+        if (cartCountEl) {
+          cartCountEl.textContent = totalItems.toString();
+          cartCountEl.style.display = totalItems > 0 ? 'flex' : 'none';
+        }
+      }
+    } catch (error) {
+      console.error('Error updating cart count:', error);
+    }
+  }
+
+  // Update on page load
+  updateCartCount();
+
+  // Listen for cart updates
+  window.addEventListener('storage', updateCartCount);
+  window.addEventListener('cartUpdated', updateCartCount);
+</script>

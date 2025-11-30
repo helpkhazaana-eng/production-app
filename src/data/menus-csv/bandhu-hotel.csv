@@ -1,0 +1,80 @@
+Item Name,Price (₹),Category,Veg/Non-Veg,Description
+Tea,15,Beverages,Veg,Freshly brewed Indian tea
+Coffee,30,Beverages,Veg,Traditional Indian coffee
+Lassi,50,Beverages,Veg,Sweet yogurt drink
+Cold Coffee,70,Beverages,Veg,Chilled coffee with ice cream
+Mineral Water,20,Beverages,Veg,Packaged drinking water
+Chicken Chowmein,100,Easy Bites,Non-Veg,Stir-fried noodles with chicken
+Egg Chowmein,90,Easy Bites,Non-Veg,Stir-fried noodles with egg
+Veg Chowmein,80,Easy Bites,Veg,Stir-fried noodles with vegetables
+Veg Pakora,130,Easy Bites,Veg,Deep-fried vegetable fritters
+Onion Pakora,130,Easy Bites,Veg,Deep-fried onion fritters
+Egg Omelet,40,Easy Bites,Non-Veg,Fluffy egg omelet with spices
+Egg Bhurji,40,Easy Bites,Non-Veg,Scrambled eggs with spices
+Egg Roll,40,Easy Bites,Non-Veg,Rolled paratha with egg stuffing
+Chicken Roll,100,Easy Bites,Non-Veg,Rolled paratha with chicken stuffing
+Aloo Paratha,60,Parathas & Soups,Veg,Stuffed potato paratha
+Mix Veg Paratha,130,Parathas & Soups,Veg,Mixed vegetable stuffed paratha
+Paneer Paratha,90,Parathas & Soups,Veg,Cottage cheese stuffed paratha
+Plain Paratha,20,Parathas & Soups,Veg,Traditional flatbread
+Mix Soup,140,Parathas & Soups,Veg,Mixed vegetable soup
+Chicken Soup,120,Parathas & Soups,Non-Veg,Hearty chicken soup
+Veg Soup,100,Parathas & Soups,Veg,Fresh vegetable soup
+Fish Finger,220,Non-Veg Appetizers,Non-Veg,Crispy fried fish strips
+Tandoori Chicken Full,460,Non-Veg Appetizers,Non-Veg,Full portion tandoori chicken
+Tandoori Chicken Half,250,Non-Veg Appetizers,Non-Veg,Half portion tandoori chicken
+Chicken Tikka,250,Non-Veg Appetizers,Non-Veg,Grilled chicken tikka pieces
+Chicken Lollipop,210,Non-Veg Appetizers,Non-Veg,Chicken lollipop with spices
+Chicken Stick,220,Non-Veg Appetizers,Non-Veg,Chicken skewers grilled to perfection
+Tawa Roti,6,Breads,Veg,Flatbread cooked on tawa
+Ghee Tawa Roti,15,Breads,Veg,Flatbread cooked with ghee
+Tandoori Roti,15,Breads,Veg,Traditional tandoor-baked roti
+Butter Tandoori Roti,30,Breads,Veg,Tandoori roti with butter
+Butter Naan,50,Breads,Veg,Soft naan with butter
+Garlic Naan,70,Breads,Veg,Naan stuffed with garlic
+Rumali Roti,40,Breads,Veg,Thin handkerchief-like roti
+Masala Kuleba,90,Breads,Veg,Spiced stuffed bread
+Chicken Curry,160,Non-Veg Main Course,Non-Veg,Traditional chicken curry
+Chicken Dopiaza,200,Non-Veg Main Course,Non-Veg,Chicken curry with double onions
+Chicken Kolhapuri,200,Non-Veg Main Course,Non-Veg,Spicy Kolhapuri style chicken
+Chicken Masala,200,Non-Veg Main Course,Non-Veg,Aromatic chicken masala
+Chicken Handi,220,Non-Veg Main Course,Non-Veg,Chicken cooked in handi pot
+Chicken Tikka Masala,270,Non-Veg Main Course,Non-Veg,Creamy tikka masala curry
+Chili Chicken,170,Non-Veg Main Course,Non-Veg,Spicy chili chicken preparation
+Chicken Varta,170,Non-Veg Main Course,Non-Veg,Punjabi style chicken curry
+Veg Thali,60,Thali,Veg,Complete vegetarian meal platter
+Veg Thali (Basmati),110,Thali,Veg,Vegetarian thali with basmati rice
+Fish Thali,80,Thali,Non-Veg,Complete fish meal platter
+Chicken Thali,150,Thali,Non-Veg,Complete chicken meal platter
+Egg Thali,70,Thali,Non-Veg,Complete egg meal platter
+Mutton Thali,220,Thali,Non-Veg,Complete mutton meal platter
+Green Salad,60,Veg Side Dish,Veg,Fresh green salad
+Chana Masala,100,Veg Side Dish,Veg,Spiced chickpea curry
+Chana Paneer,180,Veg Side Dish,Veg,Chickpea and cottage cheese curry
+Paneer Butter Masala,170,Veg Side Dish,Veg,Creamy paneer butter curry
+Chili Paneer,170,Veg Side Dish,Veg,Spicy chili paneer preparation
+Mix Veg,100,Veg Side Dish,Veg,Mixed vegetable curry
+Daal Fry,100,Veg Side Dish,Veg,Tempered lentil curry
+Aloo Dum,100,Veg Side Dish,Veg,Spiced potato curry
+Kadhai Paneer,170,Veg Side Dish,Veg,Paneer cooked in kadhai with spices
+Plain Tadka,60,Tadka,Veg,Simple tempered dal
+Egg Butter Tadka,70,Tadka,Non-Veg,Egg dal with butter tempering
+Egg Tadka,65,Tadka,Non-Veg,Egg tempered dal
+Mutton Butter Tadka,200,Tadka,Non-Veg,Mutton dal with butter tempering
+Chicken Butter Tadka,130,Tadka,Non-Veg,Chicken dal with butter tempering
+Chicken Fry,90,Snacks,Non-Veg,Fried chicken pieces
+Boiled Chana,80,Snacks,Veg,Boiled chickpeas with spices
+Rice Chicken,220,Snacks,Non-Veg,Chicken served with rice
+Chicken Kurkure,220,Snacks,Non-Veg,Crispy fried chicken
+Chicken Tandoori Masala (2 Pc),360,Snacks,Non-Veg,2 pieces tandoori chicken masala
+Chicken Tandoori Masala (4 Pc),720,Snacks,Non-Veg,4 pieces tandoori chicken masala
+Chicken Butter Masala,180,Snacks,Non-Veg,Chicken in butter gravy
+Chicken Biryani,100,Biryani,Non-Veg,Regular chicken biryani
+Chicken Biryani,130,Biryani,Non-Veg,Special chicken biryani
+Mutton Biryani,170,Biryani,Non-Veg,Traditional mutton biryani
+Chicken Fried Rice,140,Biryani,Non-Veg,Chicken fried rice
+Veg Fried Rice,120,Biryani,Veg,Vegetable fried rice
+Mix Fried Rice,170,Biryani,Veg,Mixed vegetable fried rice
+Egg Fried Rice,130,Biryani,Non-Veg,Egg fried rice
+Egg Biryani,90,Biryani,Non-Veg,Egg biryani
+Veg Biryani,100,Biryani,Veg,Vegetable biryani

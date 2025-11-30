@@ -1,0 +1,199 @@
+---
+import '../styles/global.css';
+import { generateMetaKeywords, generateLocalBusinessSchema } from '../lib/seo';
+
+interface Props {
+  title: string;
+  description?: string;
+  image?: string;
+  noIndex?: boolean;
+  keywords?: string;
+  category?: string;
+  structuredData?: any;
+}
+
+const { 
+  title, 
+  description = 'Order delicious food from the best restaurants in Aurangabad. Fast delivery, great prices, and amazing taste!',
+  image = '/images/logo.png',
+  noIndex = false,
+  keywords,
+  category,
+  structuredData
+} = Astro.props;
+
+const canonicalURL = Astro.site ? new URL(Astro.url.pathname, Astro.site) : Astro.url;
+const fullTitle = `${title} | Khazaana - Food Ordering Platform`;
+const ogImage = Astro.site ? new URL(image, Astro.site).toString() : image;
+const metaKeywords = keywords || generateMetaKeywords(category);
+const localBusinessSchema = generateLocalBusinessSchema();
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- Favicons -->
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="/android-chrome-192x192.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="/android-chrome-512x512.png">
+  
+  <meta name="generator" content={Astro.generator}>
+  
+  <!-- Primary Meta Tags -->
+  <title>{fullTitle}</title>
+  <meta name="title" content={fullTitle}>
+  <meta name="description" content={description}>
+  <meta name="keywords" content={metaKeywords}>
+  <link rel="canonical" href={canonicalURL}>
+  
+  <!-- Location & Business Meta Tags -->
+  <meta name="geo.region" content="IN-WB">
+  <meta name="geo.placename" content="Aurangabad, Suti, West Bengal">
+  <meta name="geo.position" content="24.75;88.2">
+  <meta name="ICBM" content="24.75, 88.2">
+  
+  <!-- Business Information -->
+  <meta name="author" content="Khazaana Food Ordering Platform">
+  <meta name="contact" content="+91-8695902696">
+  <meta name="coverage" content="Aurangabad, Suti, Murshidabad, West Bengal">
+  <meta name="distribution" content="global">
+  <meta name="rating" content="general">
+  <meta name="revisit-after" content="1 days">
+  
+  {noIndex ? <meta name="robots" content="noindex, nofollow"> : <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">}
+  
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content={canonicalURL}>
+  <meta property="og:title" content={fullTitle}>
+  <meta property="og:description" content={description}>
+  <meta property="og:image" content={ogImage}>
+  
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image">
+  <meta property="twitter:url" content={canonicalURL}>
+  <meta property="twitter:title" content={fullTitle}>
+  <meta property="twitter:description" content={description}>
+  <meta property="twitter:image" content={ogImage}>
+  
+  <!-- PWA Meta Tags -->
+  <meta name="theme-color" content="#FF6B35">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Khazaana">
+  <link rel="manifest" href="/manifest.json">
+  
+  <!-- Preconnect to important domains -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  
+  <!-- Google Analytics 4 -->
+  <!-- TODO: Replace with your GA4 Measurement ID -->
+  <!-- <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script> -->
+  <!-- <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-XXXXXXXXXX');
+  </script> -->
+  
+  <!-- JSON-LD Structured Data -->
+  <!-- Website Schema -->
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "Khazaana",
+    "description": description,
+    "url": canonicalURL,
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": `${Astro.site}restaurants?search={search_term_string}`,
+      "query-input": "required name=search_term_string"
+    }
+  })} />
+  
+  <!-- Local Business Schema -->
+  <script type="application/ld+json" set:html={JSON.stringify(localBusinessSchema)} />
+  
+  <!-- Organization Schema -->
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "Khazaana",
+    "url": "https://khazaana.co.in",
+    "logo": "https://khazaana.co.in/images/logo.png",
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "telephone": "+91-8695902696",
+      "contactType": "customer service",
+      "areaServed": "IN",
+      "availableLanguage": ["English", "Bengali"]
+    },
+    "sameAs": [
+      "https://www.instagram.com/_khazaana/"
+    ]
+  })} />
+  
+  {structuredData && <script type="application/ld+json" set:html={JSON.stringify(structuredData)} />}
+  
+  <!-- Slot for page-specific head content -->
+  <slot name="head" />
+</head>
+<body class="min-h-screen bg-gray-50">
+  <slot />
+  
+  <!-- Developer Tools (Development Only) -->
+  <div id="devtools-root"></div>
+  
+  <!-- Google Translate Widget -->
+  <script is:inline>
+    function googleTranslateElementInit() {
+      // Desktop version
+      const desktopElement = document.getElementById('google_translate_element');
+      if (desktopElement) {
+        new google.translate.TranslateElement({
+          pageLanguage: 'en',
+          includedLanguages: 'en,bn',
+          layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+          autoDisplay: false
+        }, 'google_translate_element');
+      }
+      
+      // Mobile version
+      const mobileElement = document.getElementById('google_translate_element_mobile');
+      if (mobileElement) {
+        new google.translate.TranslateElement({
+          pageLanguage: 'en',
+          includedLanguages: 'en,bn',
+          layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+          autoDisplay: false
+        }, 'google_translate_element_mobile');
+      }
+    }
+  </script>
+  <script is:inline src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+  
+  <!-- Mount DevTools in development -->
+  <!-- DevTools temporarily disabled -->
+  <!--
+  <script>
+    import DevTools from '../components/common/DevTools';
+    import { createRoot } from 'react-dom/client';
+    
+    if (import.meta.env.DEV) {
+      const container = document.getElementById('devtools-root');
+      if (container) {
+        const root = createRoot(container);
+        root.render(<DevTools />);
+      }
+    }
+  </script>
+  -->
+</body>
+</html>

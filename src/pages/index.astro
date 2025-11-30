@@ -1,16 +1,713 @@
 ---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/common/Header.astro';
+import Footer from '../components/common/Footer.astro';
+import AnnouncementBar from '../components/common/AnnouncementBar.astro';
+import { Phone, MapPin, UtensilsCrossed, Percent, Clock, Truck, ShoppingCart, Flame, ArrowRight } from 'lucide-react';
+import { getAdsByPlacement } from '../data/ads';
+import { generateSEOTitle, generateSEODescription, generateBreadcrumbSchema } from '../lib/seo';
+import { getActiveOffers, isExpiringSoon, getRemainingDays } from '../data/offers';
+import { Image } from 'astro:assets';
+import founderImg from '../assets/images/founder.jpg';
+import partnersImg from '../assets/images/partners.jpg';
+import ccImg from '../assets/images/cc.jpeg';
+import cc2Img from '../assets/images/cc2.jpeg';
 
+const heroAds = getAdsByPlacement('hero');
+const carouselAds = getAdsByPlacement('carousel');
+const activeOffers = getActiveOffers();
+
+const seoTitle = generateSEOTitle('Home');
+const seoDescription = generateSEODescription('Home');
+const breadcrumbSchema = generateBreadcrumbSchema([
+  { name: 'Home', url: '/' }
+]);
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<BaseLayout 
+  title={seoTitle}
+  description={seoDescription}
+  category="general"
+  structuredData={breadcrumbSchema}
+>
+  <Header />
+  <AnnouncementBar />
+  
+  <main>
+    <!-- Hero Section -->
+    <section class="text-white py-20 md:py-28 relative overflow-hidden">
+      <!-- Professional gradient background -->
+      <div class="absolute inset-0 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900"></div>
+      <!-- Accent overlay -->
+      <div class="absolute inset-0 bg-gradient-to-r from-orange-600/20 to-amber-500/10"></div>
+      <!-- Decorative elements -->
+      <div class="absolute top-0 right-0 w-96 h-96 bg-orange-500/10 rounded-full blur-3xl"></div>
+      <div class="absolute bottom-0 left-0 w-72 h-72 bg-amber-500/10 rounded-full blur-3xl"></div>
+      
+      <div class="container-custom relative z-10">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+          <div>
+            <div class="inline-flex items-center gap-2 bg-orange-500/20 border border-orange-500/30 rounded-full px-4 py-2 mb-6">
+              <span class="w-2 h-2 bg-orange-400 rounded-full animate-pulse"></span>
+              <span class="text-orange-300 text-sm font-medium">Now serving in Aurangabad</span>
+            </div>
+            <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
+              Delicious Food<br />
+              <span class="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-amber-400">Delivered Fresh</span>
+            </h1>
+            <p class="text-xl md:text-2xl mb-8 text-slate-300">
+              Order from the best restaurants in Aurangabad. Fast delivery, great taste.
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4">
+              <a href="/restaurants" class="bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-bold py-4 px-8 rounded-xl transition-all duration-200 shadow-lg shadow-orange-500/25 hover:shadow-xl hover:shadow-orange-500/30 text-center">
+                Browse Restaurants
+              </a>
+              <a href="tel:+918695902696" class="bg-white/10 backdrop-blur border border-white/20 hover:bg-white/20 text-white font-bold py-4 px-8 rounded-xl transition-all duration-200 text-center flex items-center justify-center space-x-2">
+                <Phone className="w-5 h-5" />
+                <span>Call Now</span>
+              </a>
+            </div>
+            
+            <!-- Trust badges -->
+            <div class="flex items-center gap-6 mt-10 pt-8 border-t border-white/10">
+              <div class="text-center">
+                <p class="text-2xl font-bold text-orange-400">6+</p>
+                <p class="text-sm text-slate-400">Restaurants</p>
+              </div>
+              <div class="text-center">
+                <p class="text-2xl font-bold text-orange-400">500+</p>
+                <p class="text-sm text-slate-400">Happy Customers</p>
+              </div>
+              <div class="text-center">
+                <p class="text-2xl font-bold text-orange-400">30min</p>
+                <p class="text-sm text-slate-400">Avg Delivery</p>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Hero Image/Ad -->
+          <div class="hidden lg:block">
+            {heroAds.length > 0 && (
+              <div class="relative">
+                <div class="absolute -inset-4 bg-gradient-to-r from-orange-500 to-amber-500 rounded-2xl blur-2xl opacity-20"></div>
+                <img 
+                  src={heroAds[0].imageUrl} 
+                  alt={heroAds[0].title}
+                  class="relative rounded-2xl shadow-2xl w-full h-auto object-cover border border-white/10"
+                  style="aspect-ratio: 16/9;"
+                />
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Exclusive Offers Section (Only shows when offers are active) -->
+    {activeOffers.length > 0 && (
+      <section id="offers-section" class="py-12 md:py-16 relative overflow-hidden bg-gradient-to-br from-orange-50 via-white to-amber-50">
+        <!-- Decorative background elements -->
+        <div class="absolute top-0 left-0 w-64 h-64 bg-orange-200/30 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2"></div>
+        <div class="absolute bottom-0 right-0 w-80 h-80 bg-amber-200/30 rounded-full blur-3xl translate-x-1/2 translate-y-1/2"></div>
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-[radial-gradient(circle_at_center,rgba(251,146,60,0.05)_0%,transparent_70%)]"></div>
+        
+        <div class="container-custom relative z-10">
+          <!-- Section Header -->
+          <div class="text-center mb-8 md:mb-12">
+            <div class="inline-flex items-center gap-2 bg-gradient-to-r from-orange-500 to-red-500 text-white px-4 py-2 rounded-full text-sm font-semibold mb-4 animate-pulse">
+              <Flame className="w-4 h-4" />
+              <span>Limited Time Offers</span>
+              <Flame className="w-4 h-4" />
+            </div>
+            <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-3">
+              Exclusive <span class="text-transparent bg-clip-text bg-gradient-to-r from-orange-500 to-red-500">Deals</span> For You
+            </h2>
+            <p class="text-gray-600 max-w-2xl mx-auto">
+              Grab these amazing offers before they're gone! Save big on your favorite dishes.
+            </p>
+          </div>
+
+          <!-- Offers Carousel - Mobile (Horizontal Scroll) -->
+          <div class="md:hidden">
+            <div class="flex gap-4 overflow-x-auto pb-4 snap-x snap-mandatory scrollbar-hide -mx-4 px-4">
+              {activeOffers.map((offer, index) => {
+                const expiringSoon = isExpiringSoon(offer.endDate);
+                const remainingDays = getRemainingDays(offer.endDate);
+                
+                return (
+                  <div 
+                    class="offer-card-home flex-shrink-0 w-[300px] snap-center bg-white rounded-2xl shadow-xl overflow-hidden border border-orange-100 transform transition-all hover:scale-[1.02]"
+                    data-offer-id={offer.id}
+                    data-restaurant-id={offer.restaurantId}
+                    data-offer-price={offer.offerPrice}
+                    data-dish-name={offer.dishName}
+                    data-veg={offer.vegNonVeg}
+                    data-end-date={offer.endDate}
+                  >
+                    <!-- Offer Badge -->
+                    <div class="relative bg-gradient-to-r from-orange-500 via-red-500 to-pink-500 p-4">
+                      <div class="absolute top-2 right-2 bg-white text-red-600 font-bold text-lg px-3 py-1 rounded-lg shadow-lg animate-bounce">
+                        {offer.discountPercent}% OFF
+                      </div>
+                      <span class="text-white/80 text-xs font-medium">{offer.restaurantName}</span>
+                      <h3 class="text-white text-xl font-bold mt-1 pr-20">{offer.dishName}</h3>
+                      {expiringSoon && (
+                        <div class="mt-2 inline-flex items-center gap-1 bg-white/20 backdrop-blur px-2 py-1 rounded-full text-white text-xs">
+                          <Clock className="w-3 h-3" />
+                          <span>Ends in {remainingDays} day{remainingDays !== 1 ? 's' : ''}!</span>
+                        </div>
+                      )}
+                    </div>
+                    
+                    <!-- Offer Content -->
+                    <div class="p-4">
+                      <p class="text-gray-600 text-sm mb-4 line-clamp-2">{offer.description}</p>
+                      
+                      <!-- Price Row -->
+                      <div class="flex items-center gap-3 mb-4">
+                        <span class="text-gray-400 line-through text-lg">₹{offer.originalPrice}</span>
+                        <span class="text-3xl font-bold text-green-600">₹{offer.offerPrice}</span>
+                        {offer.vegNonVeg && (
+                          <span class={`w-5 h-5 rounded border-2 flex items-center justify-center ${offer.vegNonVeg === 'Veg' ? 'border-green-600' : 'border-red-600'}`}>
+                            <span class={`w-2.5 h-2.5 rounded-full ${offer.vegNonVeg === 'Veg' ? 'bg-green-600' : 'bg-red-600'}`}></span>
+                          </span>
+                        )}
+                      </div>
+                      
+                      <!-- Delivery Badge -->
+                      <div class="flex items-center gap-2 text-sm mb-4">
+                        <Truck className="w-4 h-4 text-gray-400" />
+                        {offer.deliveryCharge === 0 ? (
+                          <span class="text-green-600 font-semibold">FREE Delivery</span>
+                        ) : (
+                          <span class="text-gray-600">Delivery: ₹{offer.deliveryCharge}</span>
+                        )}
+                      </div>
+                      
+                      <!-- CTA Button -->
+                      <button 
+                        class="add-offer-to-cart w-full bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white font-bold py-3 px-4 rounded-xl flex items-center justify-center gap-2 transition-all shadow-lg shadow-orange-500/25 hover:shadow-xl hover:shadow-orange-500/30"
+                        data-offer={JSON.stringify(offer)}
+                      >
+                        <ShoppingCart className="w-5 h-5" />
+                        <span>Add to Cart</span>
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          <!-- Offers Grid - Desktop -->
+          <div class="hidden md:grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {activeOffers.map((offer, index) => {
+              const expiringSoon = isExpiringSoon(offer.endDate);
+              const remainingDays = getRemainingDays(offer.endDate);
+              
+              return (
+                <div 
+                  class="offer-card-home group bg-white rounded-2xl shadow-lg overflow-hidden border-2 border-transparent hover:border-orange-300 transform transition-all duration-300 hover:shadow-2xl hover:-translate-y-1"
+                  data-offer-id={offer.id}
+                  data-restaurant-id={offer.restaurantId}
+                  data-offer-price={offer.offerPrice}
+                  data-dish-name={offer.dishName}
+                  data-veg={offer.vegNonVeg}
+                  data-end-date={offer.endDate}
+                >
+                  <!-- Offer Header with Gradient -->
+                  <div class="relative bg-gradient-to-r from-orange-500 via-red-500 to-pink-500 p-5 overflow-hidden">
+                    <!-- Animated background pattern -->
+                    <div class="absolute inset-0 opacity-10">
+                      <div class="absolute top-0 left-0 w-20 h-20 bg-white rounded-full -translate-x-1/2 -translate-y-1/2"></div>
+                      <div class="absolute bottom-0 right-0 w-32 h-32 bg-white rounded-full translate-x-1/2 translate-y-1/2"></div>
+                    </div>
+                    
+                    <!-- Discount Badge -->
+                    <div class="absolute top-3 right-3 bg-white text-red-600 font-bold text-xl px-4 py-2 rounded-xl shadow-lg group-hover:scale-110 transition-transform">
+                      {offer.discountPercent}% OFF
+                    </div>
+                    
+                    <div class="relative">
+                      <span class="text-white/80 text-sm font-medium">{offer.restaurantName}</span>
+                      <h3 class="text-white text-2xl font-bold mt-1 pr-24">{offer.dishName}</h3>
+                      
+                      {expiringSoon && (
+                        <div class="mt-3 inline-flex items-center gap-1.5 bg-white/20 backdrop-blur-sm px-3 py-1.5 rounded-full text-white text-sm font-medium animate-pulse">
+                          <Clock className="w-4 h-4" />
+                          <span>Hurry! Ends in {remainingDays} day{remainingDays !== 1 ? 's' : ''}!</span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                  
+                  <!-- Offer Body -->
+                  <div class="p-5">
+                    <p class="text-gray-600 mb-5">{offer.description}</p>
+                    
+                    <!-- Price Display -->
+                    <div class="flex items-center gap-4 mb-5">
+                      <div class="flex flex-col">
+                        <span class="text-gray-400 line-through text-lg">₹{offer.originalPrice}</span>
+                        <span class="text-xs text-gray-400">Original Price</span>
+                      </div>
+                      <div class="flex items-center gap-2">
+                        <span class="text-4xl font-bold text-green-600">₹{offer.offerPrice}</span>
+                        {offer.vegNonVeg && (
+                          <span class={`w-6 h-6 rounded border-2 flex items-center justify-center ${offer.vegNonVeg === 'Veg' ? 'border-green-600' : 'border-red-600'}`}>
+                            <span class={`w-3 h-3 rounded-full ${offer.vegNonVeg === 'Veg' ? 'bg-green-600' : 'bg-red-600'}`}></span>
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                    
+                    <!-- Features Row -->
+                    <div class="flex items-center gap-4 mb-5 text-sm">
+                      <div class="flex items-center gap-1.5">
+                        <Truck className="w-4 h-4 text-gray-400" />
+                        {offer.deliveryCharge === 0 ? (
+                          <span class="text-green-600 font-semibold">FREE Delivery</span>
+                        ) : (
+                          <span class="text-gray-600">₹{offer.deliveryCharge} Delivery</span>
+                        )}
+                      </div>
+                      <div class="flex items-center gap-1.5 text-gray-500">
+                        <Clock className="w-4 h-4" />
+                        <span>Till {new Date(offer.endDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}</span>
+                      </div>
+                    </div>
+                    
+                    <!-- CTA Button -->
+                    <button 
+                      class="add-offer-to-cart w-full bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white font-bold py-4 px-6 rounded-xl flex items-center justify-center gap-3 transition-all shadow-lg shadow-orange-500/25 hover:shadow-xl hover:shadow-orange-500/30 group-hover:scale-[1.02]"
+                      data-offer={JSON.stringify(offer)}
+                    >
+                      <ShoppingCart className="w-5 h-5" />
+                      <span>Add to Cart</span>
+                      <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                    </button>
+                  </div>
+                  
+                  {offer.terms && (
+                    <div class="px-5 pb-4">
+                      <p class="text-xs text-gray-400 pt-3 border-t border-gray-100">{offer.terms}</p>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+
+          <!-- View All Offers Link -->
+          <div class="text-center mt-8">
+            <a 
+              href="/restaurants?tab=offers" 
+              class="inline-flex items-center gap-2 text-orange-600 hover:text-orange-700 font-semibold transition-colors"
+            >
+              <span>View All Offers</span>
+              <ArrowRight className="w-4 h-4" />
+            </a>
+          </div>
+        </div>
+      </section>
+    )}
+
+    <!-- About Founder Section -->
+    <section class="py-16 bg-white">
+      <div class="container-custom">
+        <h2 class="section-heading text-center">About Our Founder</h2>
+        <p class="text-center text-gray-600 mb-4 max-w-3xl mx-auto">
+          Founded by <strong class="text-[var(--color-primary)]">Md. Askin Ali</strong>, Khazaana was created with a passion for bringing the best culinary experiences to your doorstep.
+        </p>
+        <p class="text-center text-gray-600 mb-12 max-w-3xl mx-auto">
+          Our mission is to connect food lovers with amazing restaurants in Aurangabad.
+        </p>
+        
+        <!-- 4-Image Grid -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+          <div class="aspect-square rounded-lg overflow-hidden shadow-md">
+            <Image src={founderImg} alt="Founder" class="w-full h-full object-cover hover:scale-110 transition-transform duration-300" width={250} height={250} format="webp" quality={80} />
+          </div>
+          <div class="aspect-square rounded-lg overflow-hidden shadow-md">
+            <Image src={partnersImg} alt="Partners" class="w-full h-full object-cover hover:scale-110 transition-transform duration-300" width={250} height={250} format="webp" quality={80} />
+          </div>
+          <div class="aspect-square rounded-lg overflow-hidden shadow-md">
+            <Image src={ccImg} alt="Shop 1" class="w-full h-full object-cover hover:scale-110 transition-transform duration-300" width={250} height={250} format="webp" quality={80} />
+          </div>
+          <div class="aspect-square rounded-lg overflow-hidden shadow-md">
+            <Image src={cc2Img} alt="Shop 2" class="w-full h-full object-cover hover:scale-110 transition-transform duration-300" width={250} height={250} format="webp" quality={80} />
+          </div>
+        </div>
+        
+        <div class="text-center">
+          <a href="/about" class="btn-outline">
+            Learn More About Us
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Featured Restaurants Preview -->
+    <section class="py-16 bg-gray-50">
+      <div class="container-custom">
+        <div class="flex justify-between items-center mb-8">
+          <h2 class="section-heading mb-0">Popular Restaurants</h2>
+          <a href="/restaurants" class="text-[var(--color-primary)] hover:text-[var(--color-primary-dark)] font-semibold flex items-center space-x-2">
+            <span>View All</span>
+            <UtensilsCrossed className="w-5 h-5" />
+          </a>
+        </div>
+        
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <!-- Cups N Crumbs - Featured First -->
+          <div class="restaurant-card p-6 relative">
+            <div class="absolute top-4 right-4">
+              <span class="badge bg-orange-100 text-orange-800 text-xs">Featured</span>
+            </div>
+            <h3 class="text-xl font-bold mb-2">Cups N Crumbs</h3>
+            <p class="text-gray-600 mb-3">Cafe • Bakery</p>
+            <div class="flex items-center space-x-2 mb-3">
+              <span class="text-yellow-500">⭐</span>
+              <span class="font-semibold">4.4</span>
+              <span class="text-gray-400">•</span>
+              <span class="text-gray-600">₹200 for two</span>
+            </div>
+            <div class="flex items-center justify-between">
+              <span class="badge badge-success">OPEN</span>
+              <a href="/restaurants/cupsncrumbs" class="btn-outline text-sm py-2 px-4">View Menu</a>
+            </div>
+          </div>
+          
+          <div class="restaurant-card p-6">
+            <h3 class="text-xl font-bold mb-2">Arsalan</h3>
+            <p class="text-gray-600 mb-3">Biryani • Mughlai</p>
+            <div class="flex items-center space-x-2 mb-3">
+              <span class="text-yellow-500">⭐</span>
+              <span class="font-semibold">4.7</span>
+              <span class="text-gray-400">•</span>
+              <span class="text-gray-600">₹200 for two</span>
+            </div>
+            <div class="flex items-center justify-between">
+              <span class="badge badge-success">OPEN</span>
+              <a href="/restaurants/arsalan" class="btn-outline text-sm py-2 px-4">View Menu</a>
+            </div>
+          </div>
+          
+          <div class="restaurant-card p-6">
+            <h3 class="text-xl font-bold mb-2">Aaviora</h3>
+            <p class="text-gray-600 mb-3">Chinese • Asian</p>
+            <div class="flex items-center space-x-2 mb-3">
+              <span class="text-yellow-500">⭐</span>
+              <span class="font-semibold">4.5</span>
+              <span class="text-gray-400">•</span>
+              <span class="text-gray-600">₹200 for two</span>
+            </div>
+            <div class="flex items-center justify-between">
+              <span class="badge badge-success">OPEN</span>
+              <a href="/restaurants/aaviora" class="btn-outline text-sm py-2 px-4">View Menu</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Ad Carousel Section - Mobile -->
+    <section class="py-12 bg-gray-50 md:hidden">
+      <div class="container-custom">
+        <h3 class="text-xl font-bold mb-6 text-center">Special Offers</h3>
+        <div class="overflow-x-auto flex space-x-4 pb-4 snap-x snap-mandatory">
+          {carouselAds.map((ad) => (
+            <div class="flex-shrink-0 w-72 snap-center">
+              <img 
+                src={ad.imageUrl} 
+                alt={ad.title}
+                class="rounded-lg shadow-md w-full h-72 object-cover"
+                style="aspect-ratio: 1/1;"
+              />
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- Ad Banner - Desktop -->
+    <section class="py-12 bg-gray-50 hidden md:block">
+      <div class="container-custom">
+        <div class="rounded-lg overflow-hidden shadow-lg">
+          {heroAds.length > 0 && (
+            <img 
+              src={heroAds[0].imageUrl} 
+              alt={heroAds[0].title}
+              class="w-full h-auto object-cover"
+              style="aspect-ratio: 72/20; max-height: 200px;"
+            />
+          )}
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</BaseLayout>
+
+<script>
+  // Register service worker for PWA
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/service-worker.js')
+        .then((registration) => {
+          console.log('SW registered:', registration);
+        })
+        .catch((error) => {
+          console.log('SW registration failed:', error);
+        });
+    });
+  }
+
+  // Add to Home Screen prompt
+  let deferredPrompt: any;
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    
+    // Show install button/banner
+    const installBanner = document.createElement('div');
+    installBanner.className = 'fixed bottom-20 left-4 right-4 bg-white p-4 rounded-lg shadow-2xl z-50 md:left-auto md:right-4 md:max-w-sm';
+    installBanner.innerHTML = `
+      <div class="flex items-center justify-between">
+        <div class="flex-1">
+          <p class="font-semibold">Install Khazaana App</p>
+          <p class="text-sm text-gray-600">Add to home screen for quick access</p>
+        </div>
+        <button id="install-btn" class="btn-primary ml-4 py-2 px-4 text-sm">Install</button>
+        <button id="close-install" class="ml-2 text-gray-400 hover:text-gray-600">✕</button>
+      </div>
+    `;
+    document.body.appendChild(installBanner);
+    
+    document.getElementById('install-btn')?.addEventListener('click', async () => {
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        console.log(`User response: ${outcome}`);
+        deferredPrompt = null;
+        installBanner.remove();
+      }
+    });
+    
+    document.getElementById('close-install')?.addEventListener('click', () => {
+      installBanner.remove();
+    });
+  });
+
+  // Handle Add to Cart for Exclusive Offers
+  import { getCart, saveCart, createEmptyCart } from '../lib/cart';
+  import { restaurants } from '../data/restaurants';
+
+  const addOfferButtons = document.querySelectorAll('.add-offer-to-cart');
+  
+  addOfferButtons.forEach((btn) => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      
+      const offerData = btn.getAttribute('data-offer');
+      if (!offerData) return;
+      
+      try {
+        const offer = JSON.parse(offerData);
+        const restaurant = restaurants.find(r => r.id === offer.restaurantId);
+        
+        if (!restaurant) {
+          alert('Restaurant not found');
+          return;
+        }
+        
+        // Get current cart
+        let cart = getCart();
+        
+        // Check if cart has items from different restaurant
+        if (cart.items.length > 0 && cart.restaurantId !== offer.restaurantId) {
+          const confirmClear = confirm(
+            `Your cart has items from ${cart.restaurantName}. Adding this offer will clear your cart. Continue?`
+          );
+          if (!confirmClear) return;
+          cart = createEmptyCart();
+        }
+        
+        // Set restaurant info
+        cart.restaurantId = offer.restaurantId;
+        cart.restaurantName = offer.restaurantName;
+        
+        // Create offer item
+        const offerItem = {
+          itemId: `offer-${offer.id}`,
+          itemName: `[OFFER] ${offer.dishName}`,
+          price: offer.offerPrice,
+          quantity: 1,
+          vegNonVeg: offer.vegNonVeg || 'Veg',
+          category: 'Exclusive Offers',
+          description: offer.description
+        };
+        
+        // Check if offer already in cart
+        const existingIndex = cart.items.findIndex(item => item.itemId === offerItem.itemId);
+        if (existingIndex >= 0) {
+          cart.items[existingIndex].quantity += 1;
+        } else {
+          cart.items.push(offerItem);
+        }
+        
+        // Recalculate totals
+        cart.subtotal = cart.items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+        cart.tax = 0; // No tax on offers
+        cart.deliveryFee = offer.deliveryCharge;
+        cart.total = cart.subtotal + cart.tax + cart.deliveryFee;
+        
+        // Save cart
+        saveCart(cart);
+        
+        // Show success toast
+        showOfferAddedToast(offer.dishName);
+        
+        // Update cart badge in header
+        updateCartBadge(cart.items.reduce((sum, item) => sum + item.quantity, 0));
+        
+      } catch (error) {
+        console.error('Failed to add offer to cart:', error);
+        alert('Failed to add offer. Please try again.');
+      }
+    });
+  });
+  
+  function showOfferAddedToast(dishName: string) {
+    const toast = document.createElement('div');
+    toast.className = 'fixed bottom-4 left-4 right-4 md:left-auto md:right-4 md:max-w-sm bg-green-600 text-white px-6 py-4 rounded-xl shadow-2xl z-[9999] flex items-center gap-3 animate-slide-up';
+    toast.innerHTML = `
+      <div class="bg-white/20 p-2 rounded-full">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+        </svg>
+      </div>
+      <div class="flex-1">
+        <p class="font-semibold">Added to Cart!</p>
+        <p class="text-sm text-green-100">${dishName}</p>
+      </div>
+      <a href="/cart" class="bg-white text-green-600 font-semibold px-4 py-2 rounded-lg text-sm hover:bg-green-50 transition-colors">
+        View Cart
+      </a>
+    `;
+    
+    document.body.appendChild(toast);
+    
+    setTimeout(() => {
+      toast.classList.add('animate-slide-down');
+      setTimeout(() => toast.remove(), 300);
+    }, 4000);
+  }
+  
+  function updateCartBadge(count: number) {
+    const badges = document.querySelectorAll('.cart-badge');
+    badges.forEach((badge) => {
+      if (count > 0) {
+        badge.textContent = count.toString();
+        badge.classList.remove('hidden');
+      } else {
+        badge.classList.add('hidden');
+      }
+    });
+  }
+  
+  // ============================================
+  // CLIENT-SIDE OFFER EXPIRY CHECK (IST)
+  // Runs on page load and every minute
+  // ============================================
+  function checkOfferExpiry() {
+    const offerCards = document.querySelectorAll('.offer-card-home[data-end-date]');
+    const now = new Date();
+    let expiredCount = 0;
+    
+    offerCards.forEach((card) => {
+      const endDateStr = card.getAttribute('data-end-date');
+      if (!endDateStr) return;
+      
+      // Parse end date and set to end of day IST (23:59:59)
+      const endDate = new Date(endDateStr);
+      endDate.setHours(23, 59, 59, 999);
+      
+      if (now > endDate) {
+        // Offer has expired - hide it with animation
+        card.classList.add('opacity-0', 'scale-95', 'pointer-events-none');
+        setTimeout(() => {
+          (card as HTMLElement).style.display = 'none';
+        }, 300);
+        expiredCount++;
+      }
+    });
+    
+    // If all offers expired, hide the entire offers section
+    if (expiredCount > 0) {
+      const remainingOffers = document.querySelectorAll('.offer-card-home:not([style*="display: none"])');
+      if (remainingOffers.length === 0) {
+        const offersSection = document.getElementById('offers-section');
+        if (offersSection) {
+          offersSection.style.display = 'none';
+        }
+      }
+    }
+  }
+  
+  // Run on page load
+  checkOfferExpiry();
+  
+  // Check every minute for real-time expiry
+  setInterval(checkOfferExpiry, 60000);
+</script>
+
+<style>
+  @keyframes slide-up {
+    from {
+      transform: translateY(100%);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+  
+  @keyframes slide-down {
+    from {
+      transform: translateY(0);
+      opacity: 1;
+    }
+    to {
+      transform: translateY(100%);
+      opacity: 0;
+    }
+  }
+  
+  .animate-slide-up {
+    animation: slide-up 0.3s ease-out;
+  }
+  
+  .animate-slide-down {
+    animation: slide-down 0.3s ease-out forwards;
+  }
+  
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+</style>
+

@@ -1,0 +1,523 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/common/Header.astro';
+import Footer from '../components/common/Footer.astro';
+import { MapPin, Phone, Mail, User, MessageCircle } from 'lucide-react';
+---
+
+<BaseLayout 
+  title="Checkout" 
+  description="Complete your order and get delicious food delivered to your doorstep."
+>
+  <Header />
+  
+  <main class="min-h-screen bg-gray-50 py-8">
+    <div class="container-custom">
+      <!-- Page Header -->
+      <div class="mb-8">
+        <h1 class="text-3xl md:text-4xl font-bold mb-2">Checkout</h1>
+        <p class="text-gray-600">Complete your order details</p>
+      </div>
+
+      <!-- Empty Cart Redirect -->
+      <div id="empty-cart-message" class="hidden bg-yellow-50 border-l-4 border-yellow-400 p-6 rounded-lg mb-4">
+        <div class="flex items-start space-x-3">
+          <svg class="w-6 h-6 text-yellow-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+          </svg>
+          <div>
+            <h3 class="font-semibold text-yellow-800 mb-1">Your cart is empty</h3>
+            <p class="text-yellow-700 mb-3">Please add items to your cart before checking out.</p>
+            <a href="/restaurants" class="btn-primary inline-block">Browse Restaurants</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Ordering Closed Banner -->
+      <div id="order-closed-checkout" class="hidden bg-red-50 border-l-4 border-red-400 p-6 rounded-lg mb-4">
+        <div class="flex items-start space-x-3">
+          <svg class="w-6 h-6 text-red-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M4.93 4.93l14.14 14.14M12 4a8 8 0 018 8 7.96 7.96 0 01-1.22 4.26M4.22 4.22A8 8 0 004 12a8 8 0 008 8" />
+          </svg>
+          <div>
+            <h3 class="font-semibold text-red-800 mb-1">Ordering is closed for today</h3>
+            <p class="text-red-700 text-sm">
+              We accept orders between <strong>9:00 AM</strong> and <strong>9:00 PM</strong> (IST).
+              You can still review your cart, but placing new orders is disabled right now.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div id="checkout-form-container" class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Checkout Form -->
+        <div class="lg:col-span-2">
+          <form id="checkout-form" class="bg-white rounded-lg shadow-sm p-6">
+            <h2 class="text-xl font-bold mb-6">Delivery Information</h2>
+
+            <!-- Name -->
+            <div class="mb-6">
+              <label for="customer-name" class="block text-sm font-medium text-gray-700 mb-2">
+                <User className="inline w-4 h-4 mr-1" />
+                Full Name *
+              </label>
+              <input
+                type="text"
+                id="customer-name"
+                name="name"
+                required
+                class="input-field"
+                placeholder="Enter your full name"
+              />
+            </div>
+
+            <!-- WhatsApp Number -->
+            <div class="mb-6">
+              <label for="customer-phone" class="block text-sm font-medium text-gray-700 mb-2">
+                <MessageCircle className="inline w-4 h-4 mr-1" />
+                WhatsApp Number *
+              </label>
+              <div class="flex">
+                <span class="inline-flex items-center px-4 bg-gray-100 border border-r-0 border-gray-200 rounded-l-lg text-gray-600">
+                  +91
+                </span>
+                <input
+                  type="tel"
+                  id="customer-phone"
+                  name="phone"
+                  required
+                  pattern="[0-9]{10}"
+                  maxlength="10"
+                  class="input-field rounded-l-none"
+                  placeholder="10-digit mobile number"
+                />
+              </div>
+              <p class="text-xs text-gray-500 mt-1">We will contact you on this number for order updates</p>
+            </div>
+
+            <!-- Email (Optional) -->
+            <div class="mb-6">
+              <label for="customer-email" class="block text-sm font-medium text-gray-700 mb-2">
+                <Mail className="inline w-4 h-4 mr-1" />
+                Email (Optional)
+              </label>
+              <input
+                type="email"
+                id="customer-email"
+                name="email"
+                class="input-field"
+                placeholder="your.email@example.com"
+              />
+            </div>
+
+            <!-- Address -->
+            <div class="mb-6">
+              <label for="customer-address" class="block text-sm font-medium text-gray-700 mb-2">
+                <MapPin className="inline w-4 h-4 mr-1" />
+                Delivery Address *
+              </label>
+              <textarea
+                id="customer-address"
+                name="address"
+                required
+                rows="3"
+                class="input-field"
+                placeholder="Enter your complete delivery address"
+              ></textarea>
+            </div>
+
+            <!-- Get Location Button -->
+            <div class="mb-6">
+              <button
+                type="button"
+                id="get-location-btn"
+                class="btn-outline flex items-center space-x-2"
+              >
+                <MapPin className="w-4 h-4" />
+                <span>Get My Location</span>
+              </button>
+              <p id="location-status" class="text-xs text-gray-500 mt-2"></p>
+            </div>
+
+            <!-- Important Note -->
+            <div class="bg-blue-50 border-l-4 border-blue-400 p-4 rounded mb-6">
+              <p class="text-sm text-blue-800">
+                <strong>📱 WhatsApp Order:</strong> After clicking "Place Order", you'll be redirected to WhatsApp 
+                to confirm your order with the restaurant. Please send the pre-filled message to complete your order.
+              </p>
+            </div>
+
+            <!-- Warning about incognito -->
+            <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded mb-6">
+              <p class="text-sm text-yellow-800">
+                <strong>⚠️ Note:</strong> Do not use incognito mode. Your order history is saved locally 
+                in your browser for future reference.
+              </p>
+            </div>
+
+            <!-- Terms & Conditions Checkbox -->
+            <div class="mb-6">
+              <label class="flex items-start gap-3 cursor-pointer">
+                <input
+                  type="checkbox"
+                  id="terms-checkbox"
+                  name="terms_accepted"
+                  required
+                  class="mt-1 w-5 h-5 text-orange-500 border-gray-300 rounded focus:ring-orange-500"
+                />
+                <span class="text-sm text-gray-700">
+                  I have read and agree to the 
+                  <a href="/terms" target="_blank" class="text-orange-600 hover:underline font-medium">Terms & Conditions</a>. 
+                  I understand that <strong>Khazaana is only a platform</strong> and the 
+                  <strong class="text-red-600">quality of food is the sole responsibility of the restaurant</strong>.
+                </span>
+              </label>
+            </div>
+
+            <!-- Submit Button -->
+            <button
+              type="submit"
+              class="btn-primary w-full text-lg py-4"
+            >
+              Place Order via WhatsApp
+              <MessageCircle className="inline w-5 h-5 ml-2" />
+            </button>
+          </form>
+        </div>
+
+        <!-- Order Summary -->
+        <div class="lg:col-span-1">
+          <div class="bg-white rounded-lg shadow-sm p-6 sticky top-24">
+            <h2 class="text-xl font-bold mb-6">Order Summary</h2>
+            
+            <!-- Restaurant -->
+            <div class="mb-6 pb-6 border-b border-gray-200">
+              <p class="text-sm text-gray-600 mb-1">Ordering from</p>
+              <p id="summary-restaurant" class="font-semibold text-lg"></p>
+            </div>
+
+            <!-- Items -->
+            <div id="summary-items" class="mb-6 pb-6 border-b border-gray-200 space-y-3">
+              <!-- Items will be rendered here -->
+            </div>
+
+            <!-- Price Breakdown -->
+            <div class="space-y-3">
+              <div class="flex justify-between text-gray-700">
+                <span>Subtotal</span>
+                <span>₹<span id="summary-subtotal">0.00</span></span>
+              </div>
+              <div class="flex justify-between text-gray-700">
+                <span>Tax</span>
+                <span>₹<span id="summary-tax">0.00</span></span>
+              </div>
+              <div class="flex justify-between text-gray-700">
+                <span>Delivery Fee</span>
+                <span id="summary-delivery-fee" class="text-green-600">FREE</span>
+              </div>
+              <div class="border-t border-gray-200 pt-3 flex justify-between text-lg font-bold">
+                <span>Total</span>
+                <span class="text-[var(--color-primary)]">₹<span id="summary-total">0.00</span></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <Footer />
+</BaseLayout>
+
+<script>
+  import { getCart, clearCart, saveOrderToHistory } from '../lib/cart';
+  import { generateWhatsAppURLFromOrderData } from '../lib/whatsapp';
+  import { submitCompleteOrder, type OrderItem, type CustomerInfo, type OrderPricing } from '../lib/googleSheets';
+  import { logger, perfMonitor } from '../lib/logger';
+  import type { Order, Customer } from '../types';
+
+  let cart = getCart();
+  let customerLocation: { latitude?: number; longitude?: number } = {};
+
+  function isOrderingOpenNow(): boolean {
+    // Development mode: keep ordering enabled
+    return true;
+  }
+
+  // Function to initialize checkout
+  function initializeCheckout() {
+    cart = getCart();
+    console.log('Cart loaded:', cart);
+    
+    const orderClosedBanner = document.getElementById('order-closed-checkout');
+    const submitBtn = document.querySelector('#checkout-form button[type="submit"]') as HTMLButtonElement | null;
+
+    const isOpenForOrders = isOrderingOpenNow();
+
+    // Show/hide ordering closed banner
+    if (orderClosedBanner) {
+      orderClosedBanner.classList.toggle('hidden', isOpenForOrders);
+    }
+
+    if (!isOpenForOrders && submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Ordering closed for today';
+    }
+
+    // Check if cart is empty
+    if (!cart || cart.items.length === 0) {
+      const emptyMessage = document.getElementById('empty-cart-message');
+      const formContainer = document.getElementById('checkout-form-container');
+      if (emptyMessage) emptyMessage.classList.remove('hidden');
+      if (formContainer) formContainer.classList.add('hidden');
+      logger.warn('Checkout accessed with empty cart', {}, 'CHECKOUT');
+    } else {
+      renderOrderSummary();
+    }
+  }
+
+  // Initialize on page load
+  initializeCheckout();
+
+  function renderOrderSummary() {
+    console.log('Rendering order summary with cart:', cart);
+    
+    const restaurantEl = document.getElementById('summary-restaurant');
+    const itemsEl = document.getElementById('summary-items');
+    const subtotalEl = document.getElementById('summary-subtotal');
+    const taxEl = document.getElementById('summary-tax');
+    const deliveryFeeEl = document.getElementById('summary-delivery-fee');
+    const totalEl = document.getElementById('summary-total');
+
+    // Update restaurant name
+    if (restaurantEl) {
+      restaurantEl.textContent = cart.restaurantName || 'Unknown Restaurant';
+      console.log('Restaurant:', cart.restaurantName);
+    }
+
+    // Update price breakdown
+    const subtotal = cart.subtotal || 0;
+    const tax = cart.tax || 0;
+    const total = cart.total || 0;
+    const deliveryFee = (cart.deliveryFee != null ? cart.deliveryFee : Math.max(0, total - subtotal - tax));
+
+    if (subtotalEl) subtotalEl.textContent = subtotal.toFixed(2);
+    if (taxEl) taxEl.textContent = tax.toFixed(2);
+    if (deliveryFeeEl) {
+      if (deliveryFee === 0) {
+        deliveryFeeEl.textContent = 'FREE';
+        deliveryFeeEl.classList.add('text-green-600');
+      } else {
+        deliveryFeeEl.textContent = deliveryFee.toFixed(2);
+        deliveryFeeEl.classList.remove('text-green-600');
+      }
+    }
+    if (totalEl) totalEl.textContent = total.toFixed(2);
+
+    console.log('Prices - Subtotal:', subtotal, 'Tax:', tax, 'Total:', total);
+
+    // Render items
+    if (itemsEl && cart.items && cart.items.length > 0) {
+      itemsEl.innerHTML = cart.items.map(item => `
+        <div class="flex justify-between text-sm">
+          <span class="flex-1">
+            ${item.vegNonVeg === 'Veg' ? '🟢' : '🔴'} ${item.itemName} × ${item.quantity}
+          </span>
+          <span class="font-semibold">₹${(item.price * item.quantity).toFixed(2)}</span>
+        </div>
+      `).join('');
+      console.log('Rendered', cart.items.length, 'items');
+    } else {
+      console.error('No items to render or itemsEl not found');
+    }
+  }
+
+  // Get location
+  const getLocationBtn = document.getElementById('get-location-btn');
+  const locationStatus = document.getElementById('location-status');
+
+  getLocationBtn?.addEventListener('click', () => {
+    if (!navigator.geolocation) {
+      if (locationStatus) {
+        locationStatus.textContent = '❌ Geolocation is not supported by your browser';
+        locationStatus.className = 'text-xs text-red-600 mt-2';
+      }
+      return;
+    }
+
+    if (locationStatus) {
+      locationStatus.textContent = '📍 Getting your location...';
+      locationStatus.className = 'text-xs text-blue-600 mt-2';
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        customerLocation = {
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude
+        };
+        
+        if (locationStatus) {
+          locationStatus.textContent = `✅ Location captured: ${position.coords.latitude.toFixed(6)}, ${position.coords.longitude.toFixed(6)}`;
+          locationStatus.className = 'text-xs text-green-600 mt-2';
+        }
+
+        logger.info('Location captured', customerLocation, 'CHECKOUT');
+      },
+      (error) => {
+        if (locationStatus) {
+          locationStatus.textContent = `❌ Error: ${error.message}`;
+          locationStatus.className = 'text-xs text-red-600 mt-2';
+        }
+        logger.error('Geolocation error', new Error(error.message), 'CHECKOUT');
+      }
+    );
+  });
+
+  // Form submission
+  const checkoutForm = document.getElementById('checkout-form') as HTMLFormElement;
+
+  checkoutForm?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    if (!isOrderingOpenNow()) {
+      alert('Ordering is currently closed. We accept orders between 9:00 AM and 9:00 PM (IST).');
+      logger.warn('Checkout attempt outside ordering hours', {}, 'CHECKOUT');
+      return;
+    }
+
+    perfMonitor.start('checkout');
+    logger.info('Checkout form submitted', {}, 'CHECKOUT');
+
+    const formData = new FormData(checkoutForm);
+    
+    const customer: Customer = {
+      name: formData.get('name') as string,
+      phone: formData.get('phone') as string,
+      email: formData.get('email') as string || undefined,
+      address: formData.get('address') as string,
+      latitude: customerLocation.latitude,
+      longitude: customerLocation.longitude
+    };
+
+    // Validate phone number
+    if (!/^[6-9][0-9]{9}$/.test(customer.phone)) {
+      alert('Please enter a valid 10-digit mobile number starting with 6, 7, 8, or 9');
+      logger.warn('Invalid phone number', { phone: customer.phone }, 'CHECKOUT');
+      return;
+    }
+
+    // Validate location
+    if (!customerLocation.latitude || !customerLocation.longitude) {
+      alert('Please share your location by clicking "Get My Location" button');
+      logger.warn('Location not provided', {}, 'CHECKOUT');
+      return;
+    }
+
+    // Disable submit button to prevent double submission
+    const submitBtn = checkoutForm.querySelector('button[type="submit"]') as HTMLButtonElement;
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Processing Order...';
+    }
+
+    try {
+      // Prepare data for Google Sheets
+      const orderItems: OrderItem[] = cart.items.map(item => ({
+        name: item.itemName,
+        qty: item.quantity,
+        price: item.price,
+        vegNonVeg: item.vegNonVeg
+      }));
+
+      const customerInfo: CustomerInfo = {
+        name: customer.name,
+        phone: customer.phone,
+        email: customer.email,
+        address: customer.address,
+        lat: customerLocation.latitude!,
+        lng: customerLocation.longitude!
+      };
+
+      const pricing: OrderPricing = {
+        subtotal: cart.subtotal,
+        tax: cart.tax,
+        deliveryFee: cart.deliveryFee || 0,
+        total: cart.total
+      };
+
+      // Get terms acceptance
+      const termsCheckbox = document.getElementById('terms-checkbox') as HTMLInputElement;
+      const termsAccepted = termsCheckbox?.checked || false;
+
+      // Show progress
+      if (submitBtn) submitBtn.textContent = 'Saving Order...';
+
+      // Submit to Google Sheets
+      const result = await submitCompleteOrder(
+        cart.restaurantName || 'Unknown Restaurant',
+        orderItems,
+        customerInfo,
+        pricing,
+        termsAccepted
+      );
+
+      if (!result.success) {
+        throw new Error(result.message);
+      }
+
+      logger.info('Order saved to Google Sheets', { orderId: result.orderId }, 'CHECKOUT');
+
+      // Create order object for local history
+      const order: Order = {
+        orderId: result.orderId,
+        restaurantId: cart.restaurantId || '',
+        restaurantName: cart.restaurantName || '',
+        items: cart.items,
+        customer,
+        subtotal: cart.subtotal,
+        tax: cart.tax,
+        total: cart.total,
+        deliveryFee: cart.deliveryFee,
+        orderTime: new Date().toISOString(),
+        status: 'pending'
+      };
+
+      // Save to local order history
+      saveOrderToHistory(order);
+
+      // Generate WhatsApp URL
+      if (submitBtn) submitBtn.textContent = 'Redirecting to WhatsApp...';
+      
+      const whatsappURL = generateWhatsAppURLFromOrderData(
+        result.orderId,
+        cart.restaurantName || 'Unknown Restaurant',
+        orderItems,
+        customerInfo,
+        pricing
+      );
+
+      // Clear cart
+      clearCart();
+
+      const duration = perfMonitor.end('checkout');
+      logger.info('Order placed successfully', { orderId: result.orderId, duration }, 'CHECKOUT');
+
+      // Redirect to WhatsApp
+      window.location.href = whatsappURL;
+
+    } catch (error) {
+      logger.error('Checkout failed', error instanceof Error ? error : new Error(String(error)), 'CHECKOUT');
+      
+      // Re-enable submit button
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = 'Place Order via WhatsApp <svg class="inline w-5 h-5 ml-2" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>';
+      }
+      
+      alert('Failed to place order. Please try again or contact support at 8695902696.');
+    }
+  });
+
+  logger.info('Checkout page loaded', { itemCount: cart.items.length }, 'CHECKOUT');
+</script>

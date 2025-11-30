@@ -1,0 +1,299 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/common/Header.astro';
+import Footer from '../components/common/Footer.astro';
+import { ShoppingBag, Trash2, Plus, Minus, ArrowRight } from 'lucide-react';
+---
+
+<BaseLayout 
+  title="Shopping Cart" 
+  description="Review your order and proceed to checkout. Fast and secure ordering from the best restaurants in Aurangabad."
+>
+  <Header />
+  
+  <main class="min-h-screen bg-gray-50 py-8">
+    <div class="container-custom">
+      <!-- Page Header -->
+      <div class="mb-8">
+        <h1 class="text-3xl md:text-4xl font-bold mb-2">Shopping Cart</h1>
+        <p class="text-gray-600">Review your items and proceed to checkout</p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Cart Items -->
+        <div class="lg:col-span-2">
+          <!-- Empty Cart State -->
+          <div id="empty-cart" class="hidden bg-white rounded-lg shadow-sm p-12 text-center">
+            <div class="text-6xl mb-4">🛒</div>
+            <h2 class="text-2xl font-bold mb-2">Your cart is empty</h2>
+            <p class="text-gray-600 mb-6">Add some delicious items from our restaurants!</p>
+            <a href="/restaurants" class="btn-primary inline-block">
+              Browse Restaurants
+            </a>
+          </div>
+
+          <!-- Cart Items List -->
+          <div id="cart-items" class="space-y-4">
+            <!-- Items will be rendered here by JavaScript -->
+          </div>
+        </div>
+
+        <!-- Order Summary -->
+        <div class="lg:col-span-1">
+          <div id="order-summary" class="bg-white rounded-lg shadow-sm p-6 sticky top-24">
+            <h2 class="text-xl font-bold mb-6">Order Summary</h2>
+            
+            <!-- Restaurant Info -->
+            <div id="restaurant-info" class="mb-6 pb-6 border-b border-gray-200">
+              <p class="text-sm text-gray-600 mb-1">Ordering from</p>
+              <p id="restaurant-name" class="font-semibold text-lg"></p>
+            </div>
+
+            <!-- Price Breakdown -->
+            <div class="space-y-3 mb-6">
+              <div class="flex justify-between text-gray-700">
+                <span>Subtotal (<span id="item-count">0</span> items)</span>
+                <span>₹<span id="subtotal">0.00</span></span>
+              </div>
+              <div class="flex justify-between text-gray-700">
+                <span>Tax</span>
+                <span>₹<span id="tax">0.00</span></span>
+              </div>
+              <div class="flex justify-between text-gray-700">
+                <span>Delivery Fee</span>
+                <span id="delivery-fee" class="text-green-600">FREE</span>
+              </div>
+              <div class="border-t border-gray-200 pt-3 flex justify-between text-lg font-bold">
+                <span>Total</span>
+                <span class="text-[var(--color-primary)]">₹<span id="total">0.00</span></span>
+              </div>
+            </div>
+
+            <!-- Checkout Button -->
+            <a href="/checkout" id="checkout-btn" class="btn-primary w-full block text-center mb-3">
+              Proceed to Checkout
+              <ArrowRight className="inline w-5 h-5 ml-2" />
+            </a>
+
+            <!-- Continue Shopping -->
+            <a href="/restaurants" class="btn-secondary w-full block text-center">
+              Continue Shopping
+            </a>
+
+            <!-- Note -->
+            <div class="mt-6 p-4 bg-blue-50 rounded-lg">
+              <p class="text-sm text-blue-800">
+                💡 <strong>Note:</strong> You can only order from one restaurant at a time. 
+                Clear your cart to order from a different restaurant.
+              </p>
+            </div>
+
+            <!-- Ordering Closed Note -->
+            <div id="order-closed-note" class="hidden mt-4 p-4 bg-yellow-50 border-l-4 border-yellow-400 rounded-lg">
+              <p class="text-sm text-yellow-800">
+                Orders are accepted between <strong>9:00 AM</strong> and <strong>9:00 PM</strong>.
+                Ordering is currently closed. Please come back during opening hours.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <Footer />
+</BaseLayout>
+
+<script>
+  import { getCart, updateQuantity, removeFromCart, clearCart } from '../lib/cart';
+  import { logger } from '../lib/logger';
+  import type { CartItem } from '../types';
+
+  let cart = getCart();
+  
+  // Render cart
+  renderCart();
+
+  function isOrderingOpenNow(): boolean {
+    // Development mode: keep ordering enabled while testing
+    return true;
+  }
+
+  function renderCart() {
+    const emptyCartEl = document.getElementById('empty-cart');
+    const cartItemsEl = document.getElementById('cart-items');
+    const restaurantNameEl = document.getElementById('restaurant-name');
+    const itemCountEl = document.getElementById('item-count');
+    const subtotalEl = document.getElementById('subtotal');
+    const taxEl = document.getElementById('tax');
+    const totalEl = document.getElementById('total');
+    const checkoutBtn = document.getElementById('checkout-btn');
+    const orderClosedNote = document.getElementById('order-closed-note');
+    const deliveryFeeEl = document.getElementById('delivery-fee');
+
+    const isOpenForOrders = isOrderingOpenNow();
+
+    if (cart.items.length === 0) {
+      // Show empty state
+      if (emptyCartEl) emptyCartEl.classList.remove('hidden');
+      if (cartItemsEl) cartItemsEl.innerHTML = '';
+      if (checkoutBtn) checkoutBtn.classList.add('opacity-50', 'pointer-events-none');
+      if (orderClosedNote) {
+        // Even with empty cart, show closed note if we are past 9 PM
+        orderClosedNote.classList.toggle('hidden', isOpenForOrders);
+      }
+      logger.info('Cart is empty', {}, 'CART_PAGE');
+      return;
+    }
+
+    // Hide empty state
+    if (emptyCartEl) emptyCartEl.classList.add('hidden');
+    if (checkoutBtn) {
+      if (isOpenForOrders) {
+        checkoutBtn.classList.remove('opacity-50', 'pointer-events-none');
+      } else {
+        checkoutBtn.classList.add('opacity-50', 'pointer-events-none');
+      }
+    }
+    if (orderClosedNote) {
+      orderClosedNote.classList.toggle('hidden', isOpenForOrders);
+    }
+
+    // Update summary
+    if (restaurantNameEl) restaurantNameEl.textContent = cart.restaurantName || '';
+    if (itemCountEl) itemCountEl.textContent = cart.items.reduce((sum, item) => sum + item.quantity, 0).toString();
+    if (subtotalEl) subtotalEl.textContent = cart.subtotal.toFixed(2);
+    if (taxEl) taxEl.textContent = cart.tax.toFixed(2);
+    if (totalEl) totalEl.textContent = cart.total.toFixed(2);
+
+    if (deliveryFeeEl) {
+      const fee = cart.deliveryFee || 0;
+      if (fee === 0) {
+        deliveryFeeEl.textContent = 'FREE';
+        deliveryFeeEl.classList.add('text-green-600');
+      } else {
+        deliveryFeeEl.textContent = fee.toFixed(2);
+        deliveryFeeEl.classList.remove('text-green-600');
+      }
+    }
+
+    // Render items
+    if (cartItemsEl) {
+      cartItemsEl.innerHTML = cart.items.map((item: CartItem, index: number) => `
+        <div class="bg-white rounded-lg shadow-sm p-6">
+          <div class="flex items-start justify-between mb-4">
+            <div class="flex-1">
+              <div class="flex items-center space-x-2 mb-2">
+                ${item.vegNonVeg === 'Veg' 
+                  ? '<span class="veg-indicator" title="Vegetarian"></span>'
+                  : '<span class="non-veg-indicator" title="Non-Vegetarian"></span>'
+                }
+                <h3 class="font-bold text-lg">${item.itemName}</h3>
+              </div>
+              ${item.description ? `<p class="text-gray-600 text-sm mb-2">${item.description}</p>` : ''}
+              <p class="text-lg font-semibold text-[var(--color-primary)]">₹${item.price}</p>
+            </div>
+            <button 
+              class="remove-item-btn p-2 text-red-500 hover:bg-red-50 rounded transition-colors"
+              data-item-name="${item.itemName}"
+              title="Remove item"
+            >
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+              </svg>
+            </button>
+          </div>
+
+          <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-3 bg-gray-100 rounded-lg p-2">
+              <button 
+                class="decrease-qty-btn w-8 h-8 flex items-center justify-center bg-white rounded hover:bg-gray-50 transition-colors"
+                data-item-name="${item.itemName}"
+              >
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"></path>
+                </svg>
+              </button>
+              <span class="font-semibold w-8 text-center">${item.quantity}</span>
+              <button 
+                class="increase-qty-btn w-8 h-8 flex items-center justify-center bg-white rounded hover:bg-gray-50 transition-colors"
+                data-item-name="${item.itemName}"
+              >
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                </svg>
+              </button>
+            </div>
+            <div class="text-right">
+              <p class="text-sm text-gray-600">Item Total</p>
+              <p class="text-xl font-bold">₹${(item.price * item.quantity).toFixed(2)}</p>
+            </div>
+          </div>
+        </div>
+      `).join('');
+
+      // Attach event listeners
+      attachEventListeners();
+    }
+
+    logger.info('Cart rendered', { itemCount: cart.items.length, total: cart.total }, 'CART_PAGE');
+  }
+
+  function attachEventListeners() {
+    // Remove item buttons
+    document.querySelectorAll('.remove-item-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const itemName = btn.getAttribute('data-item-name');
+        if (itemName) {
+          if (confirm(`Remove ${itemName} from cart?`)) {
+            cart = removeFromCart(cart, itemName);
+            renderCart();
+            logger.info('Item removed from cart', { itemName }, 'CART_PAGE');
+          }
+        }
+      });
+    });
+
+    // Decrease quantity buttons
+    document.querySelectorAll('.decrease-qty-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const itemName = btn.getAttribute('data-item-name');
+        if (itemName) {
+          const item = cart.items.find(i => i.itemName === itemName);
+          if (item) {
+            const newQty = item.quantity - 1;
+            cart = updateQuantity(cart, itemName, newQty);
+            renderCart();
+            logger.info('Item quantity decreased', { itemName, newQty }, 'CART_PAGE');
+          }
+        }
+      });
+    });
+
+    // Increase quantity buttons
+    document.querySelectorAll('.increase-qty-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const itemName = btn.getAttribute('data-item-name');
+        if (itemName) {
+          const item = cart.items.find(i => i.itemName === itemName);
+          if (item) {
+            const newQty = item.quantity + 1;
+            cart = updateQuantity(cart, itemName, newQty);
+            renderCart();
+            logger.info('Item quantity increased', { itemName, newQty }, 'CART_PAGE');
+          }
+        }
+      });
+    });
+  }
+
+  // Listen for cart updates from other tabs
+  window.addEventListener('storage', (e) => {
+    if (e.key === 'khazaana_cart') {
+      cart = getCart();
+      renderCart();
+    }
+  });
+
+  logger.info('Cart page loaded', { itemCount: cart.items.length }, 'CART_PAGE');
+</script>

@@ -1,0 +1,74 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/common/Header.astro';
+import Footer from '../components/common/Footer.astro';
+import { Home, ArrowLeft, Search } from 'lucide-react';
+---
+
+<BaseLayout 
+  title="Page Not Found | Khazaana"
+  description="The page you're looking for doesn't exist. Browse our restaurants and order delicious food."
+>
+  <Header />
+  
+  <main class="min-h-[60vh] flex items-center justify-center bg-gray-50 py-16">
+    <div class="container-custom text-center">
+      <!-- 404 Illustration -->
+      <div class="mb-8">
+        <div class="text-9xl font-bold text-orange-500 mb-4">404</div>
+        <div class="text-6xl mb-4">🍽️</div>
+      </div>
+      
+      <!-- Message -->
+      <h1 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
+        Oops! This page is not on our menu
+      </h1>
+      <p class="text-gray-600 text-lg mb-8 max-w-md mx-auto">
+        The page you're looking for doesn't exist or has been moved. 
+        Let's get you back to ordering delicious food!
+      </p>
+      
+      <!-- Action Buttons -->
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+        <a 
+          href="/" 
+          class="btn-primary flex items-center gap-2 px-6 py-3"
+        >
+          <Home className="w-5 h-5" />
+          Go to Home
+        </a>
+        <a 
+          href="/restaurants" 
+          class="btn-secondary flex items-center gap-2 px-6 py-3"
+        >
+          <Search className="w-5 h-5" />
+          Browse Restaurants
+        </a>
+      </div>
+      
+      <!-- Quick Links -->
+      <div class="mt-12 pt-8 border-t border-gray-200">
+        <p class="text-gray-500 mb-4">Popular pages:</p>
+        <div class="flex flex-wrap justify-center gap-4">
+          <a href="/restaurants/cupsncrumbs" class="text-orange-500 hover:text-orange-600 hover:underline">
+            Cups N Crumbs
+          </a>
+          <span class="text-gray-300">•</span>
+          <a href="/restaurants/aaviora" class="text-orange-500 hover:text-orange-600 hover:underline">
+            Aaviora
+          </a>
+          <span class="text-gray-300">•</span>
+          <a href="/restaurants/arsalan" class="text-orange-500 hover:text-orange-600 hover:underline">
+            Arsalan
+          </a>
+          <span class="text-gray-300">•</span>
+          <a href="/about" class="text-orange-500 hover:text-orange-600 hover:underline">
+            About Us
+          </a>
+        </div>
+      </div>
+    </div>
+  </main>
+  
+  <Footer />
+</BaseLayout>

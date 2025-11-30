@@ -1,0 +1,164 @@
+---
+import { X, ChevronLeft, ChevronRight } from 'lucide-react';
+import { getActiveAnnouncements, getAnnouncementStyle } from '../../data/announcements';
+
+const activeAnnouncements = getActiveAnnouncements();
+---
+
+{activeAnnouncements.length > 0 && (
+  <div id="announcement-bar" class="bg-gradient-to-r from-orange-500 to-orange-600 text-white relative">
+    <div class="container-custom px-2 sm:px-4">
+      <div class="flex items-center justify-between py-2.5 gap-1 sm:gap-3">
+        <!-- Previous Button (if multiple announcements) -->
+        {activeAnnouncements.length > 1 && (
+          <button
+            id="prev-announcement"
+            class="p-1 hover:bg-white/20 rounded-full transition-colors flex-shrink-0"
+            aria-label="Previous announcement"
+          >
+            <ChevronLeft className="w-4 h-4" />
+          </button>
+        )}
+
+        <!-- Announcement Content -->
+        <div class="flex-1 min-w-0 overflow-hidden">
+          <div id="announcement-slider" class="flex transition-transform duration-300">
+            {activeAnnouncements.map((announcement, index) => (
+              <div
+                class="announcement-slide min-w-full flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-3 text-center"
+                data-index={index}
+              >
+                <p class="text-[11px] sm:text-sm font-medium leading-tight whitespace-normal">
+                  {announcement.message}
+                </p>
+                {announcement.link && announcement.linkText && (
+                  <a
+                    href={announcement.link}
+                    class="flex-shrink-0 bg-white text-orange-600 text-[10px] sm:text-xs font-bold px-2.5 py-1 rounded-full hover:bg-orange-100 transition-colors whitespace-nowrap"
+                  >
+                    {announcement.linkText}
+                  </a>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <!-- Next Button (if multiple announcements) -->
+        {activeAnnouncements.length > 1 && (
+          <button
+            id="next-announcement"
+            class="p-1 hover:bg-white/20 rounded-full transition-colors flex-shrink-0"
+            aria-label="Next announcement"
+          >
+            <ChevronRight className="w-4 h-4" />
+          </button>
+        )}
+      </div>
+    </div>
+  </div>
+)}
+
+<script>
+  import { logger } from '../../lib/logger';
+
+  const announcementBar = document.getElementById('announcement-bar');
+  const slider = document.getElementById('announcement-slider');
+  const prevBtn = document.getElementById('prev-announcement');
+  const nextBtn = document.getElementById('next-announcement');
+  const closeBtn = document.getElementById('close-announcement');
+  const dots = document.querySelectorAll('.announcement-dot');
+  const slides = document.querySelectorAll('.announcement-slide');
+
+  let currentIndex = 0;
+  let autoPlayInterval: number | null = null;
+
+  // Banner always visible - no dismiss option
+
+  function updateSlider() {
+    if (!slider) return;
+    slider.style.transform = `translateX(-${currentIndex * 100}%)`;
+    
+    // Update dots
+    dots.forEach((dot, index) => {
+      if (index === currentIndex) {
+        dot.classList.remove('bg-white/50');
+        dot.classList.add('bg-white');
+      } else {
+        dot.classList.remove('bg-white');
+        dot.classList.add('bg-white/50');
+      }
+    });
+
+    logger.debug('Announcement slider updated', { currentIndex }, 'ANNOUNCEMENT');
+  }
+
+  function nextSlide() {
+    currentIndex = (currentIndex + 1) % slides.length;
+    updateSlider();
+  }
+
+  function prevSlide() {
+    currentIndex = (currentIndex - 1 + slides.length) % slides.length;
+    updateSlider();
+  }
+
+  function goToSlide(index: number) {
+    currentIndex = index;
+    updateSlider();
+  }
+
+  // Auto-play (rotate every 5 seconds)
+  if (slides.length > 1) {
+    autoPlayInterval = window.setInterval(nextSlide, 5000);
+  }
+
+  // Event listeners
+  prevBtn?.addEventListener('click', () => {
+    prevSlide();
+    // Reset auto-play
+    if (autoPlayInterval) clearInterval(autoPlayInterval);
+    autoPlayInterval = window.setInterval(nextSlide, 5000);
+  });
+
+  nextBtn?.addEventListener('click', () => {
+    nextSlide();
+    // Reset auto-play
+    if (autoPlayInterval) clearInterval(autoPlayInterval);
+    autoPlayInterval = window.setInterval(nextSlide, 5000);
+  });
+
+  // Close button removed - banner always visible
+
+  dots.forEach((dot, index) => {
+    dot.addEventListener('click', () => {
+      goToSlide(index);
+      // Reset auto-play
+      if (autoPlayInterval) clearInterval(autoPlayInterval);
+      autoPlayInterval = window.setInterval(nextSlide, 5000);
+    });
+  });
+
+  // Pause auto-play on hover
+  announcementBar?.addEventListener('mouseenter', () => {
+    if (autoPlayInterval) clearInterval(autoPlayInterval);
+  });
+
+  announcementBar?.addEventListener('mouseleave', () => {
+    if (slides.length > 1) {
+      autoPlayInterval = window.setInterval(nextSlide, 5000);
+    }
+  });
+
+  logger.info('Announcement bar initialized', { slideCount: slides.length }, 'ANNOUNCEMENT');
+</script>
+
+<style>
+  .announcement-slide {
+    flex-shrink: 0;
+  }
+
+  .announcement-dot.bg-white {
+    width: 2.5rem;
+  }
+</style>

@@ -1,0 +1,171 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/common/Header.astro';
+import Footer from '../components/common/Footer.astro';
+import { Heart, Users, Award, Target } from 'lucide-react';
+import { restaurants } from '../data/restaurants';
+import { Image } from 'astro:assets';
+import founderImg from '../assets/images/founder.jpg';
+import partnersImg from '../assets/images/partners.jpg';
+import ccImg from '../assets/images/cc.jpeg';
+import cc2Img from '../assets/images/cc2.jpeg';
+---
+
+<BaseLayout 
+  title="About Us" 
+  description="Learn about Khazaana's mission to bring the best food experiences to your doorstep. Founded with passion for culinary excellence."
+>
+  <Header />
+  
+  <main>
+    <!-- Hero Section -->
+    <section class="bg-gradient-to-r from-orange-500 to-red-500 text-white py-16">
+      <div class="container-custom text-center">
+        <h1 class="text-4xl md:text-5xl font-bold mb-4">About Khazaana</h1>
+        <p class="text-xl md:text-2xl text-orange-100 max-w-3xl mx-auto">
+          Bringing the best culinary experiences to your doorstep
+        </p>
+      </div>
+    </section>
+
+    <!-- Founder Story -->
+    <section class="py-16 bg-white">
+      <div class="container-custom">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+          <div>
+            <h2 class="section-heading">Our Story</h2>
+            <p class="text-gray-600 mb-6 leading-relaxed">
+              Khazaana was born from a simple idea: everyone deserves access to delicious, 
+              quality food from the best restaurants in Aurangabad. What started as a passion 
+              project has grown into a platform that connects food lovers with amazing 
+              culinary experiences.
+            </p>
+            <p class="text-gray-600 mb-6 leading-relaxed">
+              Our founder, <strong class="text-[var(--color-primary)]">Md. Askin Ali</strong>, 
+              with years of experience in the food industry, recognized the need for a reliable, 
+              user-friendly platform that puts customers first. Today, we partner with the finest 
+              restaurants in Aurangabad to bring you an unparalleled food ordering experience.
+            </p>
+            <p class="text-gray-600 leading-relaxed">
+              Every order placed through Khazaana supports local businesses and helps our 
+              community thrive. We're not just delivering food – we're delivering happiness, 
+              one meal at a time.
+            </p>
+          </div>
+          
+          <div class="grid grid-cols-2 gap-4">
+            <div class="aspect-square rounded-lg overflow-hidden shadow-lg">
+              <Image src={founderImg} alt="Founder" class="w-full h-full object-cover" width={300} height={300} format="webp" quality={80} />
+            </div>
+            <div class="aspect-square rounded-lg overflow-hidden shadow-lg">
+              <Image src={partnersImg} alt="Partners" class="w-full h-full object-cover" width={300} height={300} format="webp" quality={80} />
+            </div>
+            <div class="aspect-square rounded-lg overflow-hidden shadow-lg">
+              <Image src={ccImg} alt="Shop 1" class="w-full h-full object-cover" width={300} height={300} format="webp" quality={80} />
+            </div>
+            <div class="aspect-square rounded-lg overflow-hidden shadow-lg">
+              <Image src={cc2Img} alt="Shop 2" class="w-full h-full object-cover" width={300} height={300} format="webp" quality={80} />
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Values Section -->
+    <section class="py-16 bg-gray-50">
+      <div class="container-custom">
+        <h2 class="section-heading text-center mb-12">Our Values</h2>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div class="bg-white p-6 rounded-xl shadow-sm text-center">
+            <div class="inline-flex items-center justify-center w-16 h-16 bg-orange-100 rounded-full mb-4">
+              <Heart className="w-8 h-8 text-[var(--color-primary)]" />
+            </div>
+            <h3 class="text-xl font-bold mb-3">Quality First</h3>
+            <p class="text-gray-600">
+              We partner only with restaurants that meet our high standards for quality and taste.
+            </p>
+          </div>
+          
+          <div class="bg-white p-6 rounded-xl shadow-sm text-center">
+            <div class="inline-flex items-center justify-center w-16 h-16 bg-orange-100 rounded-full mb-4">
+              <Users className="w-8 h-8 text-[var(--color-primary)]" />
+            </div>
+            <h3 class="text-xl font-bold mb-3">Customer Focus</h3>
+            <p class="text-gray-600">
+              Your satisfaction is our priority. We're here to make your food ordering experience seamless.
+            </p>
+          </div>
+          
+          <div class="bg-white p-6 rounded-xl shadow-sm text-center">
+            <div class="inline-flex items-center justify-center w-16 h-16 bg-orange-100 rounded-full mb-4">
+              <Award className="w-8 h-8 text-[var(--color-primary)]" />
+            </div>
+            <h3 class="text-xl font-bold mb-3">Excellence</h3>
+            <p class="text-gray-600">
+              We strive for excellence in every aspect of our service, from ordering to delivery.
+            </p>
+          </div>
+          
+          <div class="bg-white p-6 rounded-xl shadow-sm text-center">
+            <div class="inline-flex items-center justify-center w-16 h-16 bg-orange-100 rounded-full mb-4">
+              <Target className="w-8 h-8 text-[var(--color-primary)]" />
+            </div>
+            <h3 class="text-xl font-bold mb-3">Community</h3>
+            <p class="text-gray-600">
+              Supporting local businesses and bringing the community together through great food.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Partner Restaurants -->
+    <section class="py-16 bg-white">
+      <div class="container-custom">
+        <h2 class="section-heading text-center mb-4">Our Partner Restaurants</h2>
+        <p class="text-center text-gray-600 mb-12 max-w-2xl mx-auto">
+          We're proud to partner with these amazing restaurants to bring you the best food in Aurangabad.
+        </p>
+        
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {restaurants.map((restaurant) => (
+            <a href={`/restaurants/${restaurant.id}`} class="restaurant-card p-6 flex flex-col h-full hover:shadow-lg transition-shadow">
+              <div class="flex-1">
+                <div class="flex items-start justify-between mb-2">
+                  <h3 class="text-xl font-bold">{restaurant.name}</h3>
+                  {restaurant.featured && (
+                    <span class="bg-orange-100 text-orange-800 text-xs font-semibold px-2 py-1 rounded">Featured</span>
+                  )}
+                </div>
+                <p class="text-gray-600 mb-3">{restaurant.cuisine.join(' • ')}</p>
+              </div>
+              <div class="flex items-center justify-between pt-3 border-t border-gray-100">
+                <div class="flex items-center space-x-2">
+                  <span class="text-yellow-500">⭐</span>
+                  <span class="font-semibold">{restaurant.rating}</span>
+                </div>
+                <span class="text-gray-600">₹{restaurant.costForTwo} for two</span>
+              </div>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="py-16 bg-gradient-to-r from-orange-500 to-red-500 text-white">
+      <div class="container-custom text-center">
+        <h2 class="text-3xl md:text-4xl font-bold mb-6">Ready to Order?</h2>
+        <p class="text-xl mb-8 text-orange-100 max-w-2xl mx-auto">
+          Explore our partner restaurants and discover your next favorite meal.
+        </p>
+        <a href="/restaurants" class="bg-white text-orange-600 hover:bg-gray-100 font-bold py-4 px-8 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl inline-block">
+          Browse Restaurants
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</BaseLayout>

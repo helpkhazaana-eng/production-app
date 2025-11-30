@@ -1,0 +1,8 @@
+Item Name,Price (₹),Category,Veg/Non-Veg,Description
+Chicken Biryani Full,100,Biryani,Non-Veg,
+Chicken Biryani Half,80,Biryani,Non-Veg,
+Aloo Biryani Full,70,Biryani,Veg,
+Aloo Biryani Half,50,Biryani,Veg,
+"Special Chicken Biryani (2 pcs chicken, 2 aloo)",150,Biryani,Non-Veg,
+Chicken Extra Piece,40,Add-on,Non-Veg,
+Aloo Extra Piece,5,Add-on,Veg,

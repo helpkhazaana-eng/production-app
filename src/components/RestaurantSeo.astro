@@ -1,0 +1,153 @@
+---
+/**
+ * RestaurantSeo Component
+ * Generates complete SEO metadata for restaurant pages
+ * 
+ * Usage:
+ * <RestaurantSeo restaurant={restaurant} menuItems={menuItems} />
+ */
+
+import type { Restaurant, MenuItem } from '../types';
+import { 
+  generateRestaurantMeta, 
+  generateRestaurantKeywords,
+  SITE_CONFIG,
+  LOCATION 
+} from '../lib/generateRestaurantMeta';
+import { 
+  buildCompleteRestaurantSchema,
+  buildWebPageSchema 
+} from '../lib/buildRestaurantSchema';
+
+interface Props {
+  restaurant: Restaurant;
+  menuItems?: MenuItem[];
+}
+
+const { restaurant, menuItems } = Astro.props;
+
+// Generate meta data
+const meta = generateRestaurantMeta(restaurant, menuItems);
+const keywords = generateRestaurantKeywords(restaurant);
+
+// Generate schemas
+const completeSchema = buildCompleteRestaurantSchema(restaurant, menuItems);
+const webPageSchema = buildWebPageSchema(
+  meta.title,
+  meta.description,
+  meta.canonicalUrl,
+  restaurant
+);
+
+// Combine all schemas
+const allSchemas = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    ...completeSchema['@graph'],
+    webPageSchema
+  ]
+};
+
+// Generate additional meta tags
+const { city, locality, state, pincode, coordinates } = LOCATION;
+---
+
+<!-- Additional Restaurant Meta Tags (Primary tags handled by BaseLayout) -->
+
+<!-- Author & Publisher -->
+<meta name="author" content="Khazaana Food Ordering Platform" />
+<meta name="publisher" content="Khazaana" />
+<meta name="copyright" content="Khazaana" />
+
+<!-- Location Meta Tags -->
+<meta name="geo.region" content="IN-WB" />
+<meta name="geo.placename" content={`${locality}, ${city}, ${state}`} />
+<meta name="geo.position" content={`${coordinates.latitude};${coordinates.longitude}`} />
+<meta name="ICBM" content={`${coordinates.latitude}, ${coordinates.longitude}`} />
+
+<!-- Business Meta Tags -->
+<meta name="contact" content={SITE_CONFIG.phone} />
+<meta name="coverage" content={`${city}, ${locality}, ${state}, India`} />
+<meta name="distribution" content="local" />
+<meta name="rating" content="general" />
+<meta name="revisit-after" content="1 days" />
+<meta name="target" content="all" />
+
+<!-- Restaurant-Specific Meta -->
+<meta name="restaurant:name" content={restaurant.name} />
+<meta name="restaurant:cuisine" content={restaurant.cuisine.join(', ')} />
+<meta name="restaurant:rating" content={restaurant.rating.toString()} />
+<meta name="restaurant:price_range" content={restaurant.priceRange} />
+<meta name="restaurant:locality" content={locality} />
+<meta name="restaurant:city" content={city} />
+
+<!-- Robots -->
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+<meta name="googlebot" content="index, follow" />
+<meta name="bingbot" content="index, follow" />
+
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content="restaurant.restaurant" />
+<meta property="og:site_name" content="Khazaana" />
+<meta property="og:url" content={meta.ogUrl} />
+<meta property="og:title" content={meta.ogTitle} />
+<meta property="og:description" content={meta.ogDescription} />
+<meta property="og:image" content={meta.ogImage} />
+<meta property="og:image:alt" content={`${restaurant.name} - ${restaurant.cuisine.join(', ')} in ${city}`} />
+<meta property="og:locale" content="en_IN" />
+
+<!-- Restaurant-specific OG tags -->
+<meta property="restaurant:contact_info:street_address" content={`${locality}, near DNC College`} />
+<meta property="restaurant:contact_info:locality" content={city} />
+<meta property="restaurant:contact_info:region" content={state} />
+<meta property="restaurant:contact_info:postal_code" content={pincode} />
+<meta property="restaurant:contact_info:country_name" content="India" />
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:url" content={meta.canonicalUrl} />
+<meta name="twitter:title" content={meta.twitterTitle} />
+<meta name="twitter:description" content={meta.twitterDescription} />
+<meta name="twitter:image" content={meta.twitterImage} />
+<meta name="twitter:image:alt" content={`${restaurant.name} menu and food`} />
+
+<!-- Additional SEO Tags -->
+<meta name="subject" content={`${restaurant.name} - ${restaurant.cuisine.join(', ')} Restaurant`} />
+<meta name="abstract" content={meta.description} />
+<meta name="topic" content={`${restaurant.category} Restaurant in ${city}`} />
+<meta name="summary" content={meta.description} />
+<meta name="classification" content="Restaurant, Food Delivery, Online Ordering" />
+<meta name="category" content={restaurant.category} />
+
+<!-- Mobile Optimization -->
+<meta name="format-detection" content="telephone=yes" />
+<meta name="HandheldFriendly" content="true" />
+<meta name="MobileOptimized" content="width" />
+
+<!-- Structured Data (JSON-LD) -->
+<script type="application/ld+json" set:html={JSON.stringify(allSchemas)} />
+
+<!-- Additional Schema for Rich Snippets -->
+<script type="application/ld+json" set:html={JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "Product",
+  "name": `Food from ${restaurant.name}`,
+  "description": `Order ${restaurant.cuisine.join(', ')} from ${restaurant.name} in ${city}`,
+  "brand": {
+    "@type": "Brand",
+    "name": restaurant.name
+  },
+  "aggregateRating": {
+    "@type": "AggregateRating",
+    "ratingValue": restaurant.rating,
+    "bestRating": 5,
+    "ratingCount": Math.floor(restaurant.rating * 15) + 20
+  },
+  "offers": {
+    "@type": "AggregateOffer",
+    "priceCurrency": "INR",
+    "lowPrice": "50",
+    "highPrice": "500",
+    "offerCount": menuItems?.length || 50
+  }
+})} />
