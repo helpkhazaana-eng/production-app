@@ -376,53 +376,19 @@ const localBusinessSchema = generateLocalBusinessSchema();
     }
   </script>
   -->
+  <!-- Load Sentry SDK -->
+  <script src="https://browser.sentry-cdn.com/7.91.0/bundle.min.js" crossorigin="anonymous"></script>
+  
+  <!-- Load LogRocket SDK -->
+  <script src="https://cdn.lr-ingest.io/LogRocket.min.js" crossorigin="anonymous"></script>
+  
   <!-- Initialize Monitoring System -->
   <script is:inline>
-    // Load and initialize monitoring SDKs
-    (function() {
-      let sentryLoaded = false;
-      let logrocketLoaded = false;
-      
-      // Load Sentry SDK
-      const sentryScript = document.createElement('script');
-      sentryScript.src = 'https://browser.sentry-cdn.com/7.91.0/bundle.min.js';
-      sentryScript.crossOrigin = 'anonymous';
-      sentryScript.onload = function() {
-        sentryLoaded = true;
-        console.log('✅ Sentry SDK loaded');
-        initializeMonitoring();
-      };
-      sentryScript.onerror = function() {
-        console.warn('❌ Sentry SDK failed to load');
-        initializeMonitoring();
-      };
-      document.head.appendChild(sentryScript);
-      
-      // Load LogRocket SDK
-      const logrocketScript = document.createElement('script');
-      logrocketScript.src = 'https://cdn.lr-ingest.io/LogRocket.min.js';
-      logrocketScript.crossOrigin = 'anonymous';
-      logrocketScript.onload = function() {
-        logrocketLoaded = true;
-        console.log('✅ LogRocket SDK loaded');
-        initializeMonitoring();
-      };
-      logrocketScript.onerror = function() {
-        console.warn('❌ LogRocket SDK failed to load');
-        initializeMonitoring();
-      };
-      document.head.appendChild(logrocketScript);
-      
-      let initialized = false;
-      function initializeMonitoring() {
-        // Only initialize once both scripts have attempted to load
-        if (initialized || (!sentryLoaded && !logrocketLoaded)) return;
-        
-        // Wait a bit for scripts to fully initialize
-        setTimeout(function() {
-          console.log('🔍 Checking monitoring SDKs...');
-          console.log('Sentry:', typeof window.Sentry !== 'undefined' ? '✅ Loaded' : '❌ Not loaded');
-          console.log('LogRocket:', typeof window.LogRocket !== 'undefined' ? '✅ Loaded' : '❌ Not loaded');
+    // Wait for page to load completely
+    window.addEventListener('load', function() {
+      console.log('🔍 Checking monitoring SDKs...');
+      console.log('Sentry:', typeof window.Sentry !== 'undefined' ? '✅ Loaded' : '❌ Not loaded');
+      console.log('LogRocket:', typeof window.LogRocket !== 'undefined' ? '✅ Loaded' : '❌ Not loaded');
       
       // Initialize Sentry
       if (window.Sentry) {
@@ -488,11 +454,7 @@ const localBusinessSchema = generateLocalBusinessSchema();
       };
       
       console.log('✅ Monitoring system ready');
-          
-          initialized = true;
-        }, 500); // Wait 500ms for SDKs to fully initialize
-      }
-    })();
+    });
   </script>
   
   <SpeedInsights />
