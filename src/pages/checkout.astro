@@ -410,13 +410,87 @@ import { MapPin, Phone, Mail, User, MessageCircle } from 'lucide-react';
       },
       (error) => {
         if (locationStatus) {
-          locationStatus.textContent = `❌ Error: ${error.message}`;
-          locationStatus.className = 'text-xs text-red-600 mt-2';
+          if (error.code === error.PERMISSION_DENIED) {
+            locationStatus.innerHTML = `
+              ❌ Location access denied. 
+              <button onclick="retryLocation()" class="text-blue-600 underline hover:no-underline ml-1">Try Again</button>
+              <div class="text-xs text-gray-500 mt-1">
+                Enable location in browser settings and click "Get My Location" again
+              </div>
+            `;
+            locationStatus.className = 'text-xs text-red-600 mt-2';
+          } else {
+            locationStatus.textContent = `❌ Error: ${error.message}`;
+            locationStatus.className = 'text-xs text-red-600 mt-2';
+          }
         }
         logger.error('Geolocation error', new Error(error.message), 'CHECKOUT');
       }
     );
   });
+
+  // Retry location function
+  (window as any).retryLocation = function() {
+    const locationStatus = document.getElementById('location-status');
+    const getLocationBtn = document.getElementById('get-location-btn');
+    
+    if (locationStatus) {
+      locationStatus.textContent = '📍 Getting your location...';
+      locationStatus.className = 'text-xs text-blue-600 mt-2';
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        customerLocation = {
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude
+        };
+        
+        if (locationStatus) {
+          locationStatus.textContent = `✅ Location captured: ${position.coords.latitude.toFixed(6)}, ${position.coords.longitude.toFixed(6)}`;
+          locationStatus.className = 'text-xs text-green-600 mt-2';
+        }
+
+        logger.info('Location captured on retry', customerLocation, 'CHECKOUT');
+      },
+      (error) => {
+        if (locationStatus) {
+          if (error.code === error.PERMISSION_DENIED) {
+            locationStatus.innerHTML = `
+              ❌ Location access still denied. 
+              <button onclick="showLocationHelp()" class="text-blue-600 underline hover:no-underline ml-1">Get Help</button>
+              <div class="text-xs text-gray-500 mt-1">
+                You can also enter your address manually below
+              </div>
+            `;
+            locationStatus.className = 'text-xs text-red-600 mt-2';
+          } else {
+            locationStatus.textContent = `❌ Error: ${error.message}`;
+            locationStatus.className = 'text-xs text-red-600 mt-2';
+          }
+        }
+        logger.error('Geolocation retry failed', new Error(error.message), 'CHECKOUT');
+      }
+    );
+  };
+
+  // Show location help function
+  (window as any).showLocationHelp = function() {
+    const locationStatus = document.getElementById('location-status');
+    if (locationStatus) {
+      locationStatus.innerHTML = `
+        <div class="text-xs text-gray-600">
+          <strong>To enable location:</strong><br>
+          <strong>Chrome:</strong> Settings → Privacy and security → Site Settings → Location → Allow<br>
+          <strong>Safari:</strong> Settings → Privacy → Location Services → Websites<br>
+          <strong>Firefox:</strong> Settings → Privacy & Security → Location Settings<br>
+          <br>
+          Or enter your address manually below.
+        </div>
+      `;
+      locationStatus.className = 'text-xs text-blue-600 mt-2';
+    }
+  };
 
   // Form submission
   const checkoutForm = document.getElementById('checkout-form') as HTMLFormElement;
