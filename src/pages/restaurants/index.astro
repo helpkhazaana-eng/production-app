@@ -534,7 +534,14 @@ const combinedSchema = {
                 <span>${item.vegNonVeg === 'Veg' ? '🟢' : '🔴'}</span>
                 <span>${item.name}</span>
               </div>
-              <div class="font-semibold">₹${item.price}</div>
+              <div class="font-semibold">
+                ${item.price === 195 ? 
+                  `<span class="text-gray-400 line-through text-sm">₹${item.price}</span>
+                   <span class="text-green-600 font-bold ml-1">₹180</span>
+                   <span class="bg-red-500 text-white text-xs px-1 py-0.5 rounded-full font-semibold ml-1">8% OFF</span>` : 
+                  `₹${item.price}`
+                }
+              </div>
             </div>`
             )
             .join('');
