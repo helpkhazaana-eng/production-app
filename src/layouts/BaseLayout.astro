@@ -377,12 +377,17 @@ const localBusinessSchema = generateLocalBusinessSchema();
   </script>
   -->
   <!-- Initialize Monitoring System -->
-  <script>
-    import { Monitoring } from '../lib/monitoring';
+  <script type="module">
+    import { Monitoring } from '../lib/monitoring.js';
     
     // Initialize monitoring on page load
     if (typeof window !== 'undefined') {
       Monitoring.init();
+      
+      // Make Monitoring available globally for testing
+      window.Monitoring = Monitoring;
+      
+      console.log('✅ Monitoring system initialized');
     }
   </script>
   
