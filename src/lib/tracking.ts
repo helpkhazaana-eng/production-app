@@ -1,14 +1,24 @@
 /**
- * Conversion Tracking Utility for Meta Ads & Google Ads
+ * Conversion Tracking Utility for GA4, Meta Ads & Google Ads
+ * 
+ * GA4 Measurement ID: G-VSLCVT356G
  * 
  * This file provides functions to track conversions and events
- * for both Meta (Facebook) Pixel and Google Ads.
+ * for Google Analytics 4, Meta (Facebook) Pixel, and Google Ads.
  * 
- * SETUP INSTRUCTIONS:
- * 1. Replace PIXEL_ID in BaseLayout.astro with your Meta Pixel ID
- * 2. Replace GTM-XXXXXXX with your Google Tag Manager Container ID
- * 3. Replace AW-XXXXXXXXX with your Google Ads Conversion ID
- * 4. Replace YOUR_FB_APP_ID with your Facebook App ID
+ * FEATURES TRACKED:
+ * - Page views (automatic)
+ * - Scroll depth (25%, 50%, 75%, 100%)
+ * - Time on page (30s, 60s, 2min, 5min)
+ * - Outbound clicks
+ * - Phone calls
+ * - WhatsApp clicks
+ * - Add to cart
+ * - Checkout initiation
+ * - Purchase completion
+ * - Search queries
+ * - Restaurant views
+ * - User engagement
  */
 
 // Declare global types for tracking
@@ -122,6 +132,218 @@ export const MetaPixel = {
   custom: (eventName: string, params?: Record<string, any>) => {
     if (typeof window !== 'undefined' && window.fbq) {
       window.fbq('trackCustom', eventName, params);
+    }
+  }
+};
+
+/**
+ * Track Google Analytics 4 Events
+ */
+export const GA4 = {
+  // Custom event tracking
+  event: (eventName: string, params?: Record<string, any>) => {
+    if (typeof window !== 'undefined' && window.gtag) {
+      window.gtag('event', eventName, params);
+    }
+  },
+
+  // Set user properties for segmentation
+  setUserProperties: (properties: Record<string, any>) => {
+    if (typeof window !== 'undefined' && window.gtag) {
+      window.gtag('set', 'user_properties', properties);
+    }
+  },
+
+  // Set user ID for cross-device tracking
+  setUserId: (userId: string) => {
+    if (typeof window !== 'undefined' && window.gtag) {
+      window.gtag('config', 'G-VSLCVT356G', {
+        'user_id': userId
+      });
+    }
+  },
+
+  // Track restaurant view
+  viewRestaurant: (restaurant: { id: string; name: string; cuisine?: string }) => {
+    if (typeof window !== 'undefined' && window.gtag) {
+      window.gtag('event', 'view_item', {
+        'currency': 'INR',
+        'value': 0,
+        'items': [{
+          'item_id': restaurant.id,
+          'item_name': restaurant.name,
+          'item_category': restaurant.cuisine || 'Restaurant'
+        }]
+      });
+    }
+  },
+
+  // Track menu item view
+  viewMenuItem: (item: { id: string; name: string; price: number; category?: string; restaurant?: string }) => {
+    if (typeof window !== 'undefined' && window.gtag) {
+      window.gtag('event', 'view_item', {
+        'currency': 'INR',
+        'value': item.price,
+        'items': [{
+          'item_id': item.id,
+          'item_name': item.name,
+          'item_category': item.category,
+          'item_brand': item.restaurant,
+          'price': item.price
+        }]
+      });
+    }
+  },
+
+  // Track add to cart
+  addToCart: (item: { id: string; name: string; price: number; quantity: number; category?: string; restaurant?: string }) => {
+    if (typeof window !== 'undefined' && window.gtag) {
+      window.gtag('event', 'add_to_cart', {
+        'currency': 'INR',
+        'value': item.price * item.quantity,
+        'items': [{
+          'item_id': item.id,
+          'item_name': item.name,
+          'item_category': item.category,
+          'item_brand': item.restaurant,
+          'price': item.price,
+          'quantity': item.quantity
+        }]
+      });
+    }
+  },
+
+  // Track remove from cart
+  removeFromCart: (item: { id: string; name: string; price: number; quantity: number }) => {
+    if (typeof window !== 'undefined' && window.gtag) {
+      window.gtag('event', 'remove_from_cart', {
+        'currency': 'INR',
+        'value': item.price * item.quantity,
+        'items': [{
+          'item_id': item.id,
+          'item_name': item.name,
+          'price': item.price,
+          'quantity': item.quantity
+        }]
+      });
+    }
+  },
+
+  // Track view cart
+  viewCart: (items: Array<{ id: string; name: string; price: number; quantity: number }>, total: number) => {
+    if (typeof window !== 'undefined' && window.gtag) {
+      window.gtag('event', 'view_cart', {
+        'currency': 'INR',
+        'value': total,
+        'items': items.map(item => ({
+          'item_id': item.id,
+          'item_name': item.name,
+          'price': item.price,
+          'quantity': item.quantity
+        }))
+      });
+    }
+  },
+
+  // Track begin checkout
+  beginCheckout: (items: Array<{ id: string; name: string; price: number; quantity: number }>, total: number) => {
+    if (typeof window !== 'undefined' && window.gtag) {
+      window.gtag('event', 'begin_checkout', {
+        'currency': 'INR',
+        'value': total,
+        'items': items.map(item => ({
+          'item_id': item.id,
+          'item_name': item.name,
+          'price': item.price,
+          'quantity': item.quantity
+        }))
+      });
+    }
+  },
+
+  // Track purchase
+  purchase: (params: {
+    orderId: string;
+    items: Array<{ id: string; name: string; price: number; quantity: number }>;
+    total: number;
+    tax?: number;
+    shipping?: number;
+    restaurant?: string;
+  }) => {
+    if (typeof window !== 'undefined' && window.gtag) {
+      window.gtag('event', 'purchase', {
+        'transaction_id': params.orderId,
+        'currency': 'INR',
+        'value': params.total,
+        'tax': params.tax || 0,
+        'shipping': params.shipping || 0,
+        'affiliation': params.restaurant || 'Khazaana',
+        'items': params.items.map(item => ({
+          'item_id': item.id,
+          'item_name': item.name,
+          'price': item.price,
+          'quantity': item.quantity
+        }))
+      });
+    }
+  },
+
+  // Track search
+  search: (searchTerm: string, resultsCount?: number) => {
+    if (typeof window !== 'undefined' && window.gtag) {
+      window.gtag('event', 'search', {
+        'search_term': searchTerm,
+        'results_count': resultsCount
+      });
+    }
+  },
+
+  // Track share
+  share: (method: string, contentType: string, itemId: string) => {
+    if (typeof window !== 'undefined' && window.gtag) {
+      window.gtag('event', 'share', {
+        'method': method,
+        'content_type': contentType,
+        'item_id': itemId
+      });
+    }
+  },
+
+  // Track login
+  login: (method: string) => {
+    if (typeof window !== 'undefined' && window.gtag) {
+      window.gtag('event', 'login', {
+        'method': method
+      });
+    }
+  },
+
+  // Track sign up
+  signUp: (method: string) => {
+    if (typeof window !== 'undefined' && window.gtag) {
+      window.gtag('event', 'sign_up', {
+        'method': method
+      });
+    }
+  },
+
+  // Track generate lead
+  generateLead: (value?: number) => {
+    if (typeof window !== 'undefined' && window.gtag) {
+      window.gtag('event', 'generate_lead', {
+        'currency': 'INR',
+        'value': value || 0
+      });
+    }
+  },
+
+  // Track exception/error
+  exception: (description: string, fatal: boolean = false) => {
+    if (typeof window !== 'undefined' && window.gtag) {
+      window.gtag('event', 'exception', {
+        'description': description,
+        'fatal': fatal
+      });
     }
   }
 };

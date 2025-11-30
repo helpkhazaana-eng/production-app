@@ -113,18 +113,144 @@ const localBusinessSchema = generateLocalBusinessSchema();
   <!-- Preload critical assets -->
   <link rel="preload" href="/images/logo.png" as="image">
   
-  <!-- Google Tag Manager (for Google Ads & Analytics) -->
-  <!-- Replace GTM-XXXXXXX with your GTM Container ID -->
+  <!-- Google Analytics 4 (GA4) - Full Analytics Suite -->
+  <script is:inline async src="https://www.googletagmanager.com/gtag/js?id=G-VSLCVT356G"></script>
   <script is:inline>
-    (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-    })(window,document,'script','dataLayer','GTM-XXXXXXX');
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    
+    // GA4 Configuration with Enhanced Measurement
+    gtag('config', 'G-VSLCVT356G', {
+      // Enhanced measurement (auto-tracks scrolls, outbound clicks, site search, video, file downloads)
+      'send_page_view': true,
+      
+      // User engagement tracking
+      'engagement_time_msec': 100,
+      
+      // Session settings
+      'session_duration': 1800000, // 30 minutes
+      
+      // Debug mode (set to false in production after testing)
+      'debug_mode': false,
+      
+      // Cookie settings
+      'cookie_domain': 'khazaana.co.in',
+      'cookie_expires': 63072000, // 2 years in seconds
+      'cookie_prefix': '_khz',
+      'cookie_update': true,
+      
+      // User properties for segmentation
+      'custom_map': {
+        'dimension1': 'user_type',
+        'dimension2': 'restaurant_preference',
+        'dimension3': 'order_frequency'
+      }
+    });
+    
+    // Track page timing for performance insights
+    gtag('event', 'timing_complete', {
+      'name': 'page_load',
+      'value': Math.round(performance.now()),
+      'event_category': 'Performance'
+    });
+  </script>
+  
+  <!-- Enhanced User Journey & Behavior Tracking -->
+  <script is:inline>
+    // Track scroll depth
+    let scrollDepthTracked = { 25: false, 50: false, 75: false, 100: false };
+    window.addEventListener('scroll', function() {
+      const scrollPercent = Math.round((window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100);
+      [25, 50, 75, 100].forEach(function(depth) {
+        if (scrollPercent >= depth && !scrollDepthTracked[depth]) {
+          scrollDepthTracked[depth] = true;
+          gtag('event', 'scroll_depth', {
+            'event_category': 'Engagement',
+            'event_label': depth + '%',
+            'value': depth
+          });
+        }
+      });
+    });
+    
+    // Track time on page
+    let timeOnPage = 0;
+    setInterval(function() {
+      timeOnPage += 10;
+      if (timeOnPage === 30 || timeOnPage === 60 || timeOnPage === 120 || timeOnPage === 300) {
+        gtag('event', 'time_on_page', {
+          'event_category': 'Engagement',
+          'event_label': timeOnPage + ' seconds',
+          'value': timeOnPage
+        });
+      }
+    }, 10000);
+    
+    // Track outbound link clicks
+    document.addEventListener('click', function(e) {
+      const link = e.target.closest('a');
+      if (link && link.hostname !== window.location.hostname) {
+        gtag('event', 'outbound_click', {
+          'event_category': 'Outbound',
+          'event_label': link.href,
+          'transport_type': 'beacon'
+        });
+      }
+    });
+    
+    // Track phone number clicks
+    document.addEventListener('click', function(e) {
+      const link = e.target.closest('a[href^="tel:"]');
+      if (link) {
+        gtag('event', 'phone_call', {
+          'event_category': 'Contact',
+          'event_label': link.href.replace('tel:', ''),
+          'value': 1
+        });
+      }
+    });
+    
+    // Track WhatsApp clicks
+    document.addEventListener('click', function(e) {
+      const link = e.target.closest('a[href*="wa.me"], a[href*="whatsapp"]');
+      if (link) {
+        gtag('event', 'whatsapp_click', {
+          'event_category': 'Contact',
+          'event_label': 'WhatsApp Order',
+          'value': 1
+        });
+      }
+    });
+    
+    // Track copy events (address, phone)
+    document.addEventListener('copy', function() {
+      gtag('event', 'copy_text', {
+        'event_category': 'Engagement',
+        'event_label': window.getSelection().toString().substring(0, 50)
+      });
+    });
+    
+    // Track visibility changes (tab switches)
+    document.addEventListener('visibilitychange', function() {
+      gtag('event', 'visibility_change', {
+        'event_category': 'Engagement',
+        'event_label': document.visibilityState
+      });
+    });
+    
+    // Track errors for debugging
+    window.addEventListener('error', function(e) {
+      gtag('event', 'javascript_error', {
+        'event_category': 'Error',
+        'event_label': e.message,
+        'value': 1
+      });
+    });
   </script>
   
   <!-- Meta Pixel (Facebook Ads) -->
-  <!-- Replace PIXEL_ID with your Meta Pixel ID -->
+  <!-- Replace PIXEL_ID with your Meta Pixel ID when ready -->
   <script is:inline>
     !function(f,b,e,v,n,t,s)
     {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
@@ -134,21 +260,8 @@ const localBusinessSchema = generateLocalBusinessSchema();
     t.src=v;s=b.getElementsByTagName(e)[0];
     s.parentNode.insertBefore(t,s)}(window, document,'script',
     'https://connect.facebook.net/en_US/fbevents.js');
-    fbq('init', 'PIXEL_ID');
-    fbq('track', 'PageView');
-  </script>
-  <noscript>
-    <img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=PIXEL_ID&ev=PageView&noscript=1" alt="" />
-  </noscript>
-  
-  <!-- Google Ads Conversion Tracking -->
-  <!-- Replace AW-XXXXXXXXX with your Google Ads Conversion ID -->
-  <script is:inline async src="https://www.googletagmanager.com/gtag/js?id=AW-XXXXXXXXX"></script>
-  <script is:inline>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'AW-XXXXXXXXX');
+    // fbq('init', 'PIXEL_ID'); // Uncomment and add your Pixel ID
+    // fbq('track', 'PageView');
   </script>
   
   <!-- JSON-LD Structured Data -->
@@ -263,6 +376,16 @@ const localBusinessSchema = generateLocalBusinessSchema();
     }
   </script>
   -->
+  <!-- Initialize Monitoring System -->
+  <script>
+    import { Monitoring } from '../lib/monitoring';
+    
+    // Initialize monitoring on page load
+    if (typeof window !== 'undefined') {
+      Monitoring.init();
+    }
+  </script>
+  
   <SpeedInsights />
   <Analytics />
 </body>
