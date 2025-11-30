@@ -33,7 +33,7 @@ export const FOOD_KEYWORDS = {
     'mutton biryani Suti',
     'biryani delivery Aurangabad',
     'authentic biryani West Bengal',
-    'Arsalan biryani Aurangabad'
+    'Kolkata Arsalan Biryani Aurangabad'
   ],
   chinese: [
     'best Chinese food Aurangabad',

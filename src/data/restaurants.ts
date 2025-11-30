@@ -58,7 +58,7 @@ export const restaurants: Restaurant[] = [
   },
   {
     id: 'arsalan',
-    name: 'Arsalan',
+    name: 'Kolkata Arsalan Biryani',
     address: 'College More, near DNC College, Aurangabad, Suti, West Bengal 742201',
     phone: KHAZAANA_CONTACT.phone,
     whatsapp: KHAZAANA_CONTACT.whatsapp,
@@ -92,7 +92,7 @@ export const restaurants: Restaurant[] = [
   },
   {
     id: 'bholebaba',
-    name: 'Bhole Baba',
+    name: 'Bhole Baba Roll Corner',
     address: 'College More, near DNC College, Aurangabad, Suti, West Bengal 742201',
     phone: KHAZAANA_CONTACT.phone,
     whatsapp: KHAZAANA_CONTACT.whatsapp,
@@ -109,7 +109,7 @@ export const restaurants: Restaurant[] = [
   },
   {
     id: 'whitechocolate',
-    name: 'White Chocolate',
+    name: 'White Chocolate The Cake House',
     address: 'College More, near DNC College, Aurangabad, Suti, West Bengal 742201',
     phone: KHAZAANA_CONTACT.phone,
     whatsapp: KHAZAANA_CONTACT.whatsapp,
