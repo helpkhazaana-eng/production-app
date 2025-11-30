@@ -265,8 +265,17 @@ import { MapPin, Phone, Mail, User, MessageCircle } from 'lucide-react';
   let customerLocation: { latitude?: number; longitude?: number } = {};
 
   function isOrderingOpenNow(): boolean {
-    // Development mode: keep ordering enabled
-    return true;
+    // Check if current time is within ordering hours (9 AM - 9 PM IST)
+    const now = new Date();
+    const istOffset = 5.5 * 60; // IST is UTC+5:30
+    const utcMinutes = now.getUTCHours() * 60 + now.getUTCMinutes();
+    const istMinutes = utcMinutes + istOffset;
+    const istHours = Math.floor((istMinutes % 1440) / 60);
+    
+    const opensAt = 9;  // 9 AM
+    const closesAt = 21; // 9 PM
+    
+    return istHours >= opensAt && istHours < closesAt;
   }
 
   // Function to initialize checkout
@@ -670,6 +679,11 @@ import { MapPin, Phone, Mail, User, MessageCircle } from 'lucide-react';
       alert('Failed to place order. Please try again or contact support at 8695902696.');
     }
   });
+
+  // Real-time update for ordering status (check every minute)
+  setInterval(() => {
+    initializeCheckout(); // Re-check ordering status
+  }, 60000);
 
   logger.info('Checkout page loaded', { itemCount: cart.items.length }, 'CHECKOUT');
 </script>
