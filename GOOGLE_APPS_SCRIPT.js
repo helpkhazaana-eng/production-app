@@ -256,13 +256,15 @@ function generateInvoiceForRow(sheet, row, sendEmail = true) {
     try {
       const folder = DriveApp.getFolderById(INVOICE_FOLDER_ID);
       file = folder.createFile(pdfBlob);
-      invoiceUrl = file.getUrl();
     } catch (driveError) {
       // Fallback: Save to spreadsheet's parent folder or root
       Logger.log('Drive folder access failed, saving to root: ' + driveError.toString());
       file = DriveApp.createFile(pdfBlob);
-      invoiceUrl = file.getUrl();
     }
+    
+    // Make file publicly viewable (anyone with link can view)
+    file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
+    invoiceUrl = file.getUrl();
     
     // Update sheet with invoice URL and clear any old errors
     sheet.getRange(row, 22).setValue(invoiceUrl); // Invoice_URL column

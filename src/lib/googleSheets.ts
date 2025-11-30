@@ -6,7 +6,7 @@
 import { logger } from './logger';
 
 // Google Apps Script Web App URL
-const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxPvooLNMbIaXSNaEtKVpc-MZLUDwcd8OKAhPXnMGZipUmbjGcahiqZSY39PUfcSRgbcg/exec';
+const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxCWeJy1Ki9G-xXMF7ZJWCcP4ie7GMQKiTBYg4ljxLwGRwVXERn9FBWkHa8KqXbWANi_w/exec';
 
 // Khazaana WhatsApp number for checkout (production)
 export const KHAZAANA_WHATSAPP = '918695902696';
