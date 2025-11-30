@@ -30,7 +30,7 @@ export const MONITORING_CONFIG = {
   LOGROCKET_APP_ID: process.env.PUBLIC_LOGROCKET_APP_ID || 'khazaana/khazaana-web', // From screenshot
   
   // Custom Alert Webhook (Google Apps Script)
-  ALERT_WEBHOOK_URL: process.env.PUBLIC_ALERT_WEBHOOK_URL || 'https://script.google.com/macros/s/AKfycbzyXjUTAP7JcLf_L4A-zKvTkKOHaaUbB4MAB_ukpvZhW6AQxNc8ZzFgXj2zrfmnslBOTw/exec', // Khazaana Alert System
+  ALERT_WEBHOOK_URL: process.env.PUBLIC_ALERT_WEBHOOK_URL || 'https://script.google.com/macros/s/AKfycbzPfDTUD9bYZwLGrSey30Fhu8Jr_r8y_fW7lxwgHA4g1TWCmHWwY4bSEwU3xVdgHBZlyg/exec', // Khazaana Alert System v2 (CORS Fixed)
   
   // Alert Emails (comma-separated for multiple recipients)
   ALERT_EMAILS: [
@@ -424,14 +424,10 @@ class MonitoringService {
         sessionId: this.sessionId
       };
 
-      // Use CORS proxy for Google Apps Script
-      const proxyUrl = `https://cors-anywhere.herokuapp.com/${MONITORING_CONFIG.ALERT_WEBHOOK_URL}`;
-      
-      const response = await fetch(proxyUrl, {
+      const response = await fetch(MONITORING_CONFIG.ALERT_WEBHOOK_URL, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
-          'X-Requested-With': 'XMLHttpRequest'
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify(payload)
       });
@@ -442,24 +438,6 @@ class MonitoringService {
     } catch (error) {
       // Log webhook failure but don't throw
       console.error('Failed to send alert:', error);
-      // Fallback: try direct fetch (might work for some browsers)
-      try {
-        const payload = {
-          subject,
-          data,
-          timestamp: new Date().toISOString(),
-          url: typeof window !== 'undefined' ? window.location.href : 'server-side',
-          sessionId: this.sessionId
-        };
-        
-        await fetch(MONITORING_CONFIG.ALERT_WEBHOOK_URL, {
-          method: 'POST',
-          mode: 'no-cors',
-          body: JSON.stringify(payload)
-        });
-      } catch (fallbackError) {
-        console.error('Fallback webhook also failed:', fallbackError);
-      }
     }
   }
 
