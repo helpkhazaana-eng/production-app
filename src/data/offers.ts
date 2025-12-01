@@ -86,6 +86,22 @@ export const exclusiveOffers: ExclusiveOffer[] = [
     terms: 'Free delivery on orders above ₹350. Valid on all items.'
   },
 
+  {
+    id: 'chicken-burger-and-chaat-combo',
+    dishName: 'CHICKEN BURGER AND CHAAT COMBO',
+    description: '2 CHICKEN BURGER + 1 SAMOSA CHAAT',
+    restaurantId: 'cupsncrumbs',
+    restaurantName: 'Cups N Crumbs',
+    originalPrice: 220,
+    offerPrice: 180,
+    discountPercent: 18,
+    deliveryCharge: 0,
+    startDate: '2025-12-01',
+    endDate: '2025-12-02',
+    isActive: true,
+    vegNonVeg: 'Non-Veg'
+  },
+
   // -------- ADD MORE OFFERS HERE --------
   // Copy the template below and fill in your details:
   /*
