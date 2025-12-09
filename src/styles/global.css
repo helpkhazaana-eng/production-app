@@ -389,72 +389,20 @@ body.veg-mode-active .veg-mode-switch .veg-mode-slider {
   color: white !important;
 }
 
-/* Google Translate Widget Styling */
-#google_translate_element,
-#google_translate_element_mobile {
-  display: inline-block;
+/* Header responsive fixes for small screens (360-430px) */
+.header-row {
+  min-height: 48px;
 }
 
-/* Hide Google Translate branding */
-.goog-te-banner-frame.skiptranslate {
-  display: none !important;
-}
-
-body {
-  top: 0 !important;
-}
-
-.goog-te-gadget {
-  font-family: inherit !important;
-  font-size: 14px !important;
-}
-
-.goog-te-gadget-simple {
-  background-color: transparent !important;
-  border: 1px solid #e5e7eb !important;
-  border-radius: 0.5rem !important;
-  padding: 0.5rem 0.75rem !important;
-  font-size: 14px !important;
-  transition: all 0.2s !important;
-}
-
-.goog-te-gadget-simple:hover {
-  border-color: var(--color-primary) !important;
-  background-color: #fff !important;
-}
-
-.goog-te-gadget-icon {
-  display: none !important;
-}
-
-.goog-te-menu-value span {
-  color: #374151 !important;
-}
-
-.goog-te-menu-value span:hover {
-  color: var(--color-primary) !important;
-}
-
-/* Mobile translate widget */
-#google_translate_element_mobile .goog-te-gadget-simple {
-  width: 100% !important;
-  text-align: left !important;
-}
-
-/* Mobile Menu Improvements */
-#mobile-menu {
-  max-height: 0;
-  overflow: hidden;
-  transition: max-height 0.3s ease-in-out;
-}
-
-#mobile-menu:not(.hidden) {
-  max-height: 600px;
-}
-
-/* Prevent body scroll when mobile menu is open */
-body.mobile-menu-open {
-  overflow: hidden;
+@media (max-width: 430px) {
+  .header-row {
+    gap: 4px;
+  }
+  
+  /* Ensure translate dropdown doesn't get clipped */
+  .translate-widget {
+    position: relative;
+  }
 }
 
 /* Better mobile menu spacing */

@@ -12,6 +12,7 @@ interface Props {
   keywords?: string;
   category?: string;
   structuredData?: any;
+  pageType?: string;
 }
 
 const { 
@@ -21,7 +22,8 @@ const {
   noIndex = false,
   keywords,
   category,
-  structuredData
+  structuredData,
+  pageType
 } = Astro.props;
 
 // Force canonical URL to use production domain
@@ -306,7 +308,7 @@ const localBusinessSchema = generateLocalBusinessSchema();
   <!-- Slot for page-specific head content -->
   <slot name="head" />
 </head>
-<body class="min-h-screen bg-gray-50">
+<body class="min-h-screen bg-gray-50" data-page={pageType}>
   <!-- Google Tag Manager (noscript) -->
   <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-XXXXXXX" height="0" width="0" style="display:none;visibility:hidden" title="Google Tag Manager"></iframe></noscript>
   
@@ -315,67 +317,125 @@ const localBusinessSchema = generateLocalBusinessSchema();
   <!-- Developer Tools (Development Only) -->
   <div id="devtools-root"></div>
   
-  <!-- Google Translate Widget -->
+  <!-- JigsawStack Translation Widget -->
+  <script src="https://cdn.jigsawstack.com/v1/translation-widget.js"></script>
   <script is:inline>
-    function googleTranslateElementInit() {
-      // Desktop version
-      const desktopElement = document.getElementById('google_translate_element');
-      if (desktopElement) {
-        new google.translate.TranslateElement({
-          pageLanguage: 'en',
-          includedLanguages: 'en,bn',
-          layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
-          autoDisplay: false
-        }, 'google_translate_element');
+    // Define custom CSS for the translation widget
+    const jigsawStackCustomCSS = `
+      .jigsawstack-translation-widget {
+        font-family: inherit !important;
+        font-size: 12px !important;
+        border: 2px solid #FF6B35 !important;
+        border-radius: 6px !important;
+        padding: 8px 12px !important;
+        background: #FF6B35 !important;
+        color: white !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        gap: 6px !important;
+        cursor: pointer !important;
+        transition: all 0.2s ease !important;
+        white-space: nowrap !important;
+        font-weight: 600 !important;
+        z-index: 1000 !important;
+        position: relative !important;
       }
-      
-      // Mobile version
-      const mobileElement = document.getElementById('google_translate_element_mobile');
-      if (mobileElement) {
-        new google.translate.TranslateElement({
-          pageLanguage: 'en',
-          includedLanguages: 'en,bn',
-          layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
-          autoDisplay: false
-        }, 'google_translate_element_mobile');
+      .jigsawstack-translation-widget:hover {
+        border-color: #E85A2A !important;
+        background: #E85A2A !important;
+        transform: translateY(-1px) !important;
+        box-shadow: 0 4px 8px rgba(255, 107, 53, 0.3) !important;
       }
-    }
-  </script>
-  <script is:inline src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
-  
-  <!-- Add title to Google Translate iframe for accessibility -->
-  <script is:inline>
-    // Wait for Google Translate to load and add title to iframe
-    setTimeout(function() {
-      const iframes = document.querySelectorAll('iframe');
-      iframes.forEach(function(iframe) {
-        if (!iframe.title || iframe.title === '') {
-          if (iframe.src && iframe.src.includes('translate.google')) {
-            iframe.title = 'Google Translate Widget';
-          } else {
-            iframe.title = 'Embedded content';
-          }
+      .jigsawstack-translation-widget .language-selector {
+        color: white !important;
+        font-size: 12px !important;
+        font-weight: 600 !important;
+      }
+      .jigsawstack-translation-widget .flag-icon {
+        width: 18px !important;
+        height: 14px !important;
+      }
+      @media (max-width: 640px) {
+        .jigsawstack-translation-widget {
+          padding: 6px 10px !important;
+          font-size: 11px !important;
+          border-width: 1px !important;
         }
-      });
-    }, 2000);
-  </script>
-  
-  <!-- Mount DevTools in development -->
-  <!-- DevTools temporarily disabled -->
-  <!--
-  <script>
-    import DevTools from '../components/common/DevTools';
-    import { createRoot } from 'react-dom/client';
-    
-    if (import.meta.env.DEV) {
-      const container = document.getElementById('devtools-root');
-      if (container) {
-        const root = createRoot(container);
-        root.render(<DevTools />);
+        .jigsawstack-translation-widget .language-selector {
+          font-size: 11px !important;
+        }
+      }
+    `;
+
+    // Initialize JigsawStack Translation Widget for Desktop
+    window.addEventListener('load', function() {
+      try {
+        // Desktop widget
+        const desktopElement = document.getElementById('google_translate_element');
+        if (desktopElement && window.TranslationWidget) {
+          window.TranslationWidget('sk_40c22ac1529e5833cb3e3cffe81ba18596c815721db5b63b4d36b12ca1944d06c46277967738b3165bc2d7a841fd6f1f4be7c497ff4aa5d35e17f112910e69d0024N9Lu87BuDw9ZdziZJY', {
+            pageLanguage: 'en',
+            includedLanguages: ['en', 'bn'],
+            position: 'inline',
+            theme: {
+              baseColor: '#FF6B35',
+              textColor: '#000000',
+              borderRadius: '6px'
+            },
+            showUI: true,
+            autoDetectLanguage: false,
+            customCSS: jigsawStackCustomCSS
+          });
+          console.log('✅ JigsawStack Desktop Translation Widget initialized');
+        }
+
+        // Mobile widget (portal)
+        const mobileElement = document.getElementById('mobile_translate_element');
+        if (mobileElement && window.TranslationWidget) {
+          window.TranslationWidget('sk_40c22ac1529e5833cb3e3cffe81ba18596c815721db5b63b4d36b12ca1944d06c46277967738b3165bc2d7a841fd6f1f4be7c497ff4aa5d35e17f112910e69d0024N9Lu87BuDw9ZdziZJY', {
+            pageLanguage: 'en',
+            includedLanguages: ['en', 'bn'],
+            position: 'inline',
+            theme: {
+              baseColor: '#FF6B35',
+              textColor: '#000000',
+              borderRadius: '4px'
+            },
+            showUI: true,
+            autoDetectLanguage: false,
+            customCSS: jigsawStackCustomCSS.replace('padding: 8px 12px', 'padding: 4px 6px').replace('font-size: 12px', 'font-size: 11px')
+          });
+          console.log('✅ JigsawStack Mobile Translation Widget initialized');
+        }
+      } catch (error) {
+        console.error('❌ JigsawStack Translation Widget failed to initialize:', error);
+        // Fallback: Show manual language toggle
+        showManualLanguageToggle();
+      }
+    });
+
+    function showManualLanguageToggle() {
+      const desktopEl = document.getElementById('google_translate_element');
+      const mobileEl = document.getElementById('mobile_translate_element');
+
+      if (desktopEl && !desktopEl.hasChildNodes()) {
+        desktopEl.innerHTML = '<button onclick="toggleManualLanguage()" class="inline-flex items-center gap-1 px-2 py-1 text-xs bg-orange-500 hover:bg-orange-600 text-white rounded border-0 transition-colors">🌐 বাংলা</button>';
+      }
+      if (mobileEl && !mobileEl.hasChildNodes()) {
+        mobileEl.innerHTML = '<button onclick="toggleManualLanguage()" class="inline-flex items-center gap-1 px-1 py-0.5 text-[10px] bg-orange-500 hover:bg-orange-600 text-white rounded border-0 transition-colors">🌐 বাংলা</button>';
       }
     }
+
+    function toggleManualLanguage() {
+      // Simple manual toggle between EN and BN
+      const currentLang = document.documentElement.lang || 'en';
+      const newLang = currentLang === 'en' ? 'bn' : 'en';
+      document.documentElement.lang = newLang;
+      // Reload page with new language preference
+      window.location.reload();
+    }
   </script>
-  -->
+  
   <!-- Load Sentry SDK -->
   <script src="https://browser.sentry-cdn.com/7.91.0/bundle.min.js" crossorigin="anonymous"></script>
   

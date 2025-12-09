@@ -1,0 +1,249 @@
+---
+import { Menu, ShoppingCart } from 'lucide-react';
+import { Image } from 'astro:assets';
+import logoImage from '../../assets/images/logo.png';
+---
+
+<!-- Mobile Header - Portal Concept for Better Performance -->
+<header id="mobile-header-portal" class="bg-white shadow-md sticky top-0 z-50 block md:hidden">
+  <div class="container-custom">
+    <!-- Priority Row: Logo + Translation (Highest Priority) -->
+    <div class="flex items-center justify-between py-2 px-1">
+      <!-- Logo Section - Priority 1 -->
+      <a href="/" class="flex items-center gap-2 hover:opacity-80 transition-opacity flex-shrink-0 min-w-0">
+        <Image src={logoImage} alt="Khazaana Logo" class="h-8 w-auto flex-shrink-0" width={96} height={96} format="webp" quality={100} />
+        <div class="flex flex-col min-w-0">
+          <span class="text-sm font-bold text-gray-900 leading-tight truncate">Khazaana</span>
+          <p class="text-[9px] text-orange-500 font-medium leading-tight truncate">Cups n Crumbs Cafe</p>
+        </div>
+      </a>
+
+      <!-- Translation + Actions - Priority 2 -->
+      <div class="flex items-center gap-1 flex-shrink-0">
+        <!-- JigsawStack Translation - Always visible on mobile -->
+        <div id="mobile_translate_element" class="translate-widget-mobile"></div>
+
+        <!-- Cart Button - Only on non-home pages -->
+        <a href="/cart/" id="mobile-cart-btn" class="relative btn-primary cart-btn-mobile flex items-center gap-1 px-2 py-1.5 text-xs">
+          <ShoppingCart className="w-4 h-4" />
+          <span class="hidden xs:inline">Cart</span>
+          <span id="mobile-cart-count" class="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold rounded-full h-4 w-4 flex items-center justify-center hidden">
+            0
+          </span>
+        </a>
+
+        <!-- Hamburger Menu -->
+        <button id="mobile-menu-btn-portal" class="p-1.5 text-gray-700 hover:text-[var(--color-primary)] hover:bg-gray-100 rounded-md transition-colors" aria-label="Open navigation menu">
+          <Menu className="w-5 h-5" />
+          <span class="sr-only">Menu</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- Mobile Navigation Menu - Portal -->
+<nav id="mobile-nav-portal" class="hidden md:hidden fixed inset-0 top-16 bg-white z-40 transform transition-transform duration-300 ease-in-out">
+  <div class="flex flex-col h-full">
+    <!-- Navigation Items -->
+    <div class="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
+      <a href="/" class="flex items-center space-x-3 text-gray-700 hover:text-[var(--color-primary)] hover:bg-orange-50 transition-colors font-medium py-3 px-3 rounded-lg">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+        </svg>
+        <span>Home</span>
+      </a>
+
+      <a href="/restaurants/" class="flex items-center space-x-3 text-gray-700 hover:text-[var(--color-primary)] hover:bg-orange-50 transition-colors font-medium py-3 px-3 rounded-lg">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+        </svg>
+        <span>Restaurants</span>
+      </a>
+
+      <a href="/about/" class="flex items-center space-x-3 text-gray-700 hover:text-[var(--color-primary)] hover:bg-orange-50 transition-colors font-medium py-3 px-3 rounded-lg">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+        </svg>
+        <span>About</span>
+      </a>
+
+      <a href="/history/" class="flex items-center space-x-3 text-gray-700 hover:text-[var(--color-primary)] hover:bg-orange-50 transition-colors font-medium py-3 px-3 rounded-lg">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+        </svg>
+        <span>Order History</span>
+      </a>
+
+      <a href="/cart/" class="flex items-center space-x-3 text-gray-700 hover:text-[var(--color-primary)] hover:bg-orange-50 transition-colors font-medium py-3 px-3 rounded-lg">
+        <ShoppingCart className="w-5 h-5" />
+        <span>Cart</span>
+      </a>
+    </div>
+
+    <!-- Footer Actions -->
+    <div class="border-t border-gray-200 p-4">
+      <div class="text-xs text-gray-500 text-center">
+        © 2025 Khazaana - Cups n Crumbs Cafe
+      </div>
+    </div>
+  </div>
+</nav>
+
+<style>
+  /* Mobile header portal styles */
+  #mobile-header-portal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: white;
+    border-bottom: 1px solid #e5e7eb;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+
+  /* Mobile navigation portal animation */
+  #mobile-nav-portal {
+    transform: translateX(100%);
+  }
+
+  #mobile-nav-portal:not(.hidden) {
+    transform: translateX(0);
+  }
+
+  /* Mobile translate widget styling */
+  .translate-widget-mobile {
+    display: flex !important;
+    align-items: center;
+  }
+
+  .translate-widget-mobile .jigsawstack-translation-widget {
+    font-family: inherit !important;
+    font-size: 11px !important;
+    border: 1px solid #e5e7eb !important;
+    border-radius: 4px !important;
+    padding: 4px 6px !important;
+    background: #f9fafb !important;
+    color: #374151 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 4px !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+    white-space: nowrap !important;
+    font-weight: 500 !important;
+  }
+
+  .translate-widget-mobile .jigsawstack-translation-widget:hover {
+    border-color: #FF6B35 !important;
+    background: #ffffff !important;
+  }
+
+  .translate-widget-mobile .jigsawstack-translation-widget .language-selector {
+    color: #374151 !important;
+    font-size: 10px !important;
+  }
+
+  .translate-widget-mobile .jigsawstack-translation-widget .flag-icon {
+    width: 14px !important;
+    height: 10px !important;
+  }
+
+  /* Hide mobile header on desktop */
+  @media (min-width: 768px) {
+    #mobile-header-portal {
+      display: none !important;
+    }
+  }
+
+  /* Hide cart button on landing page mobile */
+  body[data-page="home"] .cart-btn-mobile {
+    display: none !important;
+  }
+</style>
+
+<script>
+  // Mobile portal header functionality
+  class MobileHeaderPortal {
+    constructor() {
+      this.header = document.getElementById('mobile-header-portal');
+      this.nav = document.getElementById('mobile-nav-portal');
+      this.menuBtn = document.getElementById('mobile-menu-btn-portal');
+      this.isOpen = false;
+
+      this.init();
+    }
+
+    init() {
+      if (!this.menuBtn || !this.nav) return;
+
+      // Menu toggle
+      this.menuBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        this.toggleMenu();
+      });
+
+      // Close on outside click
+      document.addEventListener('click', (e) => {
+        if (this.isOpen && !this.nav.contains(e.target) && e.target !== this.menuBtn) {
+          this.closeMenu();
+        }
+      });
+
+      // Close on escape
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && this.isOpen) {
+          this.closeMenu();
+        }
+      });
+
+      // Update cart count
+      this.updateCartCount();
+      window.addEventListener('storage', () => this.updateCartCount());
+      window.addEventListener('cartUpdated', () => this.updateCartCount());
+    }
+
+    toggleMenu() {
+      this.isOpen = !this.isOpen;
+      if (this.isOpen) {
+        this.nav.classList.remove('hidden');
+        document.body.classList.add('mobile-menu-open');
+        document.body.style.overflow = 'hidden';
+      } else {
+        this.closeMenu();
+      }
+    }
+
+    closeMenu() {
+      this.isOpen = false;
+      this.nav.classList.add('hidden');
+      document.body.classList.remove('mobile-menu-open');
+      document.body.style.overflow = '';
+    }
+
+    updateCartCount() {
+      try {
+        const cart = localStorage.getItem('khazaana_cart');
+        if (cart) {
+          const cartData = JSON.parse(cart);
+          const totalItems = cartData.items?.reduce((sum: number, item: any) => sum + item.quantity, 0) || 0;
+          const cartCountEl = document.getElementById('mobile-cart-count');
+          if (cartCountEl) {
+            cartCountEl.textContent = totalItems.toString();
+            cartCountEl.style.display = totalItems > 0 ? 'flex' : 'none';
+          }
+        }
+      } catch (error) {
+        console.error('Error updating mobile cart count:', error);
+      }
+    }
+  }
+
+  // Initialize mobile header when DOM is ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => new MobileHeaderPortal());
+  } else {
+    new MobileHeaderPortal();
+  }
+</script>

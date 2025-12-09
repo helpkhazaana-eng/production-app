@@ -2,26 +2,24 @@
 import { Menu, ShoppingCart, Home, Info, UtensilsCrossed } from 'lucide-react';
 import { Image } from 'astro:assets';
 import logoImage from '../../assets/images/logo.png';
+import MobileHeader from './MobileHeader.astro';
 ---
 
-<header class="bg-white shadow-md sticky top-0 z-40">
+<!-- Mobile Header Portal - Highest Priority on Mobile -->
+<MobileHeader />
+
+<!-- Desktop Header - Hidden on Mobile -->
+<header class="bg-white shadow-md sticky top-0 z-40 hidden md:block">
   <div class="container-custom">
-    <div class="flex items-center justify-between py-3 md:py-4">
+    <div class="header-row flex items-center justify-between py-2 sm:py-3 md:py-4 gap-2">
       <!-- Logo -->
-      <a href="/" class="flex items-center space-x-2 hover:opacity-80 transition-opacity flex-shrink-0">
-        <Image src={logoImage} alt="Khazaana Logo" class="h-9 sm:h-12 w-auto" width={96} height={96} format="webp" quality={100} />
-        <div class="hidden sm:block">
-          <span class="text-xl md:text-2xl font-bold text-gray-900 block">Khazaana</span>
-          <p class="text-xs text-gray-600">Food Ordering Platform</p>
-          <p class="text-xs text-orange-500 font-medium">Powered by Cups n Crumbs Cafe</p>
+      <a href="/" class="flex items-center gap-2 hover:opacity-80 transition-opacity flex-shrink-0 min-w-0">
+        <Image src={logoImage} alt="Khazaana Logo" class="h-8 sm:h-10 md:h-12 w-auto flex-shrink-0" width={96} height={96} format="webp" quality={100} />
+        <div class="flex flex-col min-w-0">
+          <span class="text-base sm:text-lg md:text-2xl font-bold text-gray-900 leading-tight truncate">Khazaana</span>
+          <p class="text-[10px] sm:text-xs text-orange-500 font-medium leading-tight truncate">Cups n Crumbs Cafe</p>
         </div>
       </a>
-      
-      <!-- Mobile Logo Text -->
-      <div class="sm:hidden flex flex-col flex-shrink-0">
-        <span class="text-lg font-bold text-gray-900 block">Khazaana</span>
-        <p class="text-xs text-orange-500 font-medium">Powered by Cups n Crumbs Cafe</p>
-      </div>
 
       <!-- Desktop Navigation -->
       <nav class="hidden lg:flex items-center space-x-6">
@@ -43,137 +41,52 @@ import logoImage from '../../assets/images/logo.png';
       </nav>
 
       <!-- Right Side Actions -->
-      <div class="flex items-center space-x-2 sm:space-x-3">
-        <!-- Google Translate - Shows on all screens -->
+      <div class="flex items-center gap-1 sm:gap-2 flex-shrink-0">
+        <!-- Google Translate - Always visible, compact on mobile -->
         <div id="google_translate_element" class="translate-widget"></div>
 
-        <!-- Cart Button -->
-        <a href="/cart/" class="relative btn-primary flex items-center space-x-1 sm:space-x-2 px-3 sm:px-4 py-2">
-          <ShoppingCart className="w-5 h-5" />
+        <!-- Cart Button - Hidden on mobile for landing page, visible elsewhere -->
+        <a href="/cart/" id="header-cart-btn" class="relative btn-primary cart-btn-header flex items-center gap-1 px-2 sm:px-3 md:px-4 py-1.5 sm:py-2 text-sm sm:text-base">
+          <ShoppingCart className="w-4 h-4 sm:w-5 sm:h-5" />
           <span class="hidden sm:inline">Cart</span>
           <span id="cart-count" class="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center hidden">
             0
           </span>
         </a>
-
-        <!-- Mobile Menu Button -->
-        <button id="mobile-menu-btn" class="lg:hidden p-2 text-gray-700 hover:text-[var(--color-primary)]" aria-label="Open navigation menu" title="Menu">
-          <Menu className="w-6 h-6" aria-hidden="true" />
-          <span class="sr-only">Menu</span>
-        </button>
       </div>
     </div>
 
-    <!-- Mobile Navigation -->
-    <nav id="mobile-menu" class="hidden lg:hidden pb-4 border-t border-gray-200 mt-2 pt-4 bg-white">
-      <div class="flex flex-col space-y-1">
-        <a href="/" class="flex items-center space-x-3 text-gray-700 hover:text-[var(--color-primary)] hover:bg-gray-50 transition-colors font-medium py-3 px-2 rounded-lg">
-          <Home className="w-5 h-5" />
-          <span>Home</span>
-        </a>
-        <a href="/restaurants/" class="flex items-center space-x-3 text-gray-700 hover:text-[var(--color-primary)] hover:bg-gray-50 transition-colors font-medium py-3 px-2 rounded-lg">
-          <UtensilsCrossed className="w-5 h-5" />
-          <span>Restaurants</span>
-        </a>
-        <a href="/about/" class="flex items-center space-x-3 text-gray-700 hover:text-[var(--color-primary)] hover:bg-gray-50 transition-colors font-medium py-3 px-2 rounded-lg">
-          <Info className="w-5 h-5" />
-          <span>About</span>
-        </a>
-        <a href="/history/" class="flex items-center space-x-3 text-gray-700 hover:text-[var(--color-primary)] hover:bg-gray-50 transition-colors font-medium py-3 px-2 rounded-lg">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-          </svg>
-          <span>Order History</span>
-        </a>
-        <!-- Google Translate (Mobile) - Highlighted section -->
-        <div id="lang-section" class="pt-3 border-t border-gray-200 mt-3 bg-orange-50 -mx-2 px-4 py-3 rounded-lg">
-          <p class="text-sm text-gray-700 mb-3 font-semibold flex items-center gap-2">
-            <span class="text-lg">🌐</span>
-            <span>ভাষা পরিবর্তন করুন / Change Language</span>
-          </p>
-          <div id="google_translate_element_mobile" class="translate-widget-mobile"></div>
-        </div>
-      </div>
+    <!-- Desktop Navigation -->
+    <nav class="hidden lg:flex items-center space-x-6">
+      <a href="/" class="flex items-center space-x-2 text-gray-700 hover:text-[var(--color-primary)] transition-colors font-medium">
+        <Home className="w-5 h-5" />
+        <span>Home</span>
+      </a>
+      <a href="/restaurants/" class="flex items-center space-x-2 text-gray-700 hover:text-[var(--color-primary)] transition-colors font-medium">
+        <UtensilsCrossed className="w-5 h-5" />
+        <span>Restaurants</span>
+      </a>
+      <a href="/about/" class="flex items-center space-x-2 text-gray-700 hover:text-[var(--color-primary)] transition-colors font-medium">
+        <Info className="w-5 h-5" />
+        <span>About</span>
+      </a>
+      <a href="/history/" class="text-gray-700 hover:text-[var(--color-primary)] transition-colors font-medium">
+        Order History
+      </a>
     </nav>
   </div>
 </header>
 
 <style>
-  /* Style Google Translate widget for all screens */
-  .translate-widget .goog-te-gadget {
-    font-size: 0 !important;
-  }
-  
-  .translate-widget .goog-te-gadget-simple {
-    border: 1px solid #e5e7eb !important;
-    border-radius: 8px !important;
-    padding: 6px 10px !important;
-    background: #f9fafb !important;
-    display: inline-flex !important;
-    align-items: center !important;
-    font-size: 12px !important;
-  }
-  
-  /* Mobile: Compact version */
+  /* Hide cart button on landing page mobile */
   @media (max-width: 640px) {
-    .translate-widget .goog-te-gadget-simple {
-      padding: 4px 8px !important;
-      font-size: 11px !important;
+    body[data-page="home"] .cart-btn-header {
+      display: none !important;
     }
-    
-    .translate-widget .goog-te-gadget-simple img {
-      width: 14px !important;
-      height: 14px !important;
-    }
-  }
-  
-  .translate-widget .goog-te-gadget-simple span {
-    color: #374151 !important;
-  }
-  
-  /* Style translate widget in mobile menu */
-  .translate-widget-mobile .goog-te-gadget {
-    font-size: 14px !important;
-  }
-  
-  .translate-widget-mobile .goog-te-gadget-simple {
-    border: 2px solid var(--color-primary) !important;
-    border-radius: 10px !important;
-    padding: 10px 16px !important;
-    background: white !important;
   }
 </style>
 
 <script>
-  // Mobile menu toggle
-  const mobileMenuBtn = document.getElementById('mobile-menu-btn');
-  const mobileMenu = document.getElementById('mobile-menu');
-
-  mobileMenuBtn?.addEventListener('click', (e) => {
-    e.stopPropagation();
-    mobileMenu?.classList.toggle('hidden');
-    document.body.classList.toggle('mobile-menu-open');
-  });
-
-  // Close mobile menu when clicking outside
-  document.addEventListener('click', (e) => {
-    const target = e.target as HTMLElement;
-    if (mobileMenu && !mobileMenu.classList.contains('hidden')) {
-      if (!mobileMenu.contains(target) && target !== mobileMenuBtn) {
-        mobileMenu.classList.add('hidden');
-        document.body.classList.remove('mobile-menu-open');
-      }
-    }
-  });
-
-  // Close mobile menu when clicking on a link
-  mobileMenu?.querySelectorAll('a').forEach(link => {
-    link.addEventListener('click', () => {
-      mobileMenu.classList.add('hidden');
-      document.body.classList.remove('mobile-menu-open');
-    });
-  });
-
   // Update cart count from localStorage
   function updateCartCount() {
     try {
