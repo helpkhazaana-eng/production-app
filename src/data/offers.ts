@@ -50,6 +50,24 @@ export interface ExclusiveOffer {
  * =====================================================
  */
 export const exclusiveOffers: ExclusiveOffer[] = [
+  // -------- KHAZAANA RASOI OFFER --------
+  {
+    id: 'khazaanarasoi-free-delivery',
+    dishName: 'Free Delivery Special',
+    description: 'FREE Delivery on orders above ₹300! Order your favorite dishes.',
+    restaurantId: 'khazaanarasoi',
+    restaurantName: 'Khazaana Rasoi - Ghorer Moto Ranna',
+    originalPrice: 300,
+    offerPrice: 300,
+    discountPercent: 0,
+    deliveryCharge: 0,
+    startDate: '2025-12-09',
+    endDate: '2025-12-31',
+    isActive: true,
+    vegNonVeg: 'Non-Veg',
+    terms: 'Free delivery on orders above ₹300. Valid on all items.'
+  },
+
   // -------- CUPS N CRUMBS OFFER --------
   {
     id: 'cnc-grill-sandwich',

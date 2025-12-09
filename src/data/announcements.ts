@@ -37,6 +37,14 @@ export const announcements: Announcement[] = [
     link: 'tel:+918695902696',
     linkText: 'Call'
   },
+  {
+    id: 'khazaanarasoi-launch',
+    message: '🎉 New Restaurant Launch: Khazaana Rasoi - Ghorer Moto Ranna is now open! FREE Delivery above ₹300.',
+    type: 'promo',
+    active: true,
+    link: '/restaurants/khazaanarasoi',
+    linkText: 'Explore Now'
+  },
   // Add more announcements here as needed
   // Example:
   // {

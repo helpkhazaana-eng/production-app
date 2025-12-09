@@ -176,7 +176,7 @@ const combinedSchema = {
                     </div>
                     <div class="text-right">
                       <div class="bg-white text-orange-600 font-bold text-lg px-3 py-1 rounded-lg">
-                        {offer.discountPercent}% OFF
+                        {offer.discountPercent === 0 ? 'FREE' : `${offer.discountPercent}% OFF`}
                       </div>
                     </div>
                   </div>
@@ -233,7 +233,7 @@ const combinedSchema = {
                     href={`/restaurants/${offer.restaurantId}/`}
                     class="block w-full bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white text-center font-semibold py-3 rounded-lg transition-all"
                   >
-                    Order Now
+                    {offer.deliveryCharge === 0 ? 'Explore Menu' : 'Order Now'}
                   </a>
                 </div>
               </div>

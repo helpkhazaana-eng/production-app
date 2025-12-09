@@ -29,6 +29,7 @@ const breadcrumbSchema = generateBreadcrumbSchema([
   description={seoDescription}
   category="general"
   structuredData={breadcrumbSchema}
+  pageType="home"
 >
   <Header />
   <AnnouncementBar />
@@ -147,7 +148,7 @@ const breadcrumbSchema = generateBreadcrumbSchema([
                     <!-- Offer Badge -->
                     <div class="relative bg-gradient-to-r from-orange-500 via-red-500 to-pink-500 p-4">
                       <div class="absolute top-2 right-2 bg-white text-red-600 font-bold text-lg px-3 py-1 rounded-lg shadow-lg animate-bounce">
-                        {offer.discountPercent}% OFF
+                        {offer.discountPercent === 0 ? 'FREE' : `${offer.discountPercent}% OFF`}
                       </div>
                       <span class="text-white/80 text-xs font-medium">{offer.restaurantName}</span>
                       <h3 class="text-white text-xl font-bold mt-1 pr-20">{offer.dishName}</h3>
@@ -185,14 +186,25 @@ const breadcrumbSchema = generateBreadcrumbSchema([
                       </div>
                       
                       <!-- CTA Button -->
-                      <button 
-                        class="add-offer-to-cart w-full bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white font-bold py-3 px-4 rounded-xl flex items-center justify-center gap-2 transition-all shadow-lg shadow-orange-500/25 hover:shadow-xl hover:shadow-orange-500/30"
-                        data-offer={JSON.stringify(offer)}
-                        aria-label={`Add ${offer.dishName} to cart`}
-                      >
-                        <ShoppingCart className="w-5 h-5" aria-hidden="true" />
-                        <span>Add to Cart</span>
-                      </button>
+                      {offer.deliveryCharge === 0 ? (
+                        <a 
+                          href={`/restaurants/${offer.restaurantId}/`}
+                          class="w-full bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white font-bold py-3 px-4 rounded-xl flex items-center justify-center gap-2 transition-all shadow-lg shadow-green-500/25 hover:shadow-xl hover:shadow-green-500/30"
+                          aria-label={`Explore menu for ${offer.restaurantName}`}
+                        >
+                          <UtensilsCrossed className="w-5 h-5" aria-hidden="true" />
+                          <span>Explore Menu</span>
+                        </a>
+                      ) : (
+                        <button 
+                          class="add-offer-to-cart w-full bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white font-bold py-3 px-4 rounded-xl flex items-center justify-center gap-2 transition-all shadow-lg shadow-orange-500/25 hover:shadow-xl hover:shadow-orange-500/30"
+                          data-offer={JSON.stringify(offer)}
+                          aria-label={`Add ${offer.dishName} to cart`}
+                        >
+                          <ShoppingCart className="w-5 h-5" aria-hidden="true" />
+                          <span>Add to Cart</span>
+                        </button>
+                      )}
                     </div>
                   </div>
                 );
@@ -226,7 +238,7 @@ const breadcrumbSchema = generateBreadcrumbSchema([
                     
                     <!-- Discount Badge -->
                     <div class="absolute top-3 right-3 bg-white text-red-600 font-bold text-xl px-4 py-2 rounded-xl shadow-lg group-hover:scale-110 transition-transform">
-                      {offer.discountPercent}% OFF
+                      {offer.discountPercent === 0 ? 'FREE' : `${offer.discountPercent}% OFF`}
                     </div>
                     
                     <div class="relative">
@@ -279,15 +291,26 @@ const breadcrumbSchema = generateBreadcrumbSchema([
                     </div>
                     
                     <!-- CTA Button -->
-                    <button 
-                      class="add-offer-to-cart w-full bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white font-bold py-4 px-6 rounded-xl flex items-center justify-center gap-3 transition-all shadow-lg shadow-orange-500/25 hover:shadow-xl hover:shadow-orange-500/30 group-hover:scale-[1.02]"
-                      data-offer={JSON.stringify(offer)}
-                      aria-label={`Add ${offer.dishName} to cart`}
-                    >
-                      <ShoppingCart className="w-5 h-5" aria-hidden="true" />
-                      <span>Add to Cart</span>
-                      <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" aria-hidden="true" />
-                    </button>
+                    {offer.deliveryCharge === 0 ? (
+                      <a 
+                        href={`/restaurants/${offer.restaurantId}/`}
+                        class="w-full bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white font-bold py-4 px-6 rounded-xl flex items-center justify-center gap-3 transition-all shadow-lg shadow-green-500/25 hover:shadow-xl hover:shadow-green-500/30 group-hover:scale-[1.02]"
+                        aria-label={`Explore menu for ${offer.restaurantName}`}
+                      >
+                        <UtensilsCrossed className="w-5 h-5" aria-hidden="true" />
+                        <span>Explore Menu</span>
+                      </a>
+                    ) : (
+                      <button 
+                        class="add-offer-to-cart w-full bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white font-bold py-4 px-6 rounded-xl flex items-center justify-center gap-3 transition-all shadow-lg shadow-orange-500/25 hover:shadow-xl hover:shadow-orange-500/30 group-hover:scale-[1.02]"
+                        data-offer={JSON.stringify(offer)}
+                        aria-label={`Add ${offer.dishName} to cart`}
+                      >
+                        <ShoppingCart className="w-5 h-5" aria-hidden="true" />
+                        <span>Add to Cart</span>
+                        <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" aria-hidden="true" />
+                      </button>
+                    )}
                   </div>
                   
                   {offer.terms && (

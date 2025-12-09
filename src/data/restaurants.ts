@@ -40,6 +40,23 @@ export const restaurants: Restaurant[] = [
     menuFile: 'cupsncrumbs.csv'
   },
   {
+    id: 'khazaanarasoi',
+    name: 'Khazaana Rasoi - Ghorer Moto Ranna',
+    address: 'College More, near DNC College, Aurangabad, Suti, West Bengal 742201',
+    phone: KHAZAANA_CONTACT.phone,
+    whatsapp: KHAZAANA_CONTACT.whatsapp,
+    opensAt: RESTAURANT_TIMINGS.opensAt,
+    closesAt: RESTAURANT_TIMINGS.closesAt,
+    status: 'open',
+    category: 'Indian',
+    featured: false,
+    rating: 4.5,
+    cuisine: ['Indian', 'Bengali'],
+    priceRange: '₹₹',
+    costForTwo: RESTAURANT_PRICING.costForTwo,
+    menuFile: 'khazaanarasoi.csv'
+  },
+  {
     id: 'aaviora',
     name: 'Aaviora',
     address: 'College More, near DNC College, Aurangabad, Suti, West Bengal 742201',
