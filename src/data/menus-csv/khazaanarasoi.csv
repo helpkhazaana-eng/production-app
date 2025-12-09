@@ -1,16 +1,15 @@
 Item Name,Price (₹),Category,Veg/Non-Veg,Description
-Veg Thali,65,Thali,Veg,
-Chicken Thali,135,Thali,Non-Veg,
-Fish Thali,110,Thali,Non-Veg,
-Mutton Thali,230,Thali,Non-Veg,
-Roti Meal Chicken,90,Meal,Non-Veg,
-Roti Meal Mutton,180,Meal,Non-Veg,
-Chicken (2 pcs),70,Main,Non-Veg,
-Mutton (2 pcs),160,Main,Non-Veg,
-Fish Per Pc,40,Main,Non-Veg,
-Extra Rice,10,Add-on,Veg,
-Egg Tadka Half,45,Tadka,Non-Veg,
-Egg Tadka Full,80,Tadka,Non-Veg,
-Plain Tadka Half,45,Tadka,Veg,
-Plain Tadka Full,75,Tadka,Veg,
-Roti,7,Bread,Veg,
+Veg Thali,65,Thali,Veg,Complete meal with rice, dal, mixed vegetables, roti, and dessert
+Chicken Thali,135,Thali,Non-Veg,Complete meal with rice, dal, chicken curry, mixed vegetables, roti, and dessert
+Fish Thali,110,Thali,Non-Veg,Complete meal with rice, dal, fish curry, mixed vegetables, roti, and dessert
+Mutton Thali,230,Thali,Non-Veg,Complete meal with rice, dal, mutton curry, mixed vegetables, roti, and dessert
+Roti Meal Chicken,90,Meal,Non-Veg,Chicken curry with 2 rotis and salad
+Roti Meal Mutton,180,Meal,Non-Veg,Mutton curry with 2 rotis and salad
+Chicken (2 pcs),70,Main,Non-Veg,Tender chicken pieces cooked in traditional Bengali style
+Mutton (2 pcs),160,Main,Non-Veg,Authentic Bengali mutton preparation
+Fish Per Pc,40,Main,Non-Veg,Fresh fish piece cooked in Bengali spices
+Egg Tadka Half,45,Tadka,Non-Veg,Egg tadka gravy (serves 1-2)
+Egg Tadka Full,80,Tadka,Non-Veg,Egg tadka gravy (serves 3-4)
+Plain Tadka Half,45,Tadka,Veg,Vegetable tadka gravy (serves 1-2)
+Plain Tadka Full,75,Tadka,Veg,Vegetable tadka gravy (serves 3-4)
+Roti,7,Bread,Veg,Freshly made plain roti
